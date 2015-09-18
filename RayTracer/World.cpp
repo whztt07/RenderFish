@@ -31,23 +31,28 @@ void World::render_scene(void) const
 	//int n = (int)sqrt((float)vp.num_samples);
 
 	open_window(vp.hres, vp.hres);
-	ray.direction = Vec3(0, 0, -1);
 
-	for (int r = 0; r < vp.vres; r++)
-	{
-		for (int c = 0; c < vp.hres; c++)
-		{
-			x = vp.pixel_size * (c - 0.5f * (vp.hres - 1.0));
-			y = vp.pixel_size * (r - 0.5f * (vp.vres - 1.0));
-			ray.origin = Vec3(x, y, zw);
-			pixel_color = tracer->trace_ray(ray);
-			display_pixel(r, c, pixel_color);
-		}
-	}
+	//ray.direction = Vec3(0, 0, -1);
+
+	//for (int r = 0; r < vp.vres; r++)
+	//{
+	//	for (int c = 0; c < vp.hres; c++)
+	//	{
+	//		x = vp.pixel_size * (c - 0.5f * (vp.hres - 1.0));
+	//		y = vp.pixel_size * (r - 0.5f * (vp.vres - 1.0));
+	//		ray.origin = Vec3(x, y, zw);
+	//		pixel_color = tracer->trace_ray(ray);
+	//		display_pixel(r, c, pixel_color);
+	//	}
+	//}
+
+	draw_line(vp.hres, 10, 0, vp.vres / 2);
 
 	while (screen_exit == 0 && screen_keys[VK_ESCAPE] == 0)
 	{
 		screen_dispatch();
 		screen_update();
+		static float elapse = 1.0f / 30 * 1000;
+		Sleep(elapse);
 	}
 }

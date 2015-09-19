@@ -65,7 +65,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Color.cpp" />
-    <ClCompile Include="GeometricObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="ShadeRec.cpp" />
@@ -75,7 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Color.h" />
-    <ClInclude Include="GeometricObject.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="MathHelper.h" />

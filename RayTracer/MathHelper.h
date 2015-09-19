@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cmath>
 
-#define EPSILON 1e-5f;
+#define EPSILON 1e-6f;
 #define ZERO(x) abs(x) < EPSILON
 const float PI = 3.1415926536f;
 const float INV_PI = 1.0f / PI;
@@ -19,7 +19,7 @@ class Vec3 {
 public:
 	union {
 		struct { float x, y, z; };
-		float m[4];
+		float m[3];
 	};
 	
 	Vec3() : Vec3(0, 0, 0) {}
@@ -36,6 +36,7 @@ public:
 	float square_length() { return x*x + y*y + z*z; }
 	float length() const { return sqrtf(x*x + y*y + z*z); }
 	const Vec3 normalize() const { float l = length(); return Vec3(x / l, y / l, z / l); }
+	void normalize_self() { float l = length(); x /= l, y /= l; z /= l; }
 
 	float& operator[](const int index) { return m[index]; }
 	float operator[](const int index) const { return m[index]; }
@@ -79,7 +80,7 @@ static Vec3 normalize(const Vec3& v)
 	return v.normalize();
 }
 
-// v and n are normalized
+// in and normal are normalized
 static Vec3 reflect_normalized(const Vec3& in, const Vec3& normal)
 {
 	//return (n * 2 * (dot(n, v)) - v).normalize();

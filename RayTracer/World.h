@@ -1,13 +1,12 @@
 #pragma once
 
 #include <vector>
+#include <assert.h>
 
 #include "ViewPlane.h"
 #include "Geometry.h"
 #include "Color.h"
-
 #include "rtwindow.h"
-#include "assert.h"
 
 class Tracer;
 
@@ -150,7 +149,7 @@ public:
 		}
 		else
 		{
-			for (int i = x0, j = y0; i <= x1 / 2; i++)
+			for (int i = x0, j = y0; i <= x1; i++)
 			{
 				if (e < 0)
 				{
@@ -159,7 +158,7 @@ public:
 				}
 				e += dy;
 				display_pixel(i, j, Color::white);
-				display_pixel(x1 + x0 - i, y1 + y0 - j, Color::white);
+				//display_pixel(x1 + x0 - i, y1 + y0 - j, Color::white);
 			}
 		}
 

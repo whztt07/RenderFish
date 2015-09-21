@@ -64,6 +64,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BBox.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Ray.cpp" />
@@ -73,6 +74,7 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BBox.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Ray.h" />

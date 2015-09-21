@@ -36,7 +36,7 @@ public:
 class Camera
 {
 public:
-	Vec3 eye;
+	Point eye;
 	Vec3 front;
 	Vec3 right;
 	Vec3 up = Vec3(0, 1, 0);
@@ -46,7 +46,7 @@ public:
 	float fov		= 45.0f;
 	float fovScale;
 
-	Camera(const Vec3& eye, const Vec3& front) 
+	Camera(const Point& eye, const Vec3& front)
 		: eye(eye), front(front)
 	{
 		fovScale = tanf(fov * 0.5f * PI / 180.0f) * 2;

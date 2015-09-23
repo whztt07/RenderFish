@@ -13,63 +13,120 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\core">
+      <UniqueIdentifier>{77828ef8-d819-4981-9c6c-aa4c946a1a30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core">
+      <UniqueIdentifier>{d07fd461-2349-4378-98bd-b14273091772}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core\math">
+      <UniqueIdentifier>{edbf7c9b-1444-4dec-87f4-62340adebf51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core\math">
+      <UniqueIdentifier>{efe72cf8-fdca-4631-960c-4bd70393b45a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BBox.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Error.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageIO.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Ray.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadeRec.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Tracer.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPlane.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ViewPlane.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Math.cpp">
+      <Filter>Source Files\core\math</Filter>
     </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Matrix4x4.cpp">
+      <Filter>Source Files\core\math</Filter>
     </ClCompile>
-    <ClCompile Include="Color.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="random.cpp">
+      <Filter>Source Files\core\math</Filter>
     </ClCompile>
-    <ClCompile Include="Tracer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Ray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadeRec.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BBox.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rtwindow.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="BBox.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="ViewPlane.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Color.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Error.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Geometry.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ImageIO.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="Tracer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Probes.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="Ray.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Ray.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="ShadeRec.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="RenderFish.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="MathHelper.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Window.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="BBox.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ShadeRec.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Tracer.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPlane.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="World.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.hpp">
+      <Filter>Header Files\core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4x4.hpp">
+      <Filter>Header Files\core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.hpp">
+      <Filter>Header Files\core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Header Files\core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.hpp">
+      <Filter>Header Files\core\math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

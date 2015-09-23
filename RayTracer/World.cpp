@@ -1,5 +1,5 @@
-#include "World.h"
-#include "Tracer.h"
+#include "World.hpp"
+#include "Tracer.hpp"
 
 void World::build(void)
 {
@@ -16,7 +16,7 @@ void World::build(void)
 	auto s2 = new Sphere(Point(0, 30, 0), 60);
 	s2->set_color(Color::yellow);
 	auto p1 = new Plane(Vec3(0, 0, 0), Vec3(0, 1, 1));
-	p1->set_color(Vec3(0, 0.3, 0));
+	p1->set_color(Vec3(0, 0.3f, 0));
 	add_object(s1);
 	add_object(s2);
 	add_object(p1);
@@ -38,8 +38,8 @@ void World::render_scene(void) const
 	{
 		for (int c = 0; c < vp.hres; c++)
 		{
-			x = vp.pixel_size * (c - 0.5f * (vp.hres - 1.0));
-			y = vp.pixel_size * (r - 0.5f * (vp.vres - 1.0));
+			x = vp.pixel_size * (c - 0.5f * (vp.hres - 1.0f));
+			y = vp.pixel_size * (r - 0.5f * (vp.vres - 1.0f));
 			ray.o = Point(x, y, zw);
 			pixel_color = tracer->trace_ray(ray);
 			display_pixel(r, c, pixel_color);
@@ -53,6 +53,6 @@ void World::render_scene(void) const
 		screen_dispatch();
 		screen_update();
 		static float elapse = 1.0f / 30 * 1000;
-		Sleep(elapse);
+		Sleep(DWORD(elapse));
 	}
 }

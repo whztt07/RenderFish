@@ -7,11 +7,13 @@
 //#include "rtwindow.h"
 #endif
 
-#include "World.h"
-#include "MathHelper.h"
-#include "Ray.h"
-#include "Geometry.h"
-#include "ShadeRec.h"
+#include "RenderFish.hpp"
+#include "World.hpp"
+#include "Math.hpp"
+#include "Ray.hpp"
+#include "Geometry.hpp"
+#include "ShadeRec.hpp"
+#include "Transform.hpp"
 
 // Left hand
 // screen coord: (0, 0 ) at bottom, left, (1, 1) at top right 
@@ -24,14 +26,6 @@ public:
 
 	DirectionalLight(const Vec3& direction) : direction(direction) {}
 };
-
-class Transform {
-public:
-	Vec3 pos;
-	//Quaternion rot;
-	Vec3 scale;
-};
-
 
 class Camera
 {
@@ -49,7 +43,7 @@ public:
 	Camera(const Point& eye, const Vec3& front)
 		: eye(eye), front(front)
 	{
-		fovScale = tanf(fov * 0.5f * PI / 180.0f) * 2;
+		fovScale = tanf(radians(fov * 0.5f)) * 2;
 		right = cross(up, front);
 		up = cross(front, right);
 	}
@@ -67,11 +61,34 @@ const int height = 512;
 
 int to_int(float f)
 {
-	return int(clamp(f) * 255);
+	return int(clamp(f, 0, 1) * 255);
 }
 
 int main()
 {
+	log_system_init();
+	Assert(1 == 1);
+	//Assert(1 == 2);
+
+	Transform t;
+	//Assert(t.has_scale());
+	t = Transform::scale(2, 2, 2);
+	Assert(t.has_scale());
+	Vec3 v(1, 2, 3);
+	Point p(1, 2, 3);
+	v = Transform::translate(1, 2, 3)(v);
+	p = Transform::translate(1, 2, 3)(p);
+	Assert(v == Vec3(1, 2, 3));
+	Assert(p == Vec3(2, 4, 6));
+	
+	t = Transform::rotate(180, Vec3(1, 1, 0));
+	v = t(Vec3(0, 1, 0));
+	Assert(v == Vec3(1, 0, 0));
+
+	info("hello %d\n", 1);
+	warning("%s\n", "warning");
+	error("%f\n", M_PI);
+
 	World w;
 	w.build();
 	w.render_scene();

@@ -66,24 +66,39 @@
   <ItemGroup>
     <ClCompile Include="BBox.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Error.cpp" />
+    <ClCompile Include="ImageIO.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Math.cpp" />
+    <ClCompile Include="Matrix4x4.cpp" />
+    <ClCompile Include="random.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="ShadeRec.cpp" />
     <ClCompile Include="Tracer.cpp" />
+    <ClCompile Include="Transform.cpp" />
     <ClCompile Include="ViewPlane.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BBox.h" />
-    <ClInclude Include="Color.h" />
-    <ClInclude Include="Geometry.h" />
-    <ClInclude Include="Ray.h" />
-    <ClInclude Include="MathHelper.h" />
-    <ClInclude Include="rtwindow.h" />
-    <ClInclude Include="ShadeRec.h" />
-    <ClInclude Include="Tracer.h" />
-    <ClInclude Include="ViewPlane.h" />
-    <ClInclude Include="World.h" />
+    <ClInclude Include="BBox.hpp" />
+    <ClInclude Include="Color.hpp" />
+    <ClInclude Include="Error.hpp" />
+    <ClInclude Include="Geometry.hpp" />
+    <ClInclude Include="ImageIO.hpp" />
+    <ClInclude Include="MathHelper.hpp" />
+    <ClInclude Include="Matrix4x4.hpp" />
+    <ClInclude Include="Probes.hpp" />
+    <ClInclude Include="Random.hpp" />
+    <ClInclude Include="Ray.hpp" />
+    <ClInclude Include="Math.hpp" />
+    <ClInclude Include="RenderFish.hpp" />
+    <ClInclude Include="Vector.h" />
+    <ClInclude Include="Window.hpp" />
+    <ClInclude Include="ShadeRec.hpp" />
+    <ClInclude Include="Tracer.hpp" />
+    <ClInclude Include="Transform.hpp" />
+    <ClInclude Include="ViewPlane.hpp" />
+    <ClInclude Include="World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

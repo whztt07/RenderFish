@@ -66,6 +66,7 @@
   <ItemGroup>
     <ClCompile Include="BBox.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="DifferentialGeometry.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="ImageIO.cpp" />
     <ClCompile Include="main.cpp" />
@@ -73,15 +74,19 @@
     <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="random.cpp" />
     <ClCompile Include="Ray.cpp" />
+    <ClCompile Include="ReferenceCounted.cpp" />
     <ClCompile Include="ShadeRec.cpp" />
+    <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Tracer.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Vector.cpp" />
     <ClCompile Include="ViewPlane.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BBox.hpp" />
     <ClInclude Include="Color.hpp" />
+    <ClInclude Include="DifferentialGeometry.h" />
     <ClInclude Include="Error.hpp" />
     <ClInclude Include="Geometry.hpp" />
     <ClInclude Include="ImageIO.hpp" />
@@ -91,7 +96,9 @@
     <ClInclude Include="Random.hpp" />
     <ClInclude Include="Ray.hpp" />
     <ClInclude Include="Math.hpp" />
+    <ClInclude Include="ReferenceCounted.h" />
     <ClInclude Include="RenderFish.hpp" />
+    <ClInclude Include="Shape.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Window.hpp" />
     <ClInclude Include="ShadeRec.hpp" />

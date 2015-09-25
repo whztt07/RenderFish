@@ -18,14 +18,16 @@ inline float dot(const T& lhs, const U& rhs)
 	return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 }
 
-class Point;
-
 class Vec3 {
 public:
 	union {
 		struct { float x, y, z; };
 		float m[3];
 	};
+
+	static const Vec3 axis_x;
+	static const Vec3 axis_y;
+	static const Vec3 axis_z;
 
 	Vec3() : Vec3(0, 0, 0) {}
 	Vec3(float x) : Vec3(x, x, x) {}
@@ -37,43 +39,41 @@ public:
 
 	//const Point as_point() const { return Point(x, y, z); }
 
-	friend std::ostream& operator << (std::ostream& os, const Vec3& v)
-	{
-		os << v.x << ", " << v.y << ", " << v.z;
-		return os;
-	}
-
 	float length_squared() { return x*x + y*y + z*z; }
 	float length() const { return sqrtf(x*x + y*y + z*z); }
 	const Vec3 normalize() const { float l = length(); return Vec3(x / l, y / l, z / l); }
 	void normalize_self() { float l = length(); x /= l, y /= l; z /= l; }
 
-	float& operator[](const int index) { return m[index]; }
-	float operator[](const int index) const { return m[index]; }
-	Vec3& operator=(const Vec3& v) { x = v.x; y = v.y; z = v.z; return *this; }
-	Vec3 operator-() const { return Vec3(-x, -y, -z); }
-	Vec3 operator*(const float f) const { return Vec3(x * f, y * f, z * f); }
-	Vec3 operator/(const float f) const { return Vec3(x / f, y / f, z / f); }
+	float&		operator[](const int index) { return m[index]; }
+	float		operator[](const int index) const { return m[index]; }
+	Vec3&		operator=(const Vec3& v) { x = v.x; y = v.y; z = v.z; return *this; }
+	Vec3		operator-() const { return Vec3(-x, -y, -z); }
+	Vec3		operator*(const float f) const { return Vec3(x * f, y * f, z * f); }
+	Vec3		operator/(const float f) const { return Vec3(x / f, y / f, z / f); }
 	friend Vec3 operator*(const float f, const Vec3& v) { return Vec3(v.x * f, v.y * f, v.z * f); }
 	friend Vec3 operator/(const float f, const Vec3& v) { return Vec3(v.x / f, v.y / f, v.z / f); }
-	Vec3 operator+(const Vec3& v) const { return Vec3(x + v.x, y + v.y, z + v.z); }
-	Vec3 operator-(const Vec3& v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
-	Vec3 operator+=(const Vec3& v) { x += v.x; y += v.y; z += v.z; }
-	Vec3 operator-=(const Vec3& v) { x -= v.x; y -= v.y; z -= v.z; }
-	void operator*=(const float f) { x *= f; y *= f; z *= f; }
-	void operator/=(const float f) { x /= f; y /= f; z /= f; }
+	Vec3		operator+(const Vec3& v) const { return Vec3(x + v.x, y + v.y, z + v.z); }
+	Vec3		operator-(const Vec3& v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
+	Vec3		operator+=(const Vec3& v) { x += v.x; y += v.y; z += v.z; }
+	Vec3		operator-=(const Vec3& v) { x -= v.x; y -= v.y; z -= v.z; }
+	void		operator*=(const float f) { x *= f; y *= f; z *= f; }
+	void		operator/=(const float f) { x /= f; y /= f; z /= f; }
+	bool		operator==(const Vec3& v) const { return (equal(x, v.x) && equal(y, v.y) && equal(z, v.z)); }
+	bool		operator!=(const Vec3& v) const { return !operator==(v); }
 
-	bool operator==(const Vec3& v) const {
-		return (equal(x, v.x) && equal(y, v.y) && equal(z, v.z)); 
-	}
-	bool operator!=(const Vec3& v) const { return !operator==(v); }
+	friend std::ostream& operator << (std::ostream& os, const Vec3& v) { os << v.x << ", " << v.y << ", " << v.z; return os; }
 };
 
 class Point
 {
 public:
-	float x, y, z;
-
+	union {
+		struct {
+			float x, y, z;
+		};
+		float m[3];
+	};
+	
 	Point() : Point(0, 0, 0) {}
 	Point(float x, float y, float z) : x(x), y(y), z(z) {}
 
@@ -83,6 +83,8 @@ public:
 	Vec3 operator-(const Point &v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
 	Point& operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; return *this; }
 	Point& operator-=(const Vec3 &v) { x -= v.x; y -= v.y; z -= v.z; return *this; }
+	float& operator[](int index) { return m[index]; }
+	float  operator[](int index) const { return m[index]; }
 
 	bool operator==(const Vec3& p) const { return equal(x, p.x) && equal(y, p.y) && equal(z, p.z); }
 	bool operator!=(const Vec3& p) const { return !operator==(p); }
@@ -95,7 +97,7 @@ public:
 
 	Normal() : Normal(0, 0, 0) {}
 	explicit Normal(float x, float y, float z) : x(x), y(y), z(z) {}
-	//explicit Normal(const Vec3& v) : x(v.x), y(v.y), z(v.z) {}
+	explicit Normal(const Vec3& v) : x(v.x), y(v.y), z(v.z) {}
 	//explicit Normal(const Normal& n) : x(n.x), y(n.y), z(n.z) {}
 
 	Normal& operator=(const Normal& v) { x = v.x; y = v.y; z = v.z; return *this; }
@@ -126,16 +128,18 @@ public:
 	Vec4() : Vec4(0, 0, 0, 0) {}
 	Vec4(float x, float y, float z, float w)
 		: x(x), y(y), z(z), w(w) {}
-	Vec4(const Vec3& v3, float w = 0)
+	explicit Vec4(const Vec3& v3, float w = 0)
 		: x(v3.x), y(v3.y), z(v3.z), w(w) {
 	}
-	Vec4(const Point& p, float w = 1)
+	explicit Vec4(const Point& p, float w = 1)
 		: x(p.x), y(p.y), z(p.z), w(w) {}
 
 	float& operator[](int index) { return v[index]; }
 	float operator[](int index) const { return v[index]; }
 
+	// REFINE
 	Vec3 xyz() const { return Vec3(x, y, z); }
+	Point as_point() const{ return Point(x / w, y / w, z / w); }
 };
 
 #endif // VECTOR_H

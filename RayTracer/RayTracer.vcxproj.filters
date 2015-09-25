@@ -69,6 +69,18 @@
     <ClCompile Include="Transform.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
+    <ClCompile Include="Vector.cpp">
+      <Filter>Source Files\core\math</Filter>
+    </ClCompile>
+    <ClCompile Include="DifferentialGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ReferenceCounted.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BBox.hpp">
@@ -127,6 +139,15 @@
     </ClInclude>
     <ClInclude Include="MathHelper.hpp">
       <Filter>Header Files\core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="DifferentialGeometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReferenceCounted.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

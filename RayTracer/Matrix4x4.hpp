@@ -68,5 +68,15 @@ struct Matrix4x4
 		}
 		return result;
 	}
+
+	friend const Vec3 operator*(const Matrix4x4& lhs, const Vec3& rhs)
+	{
+		Vec3 result;
+		for (int i = 0; i < 3; i++)
+		{
+			result[i] = rhs.x * lhs.m[i][0] + rhs.y * lhs.m[i][1] + rhs.z * lhs.m[i][2];
+		}
+		return result;
+	}
 };
 

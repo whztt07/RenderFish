@@ -5,8 +5,7 @@
 class BBox
 {
 public:
-	Point pmin = Point(INFINITY, INFINITY, INFINITY);
-	Point pmax = Point(-INFINITY, -INFINITY, -INFINITY);
+	Point pmin, pmax;
 
 	enum Axis {
 		x_axis = 0,
@@ -14,12 +13,13 @@ public:
 		z_axis = 2
 	};
 
-	BBox() {};
+	BBox() 
+		: pmin(INFINITY, INFINITY, INFINITY), pmax(-INFINITY, -INFINITY, -INFINITY) {};
 	BBox(const Point &p) 
 		: pmin(p), pmax(p) {}
 	BBox(const Point &p1, const Point &p2) {
 		pmin = Point(fmin(p1.x, p2.x), fmin(p1.y, p2.y), fmin(p1.z, p2.z));
-		pmin = Point(fmax(p1.x, p2.x), fmax(p1.y, p2.y), fmax(p1.z, p2.z));
+		pmax = Point(fmax(p1.x, p2.x), fmax(p1.y, p2.y), fmax(p1.z, p2.z));
 	}
 
 	static BBox combine(const BBox &b, const Point &p)

@@ -85,6 +85,9 @@ int main()
 	v = t(Vec3(0, 1, 0));
 	Assert(v == Vec3(1, 0, 0));
 
+	BBox b1(Point(1, 2, 3), Point(3, 4, 5));
+	auto b2 = t(b1);
+
 	info("hello %d\n", 1);
 	warning("%s\n", "warning");
 	error("%f\n", M_PI);

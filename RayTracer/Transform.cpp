@@ -66,3 +66,31 @@ Transform Transform::rotate(float degrees, const Vec3 &axis)
 	Matrix4x4 mat(m);
 	return Transform(mat, transpose(mat));
 }
+
+Transform Transform::look_at(const Point& pos, const Point& look, const Vec3& up)
+{
+	float m[4][4];
+	m[0][3] = pos.x;
+	m[1][3] = pos.y;
+	m[2][3] = pos.z;
+	m[3][3] = 1;
+
+	auto dir = normalize(look - pos);
+	auto left = normalize(cross(normalize(up), dir));
+	auto new_up = cross(dir, left);
+	m[0][0] = left.x;
+	m[1][0] = left.y;
+	m[2][0] = left.z;
+	m[3][0] = 0;
+	m[0][1] = new_up.x;
+	m[1][1] = new_up.y;
+	m[2][1] = new_up.z;
+	m[3][1] = 0;
+	m[0][2] = dir.x;
+	m[1][2] = dir.y;
+	m[2][2] = dir.z;
+	m[3][2] = 0;
+	auto camToWorld(m);
+	return Transform(inverse(camToWorld), camToWorld);
+
+}

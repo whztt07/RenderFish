@@ -1,4 +1,9 @@
 /Debug
 /Release
+/Release
 /RayTracer/Debug/
 /RayTracer/Release/
+/Test/Debug/
+/Test/Release
+
+*.sdf

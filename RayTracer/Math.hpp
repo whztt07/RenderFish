@@ -7,7 +7,7 @@
 #include <cstdint>
 
 #include "MathHelper.hpp"
-#include "Vector.h"
+#include "Vector.hpp"
 #include "Matrix4x4.hpp"
 
 // note: Vector in RenderFish is COLUMN vector

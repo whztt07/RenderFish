@@ -114,6 +114,7 @@ public:
 	static Normal face_forward(const Normal& n, const Vec3& v) { return (dot(n, v) < 0.f) ? -n : n; }
 };
 
+//__declspec(align(16))
 class Vec4 {
 public:
 	union {

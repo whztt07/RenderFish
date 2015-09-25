@@ -1,4 +1,4 @@
-#include "Vector.h"
+#include "Vector.hpp"
 
 const Vec3 Vec3::axis_x(1, 0, 0);
 const Vec3 Vec3::axis_y(0, 1, 0);

@@ -1,6 +1,6 @@
 #pragma once
 #include "Transform.hpp"
-#include "ReferenceCounted.h"
+#include "ReferenceCounted.hpp"
 
 class Shape : public ReferenceCounted
 {

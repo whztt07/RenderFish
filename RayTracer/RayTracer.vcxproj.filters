@@ -54,9 +54,6 @@
     <ClCompile Include="World.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Math.cpp">
       <Filter>Source Files\core\math</Filter>
     </ClCompile>
@@ -69,17 +66,29 @@
     <ClCompile Include="Transform.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
     <ClCompile Include="Vector.cpp">
       <Filter>Source Files\core\math</Filter>
     </ClCompile>
     <ClCompile Include="DifferentialGeometry.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="Shape.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
     <ClCompile Include="ReferenceCounted.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="TriangleMesh.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -134,20 +143,29 @@
     <ClInclude Include="Transform.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>Header Files\core\math</Filter>
-    </ClInclude>
     <ClInclude Include="MathHelper.hpp">
       <Filter>Header Files\core\math</Filter>
     </ClInclude>
-    <ClInclude Include="DifferentialGeometry.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Vector.hpp">
+      <Filter>Header Files\core\math</Filter>
     </ClInclude>
-    <ClInclude Include="Shape.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Camera.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="ReferenceCounted.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DifferentialGeometry.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="ReferenceCounted.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="TriangleMesh.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

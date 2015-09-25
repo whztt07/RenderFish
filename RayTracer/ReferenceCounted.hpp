@@ -48,6 +48,13 @@ public:
 			delete ptr;
 	}
 
+	Reference &operator=(const Reference<T> &r) {
+		if (r->ptr) AtomicAdd(&r.ptr->n_references, 1);
+		if (ptr && AtomicAdd(&ptr->n_references, -1) == 0) delete ptr;
+		ptr = r.ptr;
+		return *this;
+	}
+
 	Reference &operator=(T *p) {
 		if (p) AtomicAdd(&p->n_references, 1);
 		if (ptr && AtomicAdd(&ptr->n_references, -1) == 0) delete ptr;

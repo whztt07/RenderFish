@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{035E69B1-DA33-41B3-B85A-18E947E3851C}</ProjectGuid>
-    <RootNamespace>RayTracer</RootNamespace>
+    <ProjectGuid>{BC5FC37E-CCF2-4FB9-A1BC-933C96947026}</ProjectGuid>
+    <RootNamespace>Test</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -44,6 +44,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../RayTracer</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -56,6 +57,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../RayTracer</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -64,54 +66,42 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BBox.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Color.cpp" />
-    <ClCompile Include="DifferentialGeometry.cpp" />
-    <ClCompile Include="Error.cpp" />
-    <ClCompile Include="ImageIO.cpp" />
+    <ClCompile Include="..\RayTracer\BBox.cpp" />
+    <ClCompile Include="..\RayTracer\Color.cpp" />
+    <ClCompile Include="..\RayTracer\Error.cpp" />
+    <ClCompile Include="..\RayTracer\ImageIO.cpp" />
+    <ClCompile Include="..\RayTracer\main.cpp" />
+    <ClCompile Include="..\RayTracer\Math.cpp" />
+    <ClCompile Include="..\RayTracer\Matrix4x4.cpp" />
+    <ClCompile Include="..\RayTracer\random.cpp" />
+    <ClCompile Include="..\RayTracer\Ray.cpp" />
+    <ClCompile Include="..\RayTracer\ShadeRec.cpp" />
+    <ClCompile Include="..\RayTracer\Tracer.cpp" />
+    <ClCompile Include="..\RayTracer\Transform.cpp" />
+    <ClCompile Include="..\RayTracer\ViewPlane.cpp" />
+    <ClCompile Include="..\RayTracer\World.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Math.cpp" />
-    <ClCompile Include="Matrix4x4.cpp" />
-    <ClCompile Include="random.cpp" />
-    <ClCompile Include="Ray.cpp" />
-    <ClCompile Include="ReferenceCounted.cpp" />
-    <ClCompile Include="ShadeRec.cpp" />
-    <ClCompile Include="Shape.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Tracer.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Vector.cpp" />
-    <ClCompile Include="TriangleMesh.cpp" />
-    <ClCompile Include="ViewPlane.cpp" />
-    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BBox.hpp" />
-    <ClInclude Include="Camera.hpp" />
-    <ClInclude Include="Color.hpp" />
-    <ClInclude Include="DifferentialGeometry.hpp" />
-    <ClInclude Include="Error.hpp" />
-    <ClInclude Include="Geometry.hpp" />
-    <ClInclude Include="ImageIO.hpp" />
-    <ClInclude Include="MathHelper.hpp" />
-    <ClInclude Include="Matrix4x4.hpp" />
-    <ClInclude Include="Probes.hpp" />
-    <ClInclude Include="Random.hpp" />
-    <ClInclude Include="Ray.hpp" />
-    <ClInclude Include="Math.hpp" />
-    <ClInclude Include="ReferenceCounted.hpp" />
-    <ClInclude Include="RenderFish.hpp" />
-    <ClInclude Include="Shape.hpp" />
-    <ClInclude Include="Texture.hpp" />
-    <ClInclude Include="TriangleMesh.hpp" />
-    <ClInclude Include="Vector.hpp" />
-    <ClInclude Include="Window.hpp" />
-    <ClInclude Include="ShadeRec.hpp" />
-    <ClInclude Include="Tracer.hpp" />
-    <ClInclude Include="Transform.hpp" />
-    <ClInclude Include="ViewPlane.hpp" />
-    <ClInclude Include="World.hpp" />
+    <ClInclude Include="..\RayTracer\BBox.hpp" />
+    <ClInclude Include="..\RayTracer\Color.hpp" />
+    <ClInclude Include="..\RayTracer\Error.hpp" />
+    <ClInclude Include="..\RayTracer\Geometry.hpp" />
+    <ClInclude Include="..\RayTracer\ImageIO.hpp" />
+    <ClInclude Include="..\RayTracer\Math.hpp" />
+    <ClInclude Include="..\RayTracer\MathHelper.hpp" />
+    <ClInclude Include="..\RayTracer\Matrix4x4.hpp" />
+    <ClInclude Include="..\RayTracer\Probes.hpp" />
+    <ClInclude Include="..\RayTracer\Random.hpp" />
+    <ClInclude Include="..\RayTracer\Ray.hpp" />
+    <ClInclude Include="..\RayTracer\RenderFish.hpp" />
+    <ClInclude Include="..\RayTracer\ShadeRec.hpp" />
+    <ClInclude Include="..\RayTracer\Tracer.hpp" />
+    <ClInclude Include="..\RayTracer\Transform.hpp" />
+    <ClInclude Include="..\RayTracer\Vector.h" />
+    <ClInclude Include="..\RayTracer\ViewPlane.hpp" />
+    <ClInclude Include="..\RayTracer\Window.hpp" />
+    <ClInclude Include="..\RayTracer\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

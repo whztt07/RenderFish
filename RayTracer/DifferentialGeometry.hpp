@@ -1,6 +1,6 @@
 #pragma once
 #include "Math.hpp"
-#include "Shape.h"
+#include "Shape.hpp"
 
 class DifferentialGeometry
 {

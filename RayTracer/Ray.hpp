@@ -27,7 +27,7 @@ public:
 	//Point point_at(float t) const { return o + d * t; }
 	Point operator()(float t) const { return o + d * t; }
 
-	Ray& operator=(const Ray& rhs) { o = rhs.o; d = rhs.d; }
+    Ray& operator=(const Ray& rhs) { o = rhs.o; d = rhs.d; return *this;}
 };
 
 class RayDifferential : public Ray

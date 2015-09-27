@@ -1,5 +1,8 @@
 #ifndef RTWINDOW_H
 #define RTWINDOW_H
+
+#if 0
+
 #include <windows.h>
 #pragma comment(lib, "gdi32.lib")
 #pragma comment(lib, "user32.lib")
@@ -122,5 +125,6 @@ void screen_update(void) {
 	screen_dispatch();
 }
 
+#endif
 
 #endif

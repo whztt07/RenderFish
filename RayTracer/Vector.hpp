@@ -54,8 +54,8 @@ public:
 	friend Vec3 operator/(const float f, const Vec3& v) { return Vec3(v.x / f, v.y / f, v.z / f); }
 	Vec3		operator+(const Vec3& v) const { return Vec3(x + v.x, y + v.y, z + v.z); }
 	Vec3		operator-(const Vec3& v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
-	Vec3		operator+=(const Vec3& v) { x += v.x; y += v.y; z += v.z; }
-	Vec3		operator-=(const Vec3& v) { x -= v.x; y -= v.y; z -= v.z; }
+	void		operator+=(const Vec3& v) { x += v.x; y += v.y; z += v.z; }
+	void		operator-=(const Vec3& v) { x -= v.x; y -= v.y; z -= v.z; }
 	void		operator*=(const float f) { x *= f; y *= f; z *= f; }
 	void		operator/=(const float f) { x /= f; y /= f; z /= f; }
 	bool		operator==(const Vec3& v) const { return (equal(x, v.x) && equal(y, v.y) && equal(z, v.z)); }
@@ -108,8 +108,8 @@ public:
 	friend Normal operator/(const float f, const Normal& v) { return Normal(v.x / f, v.y / f, v.z / f); }
 	Normal operator+(const Normal& v) const { return Normal(x + v.x, y + v.y, z + v.z); }
 	Normal operator-(const Normal& v) const { return Normal(x - v.x, y - v.y, z - v.z); }
-	Normal operator+=(const Normal& v) { x += v.x; y += v.y; z += v.z; }
-	Normal operator-=(const Normal& v) { x -= v.x; y -= v.y; z -= v.z; }
+	void operator+=(const Normal& v) { x += v.x; y += v.y; z += v.z; }
+	void operator-=(const Normal& v) { x -= v.x; y -= v.y; z -= v.z; }
 	void operator*=(const float f) { x *= f; y *= f; z *= f; }
 	void operator/=(const float f) { x /= f; y /= f; z /= f; }
 

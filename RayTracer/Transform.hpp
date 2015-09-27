@@ -19,9 +19,9 @@ public:
 		return Transform(t.m_inv, t.m);
 	}
 
-	bool operator==(const Transform& t) const {
-		// TODO
-	}
+//	bool operator==(const Transform& t) const {
+//		// TODO
+//	}
 	Transform operator*(const Transform& t2) const {
 		auto m1 = m * t2.m;
 		auto m2 = t2.m_inv * m_inv;

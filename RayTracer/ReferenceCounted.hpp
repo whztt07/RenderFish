@@ -19,6 +19,7 @@ inline int32_t AtomicAdd(AtomicInt32 *v, int32_t delta) {
 // 		: "=r"(origValue), "=m"(*v) : "0"(delta)
 // 		: "memory");
 // #endif
+    return *v + delta;
 }
 
 class ReferenceCounted

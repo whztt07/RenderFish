@@ -43,6 +43,7 @@ public:
 		ret.pmax.x = fmax(b1.pmax.x, b2.pmax.x);
 		ret.pmax.y = fmax(b1.pmax.y, b2.pmax.y);
 		ret.pmax.z = fmax(b1.pmax.z, b2.pmax.z);
+        return ret;
 	}
 
 	bool overlaps(const BBox &b) const {

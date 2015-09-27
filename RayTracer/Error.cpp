@@ -2,14 +2,24 @@
 #include <cstdio>
 #include <cstdarg>
 #include <iostream>
+
+#if defined(_WIN32) || defined(_WIN64)
+#define RENDERFISH_LOG_IS_WINDOWS 1
 #include <windows.h>
+static HANDLE hstdout;
+#define vsprintf_s vsprintf
+#elif defined(__APPLE__)
+#define RENDERFISH_LOG_IS_APPLE 1
+#else //defined(__linux__)
+#define RENDERFISH_LOG_IS_LINUX 1
+#endif
 
 #define SPRINT_BUF_SIZE 1024
 static char sprint_buf[SPRINT_BUF_SIZE];
-static HANDLE hstdout;
 
 void log_system_init()
 {
+#ifdef RENDERFISH_LOG_IS_WINDOWS
 	AllocConsole();
 	AttachConsole(GetCurrentProcessId());
 	//freopen("CON", "w", stdout);
@@ -19,43 +29,69 @@ void log_system_init()
 
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	GetConsoleScreenBufferInfo(hstdout, &csbi);
+#endif
 }
 
 void info(const char *fmt, ...)
 {
+#if RENDERFISH_LOG_IS_WINDOWS
 	SetConsoleTextAttribute(hstdout, 0x0F);
+#elif RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
+    // http://stackoverflow.com/questions/9005769/any-way-to-print-in-color-with-nslog#
+    // https://wiki.archlinux.org/index.php/Color_Bash_Prompt#List_of_colors_for_prompt_and_Bash
+     printf("\e[0;37m");    // white
+#endif
 	std::cout << "[info]";
 	va_list args;
 	va_start(args, fmt);
-	//int n = vsprintf(sprint_buf, fmt, args);
-	int n = vsprintf_s(sprint_buf, fmt, args);
+	int n = vsprintf(sprint_buf, fmt, args);
+	//int n = vsprintf_s(sprint_buf, fmt, args);
 	va_end(args);
 	//write(stdout, sprint_buf, n);
 	std::cout.write(sprint_buf, n);
+#if RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
+    printf("\e[m");
+#endif
 }
 
 void warning(const char *fmt, ...)
 {
+#if RENDERFISH_LOG_IS_WINDOWS
 	SetConsoleTextAttribute(hstdout, 0x0E);
+#elif RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
+    printf("\e[0;33m");    // yellow
+#endif
 	std::cout << "[warning]";
 	va_list args;
 	va_start(args, fmt);
-	//int n = vsprintf(sprint_buf, fmt, args);
-	int n = vsprintf_s(sprint_buf, fmt, args);
+	int n = vsprintf(sprint_buf, fmt, args);
+	//int n = vsprintf_s(sprint_buf, fmt, args);
 	va_end(args);
 	//write(stdout, sprint_buf, n);
 	std::cout.write(sprint_buf, n);
+#if RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
+    printf("\e[m");
+#endif
 }
 
 void error(const char *fmt, ...)
 {
+#if RENDERFISH_LOG_IS_WINDOWS
 	SetConsoleTextAttribute(hstdout, 0x0C);
+#elif RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
+    printf("\e[0;33m");    // yellow
+#endif
 	std::cout << "[error]";
 	va_list args;
 	va_start(args, fmt);
-	//int n = vsprintf(sprint_buf, fmt, args);
-	int n = vsprintf_s(sprint_buf, fmt, args);
+	int n = vsprintf(sprint_buf, fmt, args);
+	//int n = vsprintf_s(sprint_buf, fmt, args);
 	va_end(args);
 	//write(stdout, sprint_buf, n);
 	std::cout.write(sprint_buf, n);
+#if RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
+    printf("\e[m");
+#endif
 }
+
+#undef vsprintf_s

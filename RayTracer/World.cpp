@@ -11,14 +11,14 @@ void World::build(void)
 	background_color = Color::black;
 	tracer = new Tracer(this);
 
-	auto s1 = new Sphere(Point(0, -25, 0), 80);
-	s1->set_color(Color::red);
-	auto s2 = new Sphere(Point(0, 30, 0), 60);
-	s2->set_color(Color::yellow);
+	//auto s1 = new Sphere(Point(0, -25, 0), 80);
+	//s1->set_color(Color::red);
+	//auto s2 = new Sphere(Point(0, 30, 0), 60);
+	//s2->set_color(Color::yellow);
 	auto p1 = new Plane(Vec3(0, 0, 0), Vec3(0, 1, 1));
 	p1->set_color(Vec3(0, 0.3f, 0));
-	add_object(s1);
-	add_object(s2);
+	//add_object(s1);
+	//add_object(s2);
 	add_object(p1);
 }
 

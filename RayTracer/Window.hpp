@@ -1,7 +1,7 @@
 #ifndef RTWINDOW_H
 #define RTWINDOW_H
 
-#if 0
+#if 1
 
 #include <windows.h>
 #pragma comment(lib, "gdi32.lib")

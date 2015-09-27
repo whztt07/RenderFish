@@ -7,7 +7,7 @@
 #define RENDERFISH_LOG_IS_WINDOWS 1
 #include <windows.h>
 static HANDLE hstdout;
-#define vsprintf_s vsprintf
+#define vsprintf vsprintf_s
 #elif defined(__APPLE__)
 #define RENDERFISH_LOG_IS_APPLE 1
 #else //defined(__linux__)

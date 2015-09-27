@@ -66,4 +66,19 @@ inline Matrix4x4 transpose(const Matrix4x4& m)
 	return Matrix4x4::transpose(m);
 }
 
+// t0 and t1 are roots of Ax^2 + Bx + C = 0
+// t0 <= t1
+inline bool quadratic(float A, float B, float C, float *t0, float *t1) {
+	float discrim = B * B - 4.f * A * C;
+	if (discrim <= 0.) return false;
+	float rootDiscrim = sqrtf(discrim);
+	float q;
+	if (B < 0)	q = -0.5f * (B - rootDiscrim);
+	else		q = -0.5f * (B + rootDiscrim);
+	*t0 = q / A;
+	*t1 = C / q;
+	if (*t0 > *t1) std::swap(*t0, *t1);
+	return true;
+}
+
 #endif

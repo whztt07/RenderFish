@@ -8,18 +8,28 @@ typedef volatile int32_t AtomicInt32;
 #endif
 
 inline int32_t AtomicAdd(AtomicInt32 *v, int32_t delta) {
-// #ifdef WIN32
-// #elif defined(__APPLE__) && !(defined(__i386__) || defined(__amd64__))
-// 	return OSAtomicAdd32Barrier(delta, v);
-// #else
-// 	// gcc x86 inline assembly
-// 	int32_t origValue;
-// 	__asm__ __volatile__("lock\n"
-// 		"xaddl %0, %1"
-// 		: "=r"(origValue), "=m"(*v) : "0"(delta)
-// 		: "memory");
-// #endif
-    return *v + delta;
+#if defined(RENDERFISH_PLATFORM_IS_WINDOWS)
+	int32_t result;
+	_ReadWriteBarrier();
+	__asm {
+		__asm mov edx, v
+		__asm mov eax, delta
+		__asm lock xadd [edx], eax
+		__asm mov result, eax
+	}
+	_ReadWriteBarrier();
+	return result + delta;
+#elif defined(RENDERFISH_PLATFORM_IS_WINDOWS)
+ 	return OSAtomicAdd32Barrier(delta, v);
+#else
+ 	// gcc x86 inline assembly
+ 	int32_t origValue;
+ 	__asm__ __volatile__("lock\n"
+ 		"xaddl %0, %1"
+ 		: "=r"(origValue), "=m"(*v) : "0"(delta)
+ 		: "memory");
+	return origValue + delta;
+#endif
 }
 
 class ReferenceCounted
@@ -33,6 +43,9 @@ public:
 
 template <typename T>
 class Reference {
+private:
+	T *ptr;
+
 public:
 	Reference(T *p = nullptr) {
 		ptr = p;
@@ -67,8 +80,5 @@ public:
 	const T *operator->() const { return ptr; }
 	operator bool() const { return ptr != nullptr; }
 	const T *get_ptr() const { return ptr; }
-
-private:
-	T *ptr;
 };
 

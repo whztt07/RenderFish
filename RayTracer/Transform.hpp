@@ -68,10 +68,14 @@ public:
 			m_inv.m[0][1] * x + m_inv.m[1][1] * y + m_inv.m[2][1] * z,
 			m_inv.m[0][2] * x + m_inv.m[1][2] * y + m_inv.m[2][2] * z);
 	}
+	inline void operator()(const Ray &r, Ray* transformed_r) const {
+		(*this)(r.o, &transformed_r->o);
+		(*this)(r.d, &transformed_r->d);
+	}
 	inline Ray operator()(const Ray &r) const {
 		Ray ret = r;
-		this->operator()(ret.o, &ret.o);
-		this->operator()(ret.d, &ret.d);
+		this->operator()(r.o, &ret.o);
+		this->operator()(r.d, &ret.d);
 		return ret;
 	}
 	BBox operator()(const BBox& b) const {

@@ -4,10 +4,6 @@
 #include <cstdlib>
 #include <chrono>
 
-#ifdef _MSC_VER
-//#include "rtwindow.h"
-#endif
-
 #include "RenderFish.hpp"
 #include "World.hpp"
 #include "Math.hpp"
@@ -16,8 +12,6 @@
 #include "ShadeRec.hpp"
 #include "Transform.hpp"
 
-// Left hand
-// screen coord: (0, 0 ) at bottom, left, (1, 1) at top right 
 using namespace std;
 
 class DirectionalLight
@@ -28,34 +22,34 @@ public:
 	DirectionalLight(const Vec3& direction) : direction(direction) {}
 };
 
-class Camera
-{
-public:
-	Point eye;
-	Vec3 front;
-	Vec3 right;
-	Vec3 up = Vec3(0, 1, 0);
-
-	float z_far		= 0.1f;
-	float z_near	= 100.0f;
-	float fov		= 45.0f;
-	float fovScale;
-
-	Camera(const Point& eye, const Vec3& front)
-		: eye(eye), front(front)
-	{
-		fovScale = tanf(radians(fov * 0.5f)) * 2;
-		right = cross(up, front);
-		up = cross(front, right);
-	}
-
-	Ray ray_to(float x, float y)
-	{
-		auto r = right * ((x - 0.5f) * fovScale);
-		auto u = up * ((y - 0.5f) * fovScale);
-		return Ray(eye, (front + r + u).normalize());
-	}
-};
+// class Camera
+// {
+// public:
+// 	Point eye;
+// 	Vec3 front;
+// 	Vec3 right;
+// 	Vec3 up = Vec3(0, 1, 0);
+// 
+// 	float z_far		= 0.1f;
+// 	float z_near	= 100.0f;
+// 	float fov		= 45.0f;
+// 	float fovScale;
+// 
+// 	Camera(const Point& eye, const Vec3& front)
+// 		: eye(eye), front(front)
+// 	{
+// 		fovScale = tanf(radians(fov * 0.5f)) * 2;
+// 		right = cross(up, front);
+// 		up = cross(front, right);
+// 	}
+// 
+// 	Ray ray_to(float x, float y)
+// 	{
+// 		auto r = right * ((x - 0.5f) * fovScale);
+// 		auto u = up * ((y - 0.5f) * fovScale);
+// 		return Ray(eye, (front + r + u).normalize());
+// 	}
+// };
 
 const int width = 512;
 const int height = 512;
@@ -71,23 +65,28 @@ int main()
 	Assert(1 == 1);
 	//Assert(1 == 2);
 
-	Transform t;
-	//Assert(t.has_scale());
-	t = Transform::scale(2, 2, 2);
-	Assert(t.has_scale());
-	Vec3 v(1, 2, 3);
-	Point p(1, 2, 3);
-	v = Transform::translate(1, 2, 3)(v);
-	p = Transform::translate(1, 2, 3)(p);
-	Assert(v == Vec3(1, 2, 3));
-	Assert(p == Vec3(2, 4, 6));
-	
-	t = Transform::rotate(180, Vec3(1, 1, 0));
-	v = t(Vec3(0, 1, 0));
-	Assert(v == Vec3(1, 0, 0));
+// 	Transform t;
+// 	//Assert(t.has_scale());
+// 	t = Transform::scale(2, 2, 2);
+// 	Assert(t.has_scale());
+// 	Vec3 v(1, 2, 3);
+// 	Point p(1, 2, 3);
+// 	v = Transform::translate(1, 2, 3)(v);
+// 	p = Transform::translate(1, 2, 3)(p);
+// 	Assert(v == Vec3(1, 2, 3));
+// 	Assert(p == Vec3(2, 4, 6));
+// 	
+// 	t = Transform::rotate(180, Vec3(1, 1, 0));
+// 	v = t(Vec3(0, 1, 0));
+// 	Assert(v == Vec3(1, 0, 0));
+// 
+// 	BBox b1(Point(1, 2, 3), Point(3, 4, 5));
+// 	auto b2 = t(b1);
 
-	BBox b1(Point(1, 2, 3), Point(3, 4, 5));
-	auto b2 = t(b1);
+	float t0 = 0, t1 = 0;
+	quadratic(1, 1, -6, &t0, &t1);
+	Assert(t0 == -3.0f);
+	Assert(t1 == 2.0f);
 
 	info("hello %d\n", 1);
 	warning("%s\n", "warning");

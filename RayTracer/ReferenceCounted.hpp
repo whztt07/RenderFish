@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include "RenderFish.hpp"
 
 typedef volatile int32_t AtomicInt32;
 #ifdef HAS_64_BIT_ATOMICS

@@ -70,7 +70,7 @@ inline Matrix4x4 transpose(const Matrix4x4& m)
 // t0 <= t1
 inline bool quadratic(float A, float B, float C, float *t0, float *t1) {
 	float discrim = B * B - 4.f * A * C;
-	if (discrim <= 0.) return false;
+	if (discrim < 0.) return false;
 	float rootDiscrim = sqrtf(discrim);
 	float q;
 	if (B < 0)	q = -0.5f * (B - rootDiscrim);

@@ -15,8 +15,8 @@ public:
 	Ray() {}
 	Ray(const Point& origin, const Vec3& direction)
 		: o(origin), d(direction) {}
-	Ray(const Point & origin, const Vec3 & direction, float start, float end = INFINITY, float t = 0.0f, int d = 0)
-		: o(origin), d(direction), mint(start), maxt(end), time(t), depth(d) {}
+	Ray(const Point & origin, const Vec3 & direction, float start, float end = INFINITY, float time = 0.0f, int depth = 0)
+		: o(origin), d(direction), mint(start), maxt(end), time(time), depth(depth) {}
 	Ray(const Ray& ray) 
 		: Ray(ray.o, ray.d) {}
 

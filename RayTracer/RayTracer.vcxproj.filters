@@ -25,6 +25,9 @@
     <Filter Include="Header Files\core\math">
       <UniqueIdentifier>{efe72cf8-fdca-4631-960c-4bd70393b45a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\shapes">
+      <UniqueIdentifier>{3f735006-9ca3-4cb5-8ff4-547c3a57579b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BBox.cpp">
@@ -75,9 +78,6 @@
     <ClCompile Include="DifferentialGeometry.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
     <ClCompile Include="ReferenceCounted.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
@@ -89,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="TriangleMesh.cpp">
       <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

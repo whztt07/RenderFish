@@ -2,6 +2,7 @@
 #define MATHHELPER_H
 
 #include <cstdint>
+#include <algorithm>
 
 #define EPSILON 1e-6f;
 //#define ZERO(x) abs(x) < 1e-6f
@@ -10,12 +11,28 @@
 #undef M_PI
 #endif
 #define M_PI	3.14159265358979323846f
+#define M_PI_2  1.57079632679489661923f
+#define M_PI_4  0.785398163397448309616f
 #define INV_PI	0.31830988618379067154f
 #define INV_2PI 0.15915494309189533577f
 #define INV_4PI 0.07957747154594766788f
 
+//#ifdef RENDERFISH_PLATFORM_IS_WINDOWS
+#pragma warning (disable : 4056) // overflow in floating-point constant arithmetic, caused by INFINITY
+#pragma warning (disable : 4756) // overflow in constant arithmetic, caused by INFINITY
+//#endif
+
 #ifndef INFINITY
 #define INFINITY FLT_MAX
+#endif
+
+#if defined(_MSC_VER)
+#define NO_MIN_MAX
+#endif
+
+#ifdef NO_MIN_MAX
+using std::min;
+using std::max;
 #endif
 
 template<typename T>

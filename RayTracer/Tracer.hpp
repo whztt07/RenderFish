@@ -3,6 +3,12 @@
 #include "Color.hpp"
 #include "World.hpp"
 #include "ShadeRec.hpp"
+#include "DifferentialGeometry.hpp"
+
+template<typename T>
+inline Color float3_to_color(T t) {
+	return Color(int(t.x * 255), int(t.y * 255), int(t.z * 255));
+}
 
 class Tracer
 {
@@ -13,11 +19,7 @@ public:
 
 	virtual Color trace_ray(const Ray& ray) const
 	{
-		auto sr = _world->hit(ray);
-		if (sr.hit_an_object)
-			return sr.color;
-		else
-			return _world->background_color;
+		return _world->intersect(ray); 
 	}
 
 protected:

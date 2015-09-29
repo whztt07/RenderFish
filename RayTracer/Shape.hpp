@@ -1,7 +1,6 @@
 #pragma once
 #include "Transform.hpp"
 #include "ReferenceCounted.hpp"
-#include "Tracer.hpp"
 
 class DifferentialGeometry;
 
@@ -13,8 +12,8 @@ public:
 	const uint32_t shape_id;
 	static uint32_t next_shape_id;
 	
-	Shape(const Transform *o2w, const Transform *w2o, bool ro)
-		: object_to_world(o2w), world_to_object(w2o), reverse_orientation(ro), 
+	Shape(const Transform *o2w, const Transform *w2o, bool reverse_orientation)
+		: object_to_world(o2w), world_to_object(w2o), reverse_orientation(reverse_orientation), 
 		transform_swaps_handedness(o2w->swaps_handedness()), shape_id(next_shape_id++)  {
 	}
 	virtual ~Shape() {};
@@ -32,10 +31,10 @@ public:
 		error("Unimplemented Shaped::Refine() method called");
 	}
 
-	bool interset(const Ray &ray, float *t_hit, float *rayEpsilon,
-		DifferentialGeometry *dg) const;
+	virtual bool interset(const Ray &ray, float *t_hit, float *rayEpsilon,
+		DifferentialGeometry *dg) const = 0;
 
-	bool interset_p(const Ray &ray) const {
+	virtual bool interset_p(const Ray &ray) const = 0 {
 		error("Unimplemented Shaped::interset_p() method called");
 		return false;
 	}
@@ -48,11 +47,23 @@ public:
 	}
 };
 
-class Shere : public Shape {
+class Sphere : public Shape {
+private:
+	float _radius;
+	float _phi_max = 360;
+	float _z_min, _z_max;
+	float _theta_min = M_PI;
+	float _theta_max = 0;
+
 public:
-	Shere(const Transform *obj2world, const Transform *world2obj, bool ro,
+	Sphere(const Transform *obj2world, const Transform *world2obj, bool reverse_orientation,
+		float radius)
+		: Shape(obj2world, world2obj, reverse_orientation), _radius(radius), _z_min(-radius), _z_max(radius) {
+	}
+
+	Sphere(const Transform *obj2world, const Transform *world2obj, bool reverse_orientation,
 		float radius, float z0, float z1, float phi_max)
-		: Shape(obj2world, world2obj, ro) {
+		: Shape(obj2world, world2obj, reverse_orientation) {
 		_radius = radius;
 		_z_min = clamp(min(z0, z1), -radius, radius);
 		_z_max = clamp(max(z0, z1), -radius, radius);
@@ -65,70 +76,10 @@ public:
 		return BBox(Point(-_radius, -_radius, _z_min), Point(_radius, _radius, _z_max));
 	}
 
-	bool interset(const Ray &r, float *t_hit, float *rayEpsilon,
-		DifferentialGeometry *dg) const {
-		// Transform Ray to object space
-		Ray ray;
-		(*world_to_object)(r, &ray);
+	virtual bool interset(const Ray &r, float *t_hit, float *rayEpsilon,
+		DifferentialGeometry *diff_geo) const override;
 
-		// Compute quadratic sphere coefficients
-		float phi;
-		Point phit;
-		float A = ray.d.x * ray.d.x + ray.d.y * ray.d.y + ray.d.z * ray.d.z;
-		float B = 2 * (ray.d.x * ray.o.x + ray.d.y * ray.o.y + ray.d.z * ray.o.z);
-		float C = ray.o.x * ray.o.x + ray.o.y * ray.o.y + ray.o.z * ray.o.z - _radius * _radius;
+	virtual bool interset_p(const Ray& r) const override;
 
-		// Solve quadratic equation for t values
-		float t0, t1;
-		if (quadratic(A, B, C, &t0, &t1))
-			return false;
-
-		// Compute intersection distance along ray
-		if (t0 > ray.maxt || t1 < ray.mint)
-			return false;
-		float thit = t0;
-		if (t0 < ray.mint) {
-			thit = t1;
-			if (thit > ray.maxt) return false;
-		}
-
-		// Compute sphere hit position and ¦Õ
-		phit = ray(thit);
-		if (phit.x == 0.f && phit.y == 0.f) phit.x = 1e-5f * _radius;
-		phi = atan2f(phit.y, phit.x);
-		if (phi < 0.) phi += 2.f * M_PI;
-
-		// Test sphere intersection against clipping parameters
-		if ((_z_min > -_radius && phit.z < _z_min) ||
-			(_z_max <  _radius && phit.z > _z_max) || phi > _phi_max) { // clip t0(t1)
-			if (thit == t1) return false;
-			if (t1 > ray.maxt) return false;
-			thit = t1;
-			if ((_z_min > -_radius && phit.z < _z_min) ||
-				(_z_max <  _radius && phit.z > _z_max) || phi > _phi_max)	// clip t1
-				return false;
-		}
-
-		// Find parametric representation of sphere hit
-		float u = phi / _phi_max;
-		float theta = acosf(clamp(phit.z / _radius, -1.f, 1.f));
-		float v = (theta - _theta_min) / (_theta_max - _theta_min);
-
-		float z_radius = sqrtf(phit.x * phit.x + phit.y * phit.y);
-		float inv_z_radius = 1.f / z_radius;
-		float cos_phi = phit.x * inv_z_radius;
-		float sin_phi = phit.y * inv_z_radius;
-		Vec3 dpdu(-_phi_max * phit.y, _phi_max * phit.x, 0);
-		Vec3 dpdv = (_theta_max - _theta_min) *
-			Vec3(phit.z * cos_phi, phit.z * sin_phi, _radius * sinf(theta));
-
-		return true;
-	}
-
-private:
-	float _radius;
-	float _phi_max;
-	float _z_min, _z_max;
-	float _theta_min, _theta_max;
 };
 

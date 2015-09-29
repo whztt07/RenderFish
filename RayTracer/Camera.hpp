@@ -2,6 +2,7 @@
 
 #include "Math.hpp"
 #include "Ray.hpp"
+#include "Transform.hpp"
 
 class Camera
 {
@@ -17,8 +18,8 @@ public:
 	float aspect_ratio = 1.0f;
 	float fovScale;
 
-	Camera(const Point& eye, const Vec3& front, float aspect_ratio, float fov)
-		: eye(eye), front(front)
+	Camera(const Point& eye, const Vec3& front, float aspect_ratio = 1.0f , float fov = 45.0f)
+		: eye(eye), front(front), aspect_ratio(aspect_ratio), fov(fov)
 	{
 		fovScale = tanf(radians(fov * 0.5f)) * 2;
 		right = cross(up, front);
@@ -32,3 +33,16 @@ public:
 		return Ray(eye, normalize((front + r + u)));
 	}
 };
+
+
+//class PRTCamera
+//{
+//public:
+//	Transform camera_to_world;
+//	const float shutter_open, shutter_close;
+//	Film *film;
+//
+//public:
+//	PRTCamera(const Transform &cam2world, float sopen, float sclose, Film* film)
+//		:
+//};

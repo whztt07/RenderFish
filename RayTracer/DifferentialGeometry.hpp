@@ -6,7 +6,7 @@ class DifferentialGeometry
 {
 public:
 	Point p;
-	Normal nn;
+	Normal normal;
 	float u = 0;
 	float v = 0;
 	const Shape * shape = nullptr;
@@ -19,11 +19,11 @@ public:
 		const Normal& dndu, const Normal& dndv,
 		float u, float v, const Shape *shape)
 		: p(p), dpdu(dpdu), dpdv(dpdv), dndu(dndu), dndv(dndv), u(u), v(v), shape(shape),
-		nn(normalize(cross(dpdu, dpdv)))
+		normal(normalize(cross(dpdu, dpdv)))
 	{
 		if (shape != nullptr && (shape->reverse_orientation ^ shape->transform_swaps_handedness))
-			nn *= -1;
+			normal *= -1;
 	}
-	~DifferentialGeometry();
+	~DifferentialGeometry() {};
 };
 

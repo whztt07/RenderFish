@@ -81,5 +81,8 @@ public:
 
 	virtual bool interset_p(const Ray& r) const override;
 
+	float Sphere::Area() const {
+		return _phi_max * _radius * (_z_max - _z_min);
+	}
 };
 

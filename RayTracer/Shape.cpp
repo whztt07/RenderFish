@@ -25,7 +25,7 @@ bool Sphere::interset(const Ray &r, float *t_hit, float *rayEpsilon, Differentia
 	Point phit;
 	float A = ray.d.x * ray.d.x + ray.d.y * ray.d.y + ray.d.z * ray.d.z;
 	float B = 2 * (ray.d.x * ray.o.x + ray.d.y * ray.o.y + ray.d.z * ray.o.z);
-	float C = ray.o.x * ray.o.x + ray.o.y * ray.o.y + ray.o.z * ray.o.z - _radius * _radius;
+	float C = ray.o.x*ray.o.x + ray.o.y*ray.o.y + ray.o.z*ray.o.z - _radius*_radius;
 
 	// Solve quadratic equation for t values
 	float t0, t1;
@@ -53,11 +53,15 @@ bool Sphere::interset(const Ray &r, float *t_hit, float *rayEpsilon, Differentia
 		if (thit == t1) return false;
 		if (t1 > ray.maxt) return false;
 		thit = t1;
+		// Compute sphere hit position and phi
+		phit = ray(thit);
+		if (phit.x == 0.f && phit.y == 0.f) phit.x = 1e-5f * _radius;
+		phi = atan2f(phit.y, phit.x);
+		if (phi < 0.) phi += 2.f * M_PI;
 		if ((_z_min > -_radius && phit.z < _z_min) ||
 			(_z_max <  _radius && phit.z > _z_max) || phi > _phi_max)	// clip t1
 			return false;
 	}
-
 	// Find parametric representation of sphere hit
 	float u = phi / _phi_max;
 	float theta = acosf(clamp(phit.z / _radius, -1.f, 1.f));

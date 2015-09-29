@@ -3,24 +3,43 @@
 #include "Shape.hpp"
 #include "Camera.hpp"
 
-void World::build(void)
+void World::build( int width, int height)
 {
-	vp.set_hres(512);
-	vp.set_vres(512);
+	vp.set_hres(width);
+	vp.set_vres(height);
 	vp.set_pixel_size(1.0f);
 	vp.set_gamma(1.0f);
 
 	background_color = Color::black;
 	tracer = new Tracer(this);
-	auto p1 = new Plane(Vec3(0, 0, 0), Vec3(0, 1, 1));
-	p1->set_color(Color(Vec3(0, 0.3f, 0)));
-	add_object(p1);
 
+	// TODO: Transform pool
 	Transform *t1 = new Transform(), *t2 = new Transform();
-	*t1 = Transform::translate(1, 2, 0);
+	*t1 = Transform::translate(-2, 0, 0);
 	*t2 = inverse(*t1);
-	auto sphere = new Sphere(t1, t2, false, 2.0f);
+	auto sphere = new Sphere(t1, t2, false, 1.0f);
 	add_shape(sphere);
+
+	Transform *t3 = new Transform(), *t4 = new Transform();
+	*t3 = Transform::translate(2, 0, 0);
+	*t4 = inverse(*t3);
+	auto sphere2 = new Sphere(t3, t4, false, 1.0f, -0.6, 0.8f, 360);
+	add_shape(sphere2);
+}
+
+Color World::intersect(const Ray& ray) const
+{
+	DifferentialGeometry dg;
+	float t;
+	float ray_epsilon;
+
+	for (unsigned int j = 0; j < shapes.size(); j++) {
+		auto s = shapes[j];
+		if (s->interset(ray, &t, &ray_epsilon, &dg)) {
+			return Color(dg.normal);
+		}
+	}
+	return background_color;
 }
 
 void World::render_scene(void) const
@@ -28,7 +47,7 @@ void World::render_scene(void) const
 	Color	pixel_color;
 	float	zw	= 100.0f;
 
-	static Camera camera(Point(0, 0, -7), Vec3(0, 0, 1));
+	static Camera camera(Point(0, 0, -7), Vec3(0, 0, 1), float(vp.hres) / vp.vres);
 
 	open_window(vp.hres, vp.vres);
 
@@ -37,7 +56,7 @@ void World::render_scene(void) const
 		float sy = 1 - r * 1.0f / vp.vres;
 		for (int c = 0; c < vp.hres; c++)
 		{
-			float sx = c * 1.0f / vp.hres;
+			float sx = c * 1.0f / vp.vres;
 			auto ray = camera.ray_to(sx, sy);
 			pixel_color = tracer->trace_ray(ray);
 			set_pixel(c, r, pixel_color);

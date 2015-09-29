@@ -28,7 +28,7 @@ public:
 
 	Ray ray_to(float x, float y)
 	{
-		auto r = right * ((x - 0.5f) * fovScale);
+		auto r = right * ((x - 0.5f * aspect_ratio) * fovScale);
 		auto u = up * ((y - 0.5f) * fovScale);
 		return Ray(eye, normalize((front + r + u)));
 	}

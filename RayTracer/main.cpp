@@ -51,8 +51,8 @@ public:
 // 	}
 // };
 
-const int width = 512;
-const int height = 512;
+const int width = 800;
+const int height = 600;
 
 int to_int(float f)
 {
@@ -93,7 +93,7 @@ int main()
 	error("%f\n", M_PI);
 
 	World w;
-	w.build();
+	w.build(width, height);
 	w.render_scene();
 
 	return 0;

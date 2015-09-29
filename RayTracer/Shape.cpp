@@ -3,29 +3,23 @@
 
 uint32_t Shape::next_shape_id = 1;
 
-bool Shape::interset(const Ray &ray, float *t_hit, float *rayEpsilon, DifferentialGeometry *dg) const
-{
-	error("Unimplemented Shaped::interset() method called");
-	return false;
-}
-
 void Shape::get_shading_geometry(const Transform &obj2world, const DifferentialGeometry &dg, DifferentialGeometry *dg_shading) const
 {
 	*dg_shading = dg;
 }
 
-bool Sphere::interset(const Ray &r, float *t_hit, float *rayEpsilon, DifferentialGeometry *diff_geo) const
+bool Sphere::interset(const Ray &ray, float *t_hit, float *ray_epsilon, DifferentialGeometry *diff_geo) const
 {
 	// Transform Ray to object space
-	Ray ray;
-	(*world_to_object)(r, &ray);
+	Ray w_ray;
+	(*world_to_object)(ray, &w_ray);
 
 	// Compute quadratic sphere coefficients
 	float phi;
 	Point phit;
-	float A = ray.d.x * ray.d.x + ray.d.y * ray.d.y + ray.d.z * ray.d.z;
-	float B = 2 * (ray.d.x * ray.o.x + ray.d.y * ray.o.y + ray.d.z * ray.o.z);
-	float C = ray.o.x*ray.o.x + ray.o.y*ray.o.y + ray.o.z*ray.o.z - _radius*_radius;
+	float A = w_ray.d.x * w_ray.d.x + w_ray.d.y * w_ray.d.y + w_ray.d.z * w_ray.d.z;
+	float B = 2 * (w_ray.d.x * w_ray.o.x + w_ray.d.y * w_ray.o.y + w_ray.d.z * w_ray.o.z);
+	float C = w_ray.o.x*w_ray.o.x + w_ray.o.y*w_ray.o.y + w_ray.o.z*w_ray.o.z - _radius*_radius;
 
 	// Solve quadratic equation for t values
 	float t0, t1;
@@ -33,16 +27,16 @@ bool Sphere::interset(const Ray &r, float *t_hit, float *rayEpsilon, Differentia
 		return false;
 
 	// Compute intersection distance along ray
-	if (t0 > ray.maxt || t1 < ray.mint)
+	if (t0 > w_ray.maxt || t1 < w_ray.mint)
 		return false;
 	float thit = t0;
-	if (t0 < ray.mint) {
+	if (t0 < w_ray.mint) {
 		thit = t1;
-		if (thit > ray.maxt) return false;
+		if (thit > w_ray.maxt) return false;
 	}
 
 	// Compute sphere hit position and phi
-	phit = ray(thit);
+	phit = w_ray(thit);
 	if (phit.x == 0.f && phit.y == 0.f) phit.x = 1e-5f * _radius;
 	phi = atan2f(phit.y, phit.x);
 	if (phi < 0.) phi += 2.f * M_PI;
@@ -51,10 +45,10 @@ bool Sphere::interset(const Ray &r, float *t_hit, float *rayEpsilon, Differentia
 	if ((_z_min > -_radius && phit.z < _z_min) ||
 		(_z_max <  _radius && phit.z > _z_max) || phi > _phi_max) { // clip t0(t1)
 		if (thit == t1) return false;
-		if (t1 > ray.maxt) return false;
+		if (t1 > w_ray.maxt) return false;
 		thit = t1;
 		// Compute sphere hit position and phi
-		phit = ray(thit);
+		phit = w_ray(thit);
 		if (phit.x == 0.f && phit.y == 0.f) phit.x = 1e-5f * _radius;
 		phi = atan2f(phit.y, phit.x);
 		if (phi < 0.) phi += 2.f * M_PI;
@@ -93,7 +87,7 @@ bool Sphere::interset(const Ray &r, float *t_hit, float *rayEpsilon, Differentia
 	*diff_geo = DifferentialGeometry(o2w(phit), o2w(dpdu), o2w(dpdv),
 		o2w(dndu), o2w(dndv), u, v, this);
 	*t_hit = thit;
-	*rayEpsilon = 5e-4f * *t_hit;
+	*ray_epsilon = 5e-4f * *t_hit;
 	return true;
 }
 

@@ -19,38 +19,42 @@ public:
 	virtual ~Shape() {};
 
 	virtual BBox object_bound() const = 0;
-	BBox world_bound() const {
+	virtual BBox world_bound() const {
 		return (*object_to_world)(object_bound());
 	}
 
-	bool can_intersect() const {
+	virtual bool can_intersect() const {
 		return true;
 	}
 
-	void refine(vector<Reference<Shape>> &refine) const {
-		error("Unimplemented Shaped::Refine() method called");
+	virtual void refine(vector<Reference<Shape>> &refined) const {
+		error("Unimplemented Shaped::Refine() method called\n");
 	}
 
-	virtual bool interset(const Ray &ray, float *t_hit, float *rayEpsilon,
-		DifferentialGeometry *dg) const = 0;
+	virtual bool interset(const Ray &ray, float *t_hit, float *ray_epsilon,
+		DifferentialGeometry *diff_geo) const {
+		error("Unimplemented Shaped::interset() method called\n");
+		return false;
+	}
 
-	virtual bool interset_p(const Ray &ray) const = 0 {
-		error("Unimplemented Shaped::interset_p() method called");
+	virtual bool interset_p(const Ray &ray) const {
+		error("Unimplemented Shaped::interset_p() method called\n");
 		return false;
 	}
 
 	virtual void get_shading_geometry(const Transform &obj2world,
 		const DifferentialGeometry &dg, DifferentialGeometry *dg_shading) const;
 
-	float Area() const {
-		error("Unimplemented Shaped::Area() method called");
+	virtual float area() const {
+		error("Unimplemented Shaped::Area() method called\n");
+		return 0;
 	}
 };
 
 class Sphere : public Shape {
 private:
 	float _radius;
-	float _phi_max = 360;
+	float _phi_max = radians(360);
 	float _z_min, _z_max;
 	float _theta_min = M_PI;
 	float _theta_max = 0;
@@ -76,12 +80,12 @@ public:
 		return BBox(Point(-_radius, -_radius, _z_min), Point(_radius, _radius, _z_max));
 	}
 
-	virtual bool interset(const Ray &r, float *t_hit, float *rayEpsilon,
-		DifferentialGeometry *diff_geo) const override;
+	virtual bool interset(const Ray &ray, float *t_hit, float *ray_epsilon,
+		DifferentialGeometry *diff_geo) const;
 
 	virtual bool interset_p(const Ray& r) const override;
 
-	float Sphere::Area() const {
+	virtual float area() const {
 		return _phi_max * _radius * (_z_max - _z_min);
 	}
 };

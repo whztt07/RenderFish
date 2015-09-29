@@ -23,8 +23,11 @@ void World::build( int width, int height)
 	Transform *t3 = new Transform(), *t4 = new Transform();
 	*t3 = Transform::translate(2, 0, 0);
 	*t4 = inverse(*t3);
-	auto sphere2 = new Sphere(t3, t4, false, 1.0f, -0.6, 0.8f, 360);
+	auto sphere2 = new Sphere(t3, t4, false, 1.0f, -0.6f, 0.8f, 360);
 	add_shape(sphere2);
+
+	info("%f\n", sphere->area());
+	info("%f\n", sphere2->area());
 }
 
 Color World::intersect(const Ray& ray) const

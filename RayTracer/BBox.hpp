@@ -22,7 +22,7 @@ public:
 		pmax = Point(fmax(p1.x, p2.x), fmax(p1.y, p2.y), fmax(p1.z, p2.z));
 	}
 
-	static BBox combine(const BBox &b, const Point &p)
+	friend BBox combine(const BBox &b, const Point &p)
 	{
 		BBox ret;
 		ret.pmin.x = fmin(b.pmin.x, p.x);
@@ -34,7 +34,7 @@ public:
 		return ret;
 	}
 
-	static BBox combine(const BBox &b1, const BBox &b2)
+	friend BBox combine(const BBox &b1, const BBox &b2)
 	{
 		BBox ret;
 		ret.pmin.x = fmin(b1.pmin.x, b2.pmin.x);

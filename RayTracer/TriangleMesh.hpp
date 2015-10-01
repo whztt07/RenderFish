@@ -22,13 +22,16 @@ public:
 	virtual BBox world_bound() const override;
 
 	virtual bool interset(const Ray &ray, float *t_hit, float *ray_epsilon,
-		DifferentialGeometry *diff_geo) const {
-		return true;
-	}
+		DifferentialGeometry *diff_geo) const override;
 
-	virtual bool interset_p(const Ray &ray) const {
-		return true;
-	}
+	virtual bool interset_p(const Ray &ray) const override;
+
+	void get_uvs(float uv[3][2]) const;
+
+	virtual float area() const override;
+
+	virtual void get_shading_geometry(const Transform &obj2world, const DifferentialGeometry &dg,
+		DifferentialGeometry *dg_shading) const override;
 };
 
 class TriangleMesh : public Shape
@@ -44,6 +47,9 @@ public:
 	float*	uv;
 	Reference<Texture<float> > alpha_texture;	// [optional] alpha mask
 
+	TriangleMesh() : Shape(), n_triangles(0), n_vertices(0), alpha_texture(nullptr) {
+
+	}
 
 	TriangleMesh(const Transform *o2w, const Transform *w2o,
 		bool reverse_orientation, int nt, int nv, const int vi, const Point *P,
@@ -61,6 +67,10 @@ public:
 		if (tangent != nullptr) {
 			this->tangent = new Vec3[3 * n_triangles];
 			memcpy(this->tangent, tangent, 3 * n_triangles * sizeof(Vec3));
+		}
+		if (uv != nullptr) {
+			this->uv = new float[2 * 3 * n_triangles];
+			memcpy(this->uv, uv, 2 * 3 * n_triangles * sizeof(float));
 		}
 		for (int i = 0; i < n_vertices; ++i) {
 			position[i] = (*object_to_world)(P[i]);

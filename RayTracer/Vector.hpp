@@ -10,6 +10,8 @@
 class Vec2 {
 public:
 	float x, y;
+	
+	Vec2(float x, float y) : x(x), y(y) {}
 };
 
 template < class T, class U >
@@ -17,6 +19,14 @@ inline float dot(const T& lhs, const U& rhs)
 {
 	return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 }
+
+template < class T, class U >
+static T cross(const T& u, const U& v)
+{
+	return T(u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x);
+}
+
+class Normal;
 
 class Vec3 {
 public:
@@ -34,6 +44,7 @@ public:
 	Vec3(const Vec3& v) : Vec3(v.x, v.y, v.z) {
 	}
 	Vec3(float x, float y, float z) : x(x), y(y), z(z) { Assert(!has_NaNs()); }
+	explicit Vec3(const Normal& n);
 
 	bool has_NaNs() const { return isnan(x) || isnan(y) || isnan(z); }
 
@@ -85,6 +96,9 @@ public:
 	Point& operator-=(const Vec3 &v) { x -= v.x; y -= v.y; z -= v.z; return *this; }
 	float& operator[](int index) { return m[index]; }
 	float  operator[](int index) const { return m[index]; }
+	Point operator*(float f) const { return Point(x * f, y * f, z * f); }
+	friend Point operator*(float f, const Point& p) { return Point(p.x * f, p.y * f, p.z * f); }
+
 
 	bool operator==(const Vec3& p) const { return equal(x, p.x) && equal(y, p.y) && equal(z, p.z); }
 	bool operator!=(const Vec3& p) const { return !operator==(p); }

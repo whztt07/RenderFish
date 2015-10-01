@@ -9,6 +9,8 @@ public:
 
 	Matrix4x4 m, m_inv;
 
+	static Transform identity;
+
 	Transform() {}
 	Transform(const Matrix4x4& mat)
 		: m(mat), m_inv(inverse(mat)) {}
@@ -18,6 +20,7 @@ public:
 	friend Transform inverse(const Transform& t) {
 		return Transform(t.m_inv, t.m);
 	}
+
 
 //	bool operator==(const Transform& t) const {
 //		// TODO

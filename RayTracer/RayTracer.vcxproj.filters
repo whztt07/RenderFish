@@ -28,6 +28,12 @@
     <Filter Include="Header Files\shapes">
       <UniqueIdentifier>{3f735006-9ca3-4cb5-8ff4-547c3a57579b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\shapes">
+      <UniqueIdentifier>{a4ffce75-fab8-4989-8fd6-cc33f9cf9ba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IO">
+      <UniqueIdentifier>{9a005f0a-efef-4242-9761-d24e30a96b7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BBox.cpp">
@@ -87,10 +93,13 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="TriangleMesh.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TriangleMesh.cpp">
+      <Filter>Source Files\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -105,9 +114,6 @@
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="Geometry.hpp">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageIO.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="Probes.hpp">
@@ -168,7 +174,13 @@
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="TriangleMesh.hpp">
-      <Filter>Header Files\core</Filter>
+      <Filter>Header Files\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageIO.hpp">
+      <Filter>Header Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelIO.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

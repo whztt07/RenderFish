@@ -14,20 +14,25 @@
 // Matrix4x4 in RenderFish is ROW matrix
 // matrix-vector multiplication: mat * vec;
 
-static float dot(const Vec3& u, const Vec3& v)
-{
-	return u.x * v.x + u.y * v.y + u.z * v.z;
-}
+//static float dot(const Vec3& u, const Vec3& v)
+//{
+//	return u.x * v.x + u.y * v.y + u.z * v.z;
+//}
 
-static Vec3 cross(const Vec3& u, const Vec3& v)
-{
-	return Vec3(u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x);
-}
+//static Vec3 cross(const Vec3& u, const Vec3& v)
+//{
+//	return Vec3(u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x);
+//}
 
 static Vec3 normalize(const Vec3& v)
 {
 	//float l = v.length();
 	return v.normalize();
+}
+
+static Normal normalize(const Normal& n) {
+	float l = sqrtf(n.x*n.x + n.y*n.y + n.z*n.z);
+	return Normal(n.x / l, n.y / l, n.z / l);
 }
 
 static float distance(const Point &p1, const Point &p2)
@@ -79,6 +84,20 @@ inline bool quadratic(float A, float B, float C, float *t0, float *t1) {
 	*t1 = C / q;
 	if (*t0 > *t1) std::swap(*t0, *t1);
 	return true;
+}
+
+template<class T>
+inline void coordinate_system(const T &v1, T *v2, T *v3)
+{
+	if (fabsf(v1.x) > fabsf(v1.y)) {
+		float inv_len = 1.f / sqrtf(v1.x*v1.x + v1.z*v1.z);
+		*v2 = T(-v1.z * inv_len, 0.f, v1.x * inv_len);
+	}
+	else {
+		float inv_len = 1.f / sqrtf(v1.y * v1.y + v1.z * v1.z);
+		*v2 = T(0.f, v1.z * inv_len, -v1.y * inv_len);
+	}
+	*v3 = cross(v1, *v2);
 }
 
 #endif

@@ -1,5 +1,7 @@
 #include "Transform.hpp"
 
+Transform Transform::identity = Transform(Matrix4x4(), Matrix4x4());
+
 Transform Transform::rotate_x(float degrees)
 {
 	float sin_t = sinf(radians(degrees));

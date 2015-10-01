@@ -72,16 +72,18 @@ bool Sphere::interset(const Ray &ray, float *t_hit, float *ray_epsilon, Differen
 	auto d2Pduu = -_phi_max * _phi_max * Vec3(phit.x, phit.y, 0);
 	auto d2Pduv = (_theta_max - _theta_min) * phit.z * _phi_max * Vec3(-sin_phi, cos_phi, 0.f);
 	auto d2Pdvv = (_theta_max - _theta_min) * (_theta_max - _theta_min) * Vec3(phit.x, phit.y, phit.z);
-	float E = dot(dpdu, dpdu);
-	float F = dot(dpdu, dpdv);
-	float G = dot(dpdv, dpdv);
-	auto N = normalize(cross(dpdu, dpdv));
-	float e = dot(N, d2Pduu);
-	float f = dot(N, d2Pduv);
-	float g = dot(N, d2Pdvv);
-	float invEGF2 = 1.0f / (E * G - F * F);
-	auto dndu = Normal((f*F - e*G) * invEGF2 * dpdu + (e*F - f*E) * invEGF2 * dpdv);
-	auto dndv = Normal((g*F - f*G) * invEGF2 * dpdu + (f*F - g*E) * invEGF2 * dpdv);
+	Normal dndu, dndv;
+	calc_dndu_dndv(dpdu, dpdv, d2Pduu, d2Pduv, d2Pdvv, &dndu, &dndv);
+	//float E = dot(dpdu, dpdu);
+	//float F = dot(dpdu, dpdv);
+	//float G = dot(dpdv, dpdv);
+	//auto N = normalize(cross(dpdu, dpdv));
+	//float e = dot(N, d2Pduu);
+	//float f = dot(N, d2Pduv);
+	//float g = dot(N, d2Pdvv);
+	//float invEGF2 = 1.0f / (E * G - F * F);
+	//auto dndu = Normal((f*F - e*G) * invEGF2 * dpdu + (e*F - f*E) * invEGF2 * dpdv);
+	//auto dndv = Normal((g*F - f*G) * invEGF2 * dpdu + (f*F - g*E) * invEGF2 * dpdv);
 
 	const auto &o2w = *object_to_world;
 	*diff_geo = DifferentialGeometry(o2w(phit), o2w(dpdu), o2w(dpdv),

@@ -36,7 +36,9 @@ inline int32_t AtomicAdd(AtomicInt32 *v, int32_t delta) {
 class ReferenceCounted
 {
 public:
+//protected:
 	AtomicInt32 n_references = 0;
+public:
 	ReferenceCounted() {};
 	virtual ~ReferenceCounted() {};
 };

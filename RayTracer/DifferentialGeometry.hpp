@@ -13,6 +13,9 @@ public:
 	Vec3 dpdu, dpdv;
 	Normal dndu, dndv;
 
+	// barycentric coordinates
+	// for Triangle only
+	float b1, b2;
 
 	DifferentialGeometry() {};
 	DifferentialGeometry(const Point& p, const Vec3& dpdu, const Vec3& dpdv, 

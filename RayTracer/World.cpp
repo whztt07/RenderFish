@@ -2,6 +2,8 @@
 #include "Tracer.hpp"
 #include "Shape.hpp"
 #include "Camera.hpp"
+#include "TriangleMesh.hpp"
+#include "ModelIO.hpp"
 
 void World::build( int width, int height)
 {
@@ -26,6 +28,10 @@ void World::build( int width, int height)
 	auto sphere2 = new Sphere(t3, t4, false, 1.0f, -0.6f, 0.8f, 360);
 	add_shape(sphere2);
 
+	TriangleMesh *mesh = new TriangleMesh();
+	ModelIO::load("cube.obj", mesh);
+	add_shape(mesh);
+
 	info("%f\n", sphere->area());
 	info("%f\n", sphere2->area());
 }
@@ -35,14 +41,29 @@ Color World::intersect(const Ray& ray) const
 	DifferentialGeometry dg;
 	float t;
 	float ray_epsilon;
+	Color ret_color = background_color;
 
 	for (unsigned int j = 0; j < shapes.size(); j++) {
 		auto s = shapes[j];
-		if (s->interset(ray, &t, &ray_epsilon, &dg)) {
-			return Color(dg.normal);
+		if (s->can_intersect()) {
+			if (s->interset(ray, &t, &ray_epsilon, &dg)) {
+				ray.maxt = t;
+				ret_color = Color(dg.normal);
+			}
+		}
+		else {
+			//vector<Reference<Shape>> vs;
+			//s->refine(vs);
+			auto& vs = s->refined_shapes;
+			for (auto i = vs.begin(); i != vs.end(); ++i) {
+				if ((*i)->interset(ray, &t, &ray_epsilon, &dg)) {
+					ray.maxt = t;
+					ret_color = Color::green;
+				}
+			}
 		}
 	}
-	return background_color;
+	return ret_color;
 }
 
 void World::render_scene(void) const

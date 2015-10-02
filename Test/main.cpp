@@ -121,6 +121,11 @@ int main()
 
 	printf("%lld\n", ms);
 
+	float t0 = 0, t1 = 0;
+	quadratic(1, 1, -6, &t0, &t1);
+	Assert(t0 == -3.0f);
+	Assert(t1 == 2.0f);
+
 	std::cin >> ms;
 	return 0;
 }

@@ -1,6 +1,7 @@
 #include "World.hpp"
 #include "Tracer.hpp"
 #include "Shape.hpp"
+#include "Sphere.hpp"
 #include "Camera.hpp"
 #include "TriangleMesh.hpp"
 #include "ModelIO.hpp"
@@ -31,9 +32,6 @@ void World::build( int width, int height)
 	TriangleMesh *mesh = new TriangleMesh();
 	ModelIO::load("cube.obj", mesh);
 	add_shape(mesh);
-
-	info("%f\n", sphere->area());
-	info("%f\n", sphere2->area());
 }
 
 Color World::intersect(const Ray& ray) const
@@ -46,7 +44,7 @@ Color World::intersect(const Ray& ray) const
 	for (unsigned int j = 0; j < shapes.size(); j++) {
 		auto s = shapes[j];
 		if (s->can_intersect()) {
-			if (s->interset(ray, &t, &ray_epsilon, &dg)) {
+			if (s->intersect(ray, &t, &ray_epsilon, &dg)) {
 				ray.maxt = t;
 				ret_color = Color(dg.normal);
 			}
@@ -56,7 +54,7 @@ Color World::intersect(const Ray& ray) const
 			//s->refine(vs);
 			auto& vs = s->refined_shapes;
 			for (auto i = vs.begin(); i != vs.end(); ++i) {
-				if ((*i)->interset(ray, &t, &ray_epsilon, &dg)) {
+				if ((*i)->intersect(ray, &t, &ray_epsilon, &dg)) {
 					ray.maxt = t;
 					ret_color = Color::green;
 				}
@@ -66,7 +64,7 @@ Color World::intersect(const Ray& ray) const
 	return ret_color;
 }
 
-void World::render_scene(void) const
+void World::render_scene(void)
 {
 	Color	pixel_color;
 	float	zw	= 100.0f;
@@ -86,20 +84,10 @@ void World::render_scene(void) const
 			set_pixel(c, r, pixel_color);
 		}
 	}
-
-	//draw_line(vp.hres, 10, 0, vp.vres / 2);
-	//display_pixel(20, 1, Color::white);
-
-	while (screen_exit == 0 && screen_keys[VK_ESCAPE] == 0)
-	{
-		screen_dispatch();
-		screen_update();
-		static float elapse = 1.0f / 30 * 1000;
-		Sleep(DWORD(elapse));
-	}
+	window.run();
 }
 
-void World::draw_line(int x0, int y0, int x1, int y1) const
+void World::draw_line(int x0, int y0, int x1, int y1)
 {
 	if (x0 > x1)
 	{

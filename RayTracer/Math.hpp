@@ -24,6 +24,9 @@
 //	return Vec3(u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x);
 //}
 
+//#ifndef swap
+//#define swap(x, y) {auto t = x; x = y; y = t;}
+
 static Vec3 normalize(const Vec3& v)
 {
 	//float l = v.length();

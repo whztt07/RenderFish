@@ -2,6 +2,8 @@
 #define BBOX_H
 #include "Math.hpp"
 
+class Ray;
+
 class BBox
 {
 public:
@@ -21,6 +23,8 @@ public:
 		pmin = Point(fmin(p1.x, p2.x), fmin(p1.y, p2.y), fmin(p1.z, p2.z));
 		pmax = Point(fmax(p1.x, p2.x), fmax(p1.y, p2.y), fmax(p1.z, p2.z));
 	}
+
+	bool intersect_p(const Ray &ray, float *hit_t0, float *hit_t1) const;
 
 	friend BBox combine(const BBox &b, const Point &p)
 	{

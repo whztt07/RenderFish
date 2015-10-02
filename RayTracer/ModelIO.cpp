@@ -15,7 +15,7 @@ string get_file_type(const string & name)
 void split_string(const string & str, int *vertex_id, int *uv_id, int *normal_id)
 {
 	int count = 0;
-	for (int i = 0; i < str.length(); i++)
+	for (unsigned int i = 0; i < str.length(); i++)
 	{
 		if (str[i] == '/') count++;
 	}
@@ -28,9 +28,12 @@ void split_string(const string & str, int *vertex_id, int *uv_id, int *normal_id
 		sscanf_s(str.c_str(), "%d/%d/%d", vertex_id, uv_id, normal_id);
 	else
 		error("vertex not in wanted format in load_obj: not triangle\n");
-	*vertex_id--;
-	*uv_id--;
-	*normal_id--;
+	
+	//http://en.cppreference.com/w/cpp/language/operator_precedence
+	// the precedence of -- is prior than *
+	--(*vertex_id);
+	--(*uv_id);
+	--(*normal_id);
 }
 
 void ModelIO::load(const string & path, TriangleMesh* mesh)

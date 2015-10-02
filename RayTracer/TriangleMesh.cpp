@@ -4,6 +4,34 @@ Triangle::Triangle(const Transform *o2w, const Transform *w2o, bool reverse_orie
 {
 	mesh = m;
 	v = &mesh->vertex_index[3 * n];
+	Assert(v[0] < mesh->n_vertices);
+	Assert(v[1] < mesh->n_vertices);
+	Assert(v[2] < mesh->n_vertices);
+
+	const auto &p1 = mesh->position[v[0]];
+	const auto &p2 = mesh->position[v[1]];
+	const auto &p3 = mesh->position[v[2]];
+	auto e1 = p2 - p1;
+	auto e2 = p3 - p1;
+	//Vec3 dpdu, dpdv;
+	float uvs[3][2];
+	get_uvs(uvs);
+
+	float du1 = uvs[0][0] - uvs[2][0];
+	float du2 = uvs[1][0] - uvs[2][0];
+	float dv1 = uvs[0][1] - uvs[2][1];
+	float dv2 = uvs[1][1] - uvs[2][1];
+	auto dp1 = p1 - p3, dp2 = p2 - p3;
+
+	float determinant = du1 * dv2 - dv1 * du2;
+	if (determinant == 0.f) {
+		coordinate_system(normalize(cross(e2, e1)), &dpdu, &dpdv);
+	}
+	else {
+		float inv_def = 1.f / determinant;
+		dpdu = (dv2 * dp1 - dv1 * dp2) * inv_def;
+		dpdv = (-du2 * dp1 + du1 * dp2) * inv_def;
+	}
 }
 
 BBox Triangle::object_bound() const
@@ -22,7 +50,7 @@ BBox Triangle::world_bound() const
 	return combine(BBox(p1, p2), p3);
 }
 
-bool Triangle::interset(const Ray &ray, float *t_hit, float *ray_epsilon, DifferentialGeometry *diff_geo) const
+bool Triangle::intersect(const Ray &ray, float *t_hit, float *ray_epsilon, DifferentialGeometry *diff_geo) const
 {
 	const auto &p1 = mesh->position[v[0]];
 	const auto &p2 = mesh->position[v[1]];
@@ -54,25 +82,25 @@ bool Triangle::interset(const Ray &ray, float *t_hit, float *ray_epsilon, Differ
 
 	//info("%f %f\n", b1, b2);
 
-	Vec3 dpdu, dpdv;
+	//Vec3 dpdu, dpdv;
 	float uvs[3][2];
 	get_uvs(uvs);
 
-	float du1 = uvs[0][0] - uvs[2][0];
-	float du2 = uvs[1][0] - uvs[2][0];
-	float dv1 = uvs[0][1] - uvs[2][1];
-	float dv2 = uvs[1][1] - uvs[2][1];
-	auto dp1 = p1 - p3, dp2 = p2 - p3;
+	//float du1 = uvs[0][0] - uvs[2][0];
+	//float du2 = uvs[1][0] - uvs[2][0];
+	//float dv1 = uvs[0][1] - uvs[2][1];
+	//float dv2 = uvs[1][1] - uvs[2][1];
+	//auto dp1 = p1 - p3, dp2 = p2 - p3;
 
-	float determinant = du1 * dv2 - dv1 * du2;
-	if (determinant == 0.f) {
-		coordinate_system(normalize(cross(e2, e1)), &dpdu, &dpdv);
-	}
-	else {
-		float inv_def = 1.f / determinant;
-		dpdu = ( dv2 * dp1 - dv1 * dp2) * inv_def;
-		dpdv = (-du2 * dp1 + du1 * dp2) * inv_def;
-	}
+	//float determinant = du1 * dv2 - dv1 * du2;
+	//if (determinant == 0.f) {
+	//	coordinate_system(normalize(cross(e2, e1)), &dpdu, &dpdv);
+	//}
+	//else {
+	//	float inv_def = 1.f / determinant;
+	//	dpdu = ( dv2 * dp1 - dv1 * dp2) * inv_def;
+	//	dpdv = (-du2 * dp1 + du1 * dp2) * inv_def;
+	//}
 
 	float b0 = 1 - b1 - b2;
 	float tu = b0*uvs[0][0] + b1*uvs[1][0] + b2*uvs[2][0];
@@ -90,7 +118,7 @@ bool Triangle::interset(const Ray &ray, float *t_hit, float *ray_epsilon, Differ
 	return true;
 }
 
-bool Triangle::interset_p(const Ray & ray) const
+bool Triangle::intersect_p(const Ray & ray) const
 {
 	const auto &p1 = mesh->position[v[0]];
 	const auto &p2 = mesh->position[v[1]];

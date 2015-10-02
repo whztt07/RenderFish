@@ -13,6 +13,11 @@ class Triangle : public Shape
 private:
 	Reference<TriangleMesh> mesh;
 	int *v;
+
+	// cache
+	Vec3 dpdu, dpdv;
+	Normal dndu, dndv;
+
 public:
 	Triangle(const Transform *o2w, const Transform *w2o,
 		bool reverse_orientation, TriangleMesh *m, int n);
@@ -21,10 +26,10 @@ public:
 
 	virtual BBox world_bound() const override;
 
-	virtual bool interset(const Ray &ray, float *t_hit, float *ray_epsilon,
+	virtual bool intersect(const Ray &ray, float *t_hit, float *ray_epsilon,
 		DifferentialGeometry *diff_geo) const override;
 
-	virtual bool interset_p(const Ray &ray) const override;
+	virtual bool intersect_p(const Ray &ray) const override;
 
 	void get_uvs(float uv[3][2]) const;
 
@@ -84,21 +89,21 @@ public:
 		return obj_bounds;
 	}
 
-	BBox world_bound() const {
+	virtual BBox world_bound() const override {
 		BBox world_bounds;
 		for (int i = 0; i < n_vertices; i++)
 			world_bounds = combine(world_bounds, position[i]);
 		return world_bounds;
 	}
 
-	virtual bool can_intersect() const {
+	virtual bool can_intersect() const override {
 		return false;
 	}
 
-	void refine(vector<Reference<Shape>> &refined) const {
+	virtual void refine(vector<Reference<Shape>> &refined) const override {
 		for (int i = 0; i < n_triangles; ++i)
 			refined.push_back(new Triangle(object_to_world, world_to_object, 
-			reverse_orientation, (TriangleMesh *)this, i));
+							reverse_orientation, (TriangleMesh *)this, i));
 	}
 };
 

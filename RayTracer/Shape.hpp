@@ -24,9 +24,9 @@ class Shape : public ReferenceCounted
 {
 protected:
 	static uint32_t next_shape_id;
-	const uint32_t shape_id;
 
 public:
+	const uint32_t shape_id;
 	const Transform *object_to_world, *world_to_object;
 	const bool reverse_orientation, transform_swaps_handedness;
 
@@ -55,13 +55,13 @@ public:
 		error("Unimplemented Shaped::Refine() method called\n");
 	}
 
-	virtual bool interset(const Ray &ray, float *t_hit, float *ray_epsilon,
+	virtual bool intersect(const Ray &ray, float *t_hit, float *ray_epsilon,
 		DifferentialGeometry *diff_geo) const {
 		error("Unimplemented Shaped::interset() method called\n");
 		return false;
 	}
 
-	virtual bool interset_p(const Ray &ray) const {
+	virtual bool intersect_p(const Ray &ray) const {
 		error("Unimplemented Shaped::interset_p() method called\n");
 		return false;
 	}
@@ -74,43 +74,3 @@ public:
 		return 0;
 	}
 };
-
-class Sphere : public Shape {
-private:
-	float _radius;
-	float _phi_max = radians(360);
-	float _z_min, _z_max;
-	float _theta_min = M_PI;
-	float _theta_max = 0;
-
-public:
-	Sphere(const Transform *obj2world, const Transform *world2obj, bool reverse_orientation,
-		float radius)
-		: Shape(obj2world, world2obj, reverse_orientation), _radius(radius), _z_min(-radius), _z_max(radius) {
-	}
-
-	Sphere(const Transform *obj2world, const Transform *world2obj, bool reverse_orientation,
-		float radius, float z0, float z1, float phi_max)
-		: Shape(obj2world, world2obj, reverse_orientation) {
-		_radius = radius;
-		_z_min = clamp(min(z0, z1), -radius, radius);
-		_z_max = clamp(max(z0, z1), -radius, radius);
-		_theta_min = acosf(clamp(_z_min / radius, -1.f, 1.f));
-		_theta_max = acosf(clamp(_z_max / radius, -1.f, 1.f));
-		_phi_max = radians(clamp(phi_max, 0.f, 360.f));
-	}
-
-	BBox object_bound() const {
-		return BBox(Point(-_radius, -_radius, _z_min), Point(_radius, _radius, _z_max));
-	}
-
-	virtual bool interset(const Ray &ray, float *t_hit, float *ray_epsilon,
-		DifferentialGeometry *diff_geo) const;
-
-	virtual bool interset_p(const Ray& r) const override;
-
-	virtual float area() const {
-		return _phi_max * _radius * (_z_max - _z_min);
-	}
-};
-

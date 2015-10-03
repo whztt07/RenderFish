@@ -81,23 +81,7 @@ public:
 		this->operator()(r.d, &ret.d);
 		return ret;
 	}
-	BBox operator()(const BBox& b) const {
-		// note the fact that the eight corner points are linear combinations 
-		//	of three axis-aligned basis vectors and a single corner point
-		// PBRT p104 exercise 2.1
-		const Transform & T = *this;
-		auto x = T(Vec3::axis_x);
-		auto y = T(Vec3::axis_y);
-		auto z = T(Vec3::axis_z);
-		auto pmin = T(b.pmin);
-#define NEGTIVE(v) ((v) < 0 ? (v) : 0)
-		pmin.x += NEGTIVE(x.x) + NEGTIVE(y.x) + NEGTIVE(z.x);
-		pmin.y += NEGTIVE(x.y) + NEGTIVE(y.y) + NEGTIVE(z.y);
-		pmin.z += NEGTIVE(x.z) + NEGTIVE(y.z) + NEGTIVE(z.z);
-#undef NEGTIVE
-		//return BBox(pmin, pmin + x + y + z);
-		return BBox(pmin, Point(pmin.x+x.x+y.y+z.z, pmin.y+x.y+y.y+z.y, pmin.z+x.z+y.z+z.z));
-	}
+	BBox operator()(const BBox& b) const;
 #pragma endregion
 
 	bool has_scale() const {

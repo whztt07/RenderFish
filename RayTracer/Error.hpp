@@ -9,6 +9,8 @@ void warning(const char *fmt, ...);
 
 void error(const char *fmt, ...);
 
+void progress(float percentage);
+
 #ifdef NDEBUG
 #define Assert(expr) ((void)0)
 #else

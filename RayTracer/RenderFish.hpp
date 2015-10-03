@@ -11,8 +11,6 @@
 #define RENDERFISH_PLATFORM_IS_APPLE
 #endif
 
-
-
 #include <cmath>
 #include <cstdlib>
 #include <cstdio>

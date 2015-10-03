@@ -63,8 +63,6 @@ bool Triangle::intersect(const Ray &ray, float *t_hit, float *ray_epsilon, Diffe
 	float divisor = dot(s1, e1);
 	if (divisor == 0)
 		return false;
-	//if (zero(divisor))
-	//	return false;
 	float inv_divisor = 1.0f / divisor;
 	
 	float b1 = dot(s1, s) * inv_divisor;
@@ -79,8 +77,6 @@ bool Triangle::intersect(const Ray &ray, float *t_hit, float *ray_epsilon, Diffe
 	float t = dot(e2, s2) * inv_divisor;
 	if (t < ray.mint || t > ray.maxt)
 		return false;
-
-	//info("%f %f\n", b1, b2);
 
 	//Vec3 dpdu, dpdv;
 	float uvs[3][2];

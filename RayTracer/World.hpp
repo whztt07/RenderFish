@@ -6,6 +6,7 @@
 #include "Color.hpp"
 #include "Window.hpp"
 #include "DifferentialGeometry.hpp"
+#include "KdTree.hpp"
 
 class Tracer;
 
@@ -16,7 +17,11 @@ public:
 	ViewPlane vp;
 	Color	background_color;
 	Tracer*	tracer;
-	std::vector<Shape*> shapes;
+	//vector<Shape*> shapes;
+	vector<Reference<Primitive>> primitives;
+	KdTree* kdTree;
+
+	Material material;
 
 	World() {}
 	~World() {}
@@ -25,10 +30,10 @@ public:
 
 	void render_scene(void);
 
-	void add_shape(Shape* shape)
-	{
-		shapes.push_back(shape);
-	}
+	//void add_shape(Shape* shape)
+	//{
+	//	shapes.push_back(shape);
+	//}
 
 	Color intersect(const Ray& ray) const;
 
@@ -43,10 +48,6 @@ public:
 		Assert(!(x < 0 || x > vp.hres || y < 0 || y > vp.vres));
 // 		if (x < 0 || x > vp.hres || y < 0 || y > vp.vres)
 // 			return;
-		//int p = (y * vp.hres + x)*4;
-		//screen_fb[p++] = pixel_color.b;
-		//screen_fb[p++] = pixel_color.g;
-		//screen_fb[p++] = pixel_color.r;
 		window.set_pixel(x, y, pixel_color.r, pixel_color.g, pixel_color.b);
 	}
 

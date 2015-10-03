@@ -2,6 +2,44 @@
 
 Transform Transform::identity = Transform(Matrix4x4(), Matrix4x4());
 
+BBox Transform::operator()(const BBox& b) const {
+#if 0
+	const Transform &M = *this;
+	BBox ret(M(Point(b.pmin.x, b.pmin.y, b.pmin.z)));
+	ret = combine(ret, M(Point(b.pmax.x, b.pmin.y, b.pmin.z)));
+	ret = combine(ret, M(Point(b.pmin.x, b.pmax.y, b.pmin.z)));
+	ret = combine(ret, M(Point(b.pmin.x, b.pmin.y, b.pmax.z)));
+	ret = combine(ret, M(Point(b.pmin.x, b.pmax.y, b.pmax.z)));
+	ret = combine(ret, M(Point(b.pmax.x, b.pmax.y, b.pmin.z)));
+	ret = combine(ret, M(Point(b.pmax.x, b.pmin.y, b.pmax.z)));
+	ret = combine(ret, M(Point(b.pmax.x, b.pmax.y, b.pmax.z)));
+	return ret;
+#else
+	// note the fact that the eight corner points are linear combinations 
+	//	of three axis-aligned basis vectors and a single corner point
+	// PBRT p104 exercise 2.1
+	const Transform & T = *this;
+	auto d = b.pmax - b.pmin;
+	auto x = T(Vec3(d.x, 0, 0));
+	auto y = T(Vec3(0, d.y, 0));
+	auto z = T(Vec3(0, 0, d.z));
+	auto pmin = T(b.pmin);
+	auto pmax = pmin;
+#define NEGTIVE(v) ((v) < 0 ? (v) : 0)
+#define POSITIVE(v) ((v) > 0 ? (v) : 0)
+	pmin.x += NEGTIVE(x.x) + NEGTIVE(y.x) + NEGTIVE(z.x);
+	pmin.y += NEGTIVE(x.y) + NEGTIVE(y.y) + NEGTIVE(z.y);
+	pmin.z += NEGTIVE(x.z) + NEGTIVE(y.z) + NEGTIVE(z.z);
+	pmax.x += POSITIVE(x.x) + POSITIVE(y.x) + POSITIVE(z.x);
+	pmax.y += POSITIVE(x.y) + POSITIVE(y.y) + POSITIVE(z.y);
+	pmax.z += POSITIVE(x.z) + POSITIVE(y.z) + POSITIVE(z.z);
+#undef NEGTIVE
+#undef POSITIVE
+	//return BBox(pmin, pmin + x + y + z);
+	return BBox(pmin, pmax);
+#endif
+}
+
 Transform Transform::rotate_x(float degrees)
 {
 	float sin_t = sinf(radians(degrees));

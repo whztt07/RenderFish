@@ -57,7 +57,8 @@ void ModelIO::load_obj(const string & path, std::ifstream & fin, TriangleMesh* m
 {
 	//error("unimplemented function\n");
 
-	char buffer[256], str[256];
+	char buffer[256];
+	char str[256];
 	float f1, f2, f3;
 
 	int n_triangles = 0;
@@ -73,16 +74,20 @@ void ModelIO::load_obj(const string & path, std::ifstream & fin, TriangleMesh* m
 
 	int line_number = 0;
 
+	info("Loading model %s\n", path.c_str());
+
 	while (!fin.getline(buffer, 255).eof())
 	{
 		buffer[255] = '\0';
 		sscanf_s(buffer, "%s", str, 255);
+		//info(buffer);
 		line_number++;
 
 		// vertex
 		if ((buffer[0] == 'v') && (buffer[1] == ' ' || buffer[1] == 32)) {
 			if (sscanf_s(buffer, "v %f %f %f", &f1, &f2, &f3) == 3) {
 				verts.push_back(Point(f1, f2, f3));
+				//info("%f %f %f\n", f1, f2, f3);
 				n_vertices++;
 			}
 			else {
@@ -134,6 +139,8 @@ void ModelIO::load_obj(const string & path, std::ifstream & fin, TriangleMesh* m
 
 	Assert(verts.size() == n_vertices);
 	Assert(p_index.size() == n_triangles * 3);
+	
+	info("Model loading finished. n_triangles = %d, n_vertives = %d.\n", n_triangles, n_vertices);
 
 	mesh->n_triangles = n_triangles;
 	mesh->n_vertices = n_vertices;
@@ -141,6 +148,6 @@ void ModelIO::load_obj(const string & path, std::ifstream & fin, TriangleMesh* m
 	memcpy(mesh->position, (void *)&verts[0], n_vertices * sizeof(Point));
 	mesh->vertex_index = new int[n_triangles * 3];
 	memcpy(mesh->vertex_index, (void*)&p_index[0], n_triangles * 3 * sizeof(int));
-	mesh->refine(mesh->refined_shapes);
+	//mesh->refine(mesh->refined_shapes);
 }
 

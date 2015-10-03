@@ -78,7 +78,7 @@ public:
 		return d.x * d.y * d.z;
 	}
 
-	float maximum_extent() const {
+	Axis maximum_extent() const {
 		auto diag = pmax - pmin;
 		if (diag.x > diag.y && diag.x > diag.z)
 			return Axis::x_axis;

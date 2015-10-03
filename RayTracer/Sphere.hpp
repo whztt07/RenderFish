@@ -39,7 +39,8 @@ public:
 			y_max = _radius * sinf(_phi_max);
 		}
 
-		return BBox(Point(x_min, y_min, _z_min), Point(_radius, y_max, _z_max));
+		//return BBox(Point(x_min, y_min, _z_min), Point(_radius, y_max, _z_max));
+		return BBox(Point(-_radius, -_radius, _z_min), Point(_radius, _radius, _z_max));
 	}
 
 	virtual bool intersect(const Ray &ray, float *t_hit, float *ray_epsilon,

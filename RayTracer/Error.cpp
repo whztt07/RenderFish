@@ -17,6 +17,8 @@ static HANDLE hstdout;
 #define SPRINT_BUF_SIZE 1024
 static char sprint_buf[SPRINT_BUF_SIZE];
 
+using std::cout;
+
 void log_system_init()
 {
 #ifdef RENDERFISH_LOG_IS_WINDOWS
@@ -45,9 +47,7 @@ void info(const char *fmt, ...)
 	va_list args;
 	va_start(args, fmt);
 	int n = vsprintf(sprint_buf, fmt, args);
-	//int n = vsprintf_s(sprint_buf, fmt, args);
 	va_end(args);
-	//write(stdout, sprint_buf, n);
 	std::cout.write(sprint_buf, n);
 #if RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
     printf("\e[m");
@@ -65,9 +65,7 @@ void warning(const char *fmt, ...)
 	va_list args;
 	va_start(args, fmt);
 	int n = vsprintf(sprint_buf, fmt, args);
-	//int n = vsprintf_s(sprint_buf, fmt, args);
 	va_end(args);
-	//write(stdout, sprint_buf, n);
 	std::cout.write(sprint_buf, n);
 #if RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
     printf("\e[m");
@@ -85,12 +83,45 @@ void error(const char *fmt, ...)
 	va_list args;
 	va_start(args, fmt);
 	int n = vsprintf(sprint_buf, fmt, args);
-	//int n = vsprintf_s(sprint_buf, fmt, args);
 	va_end(args);
-	//write(stdout, sprint_buf, n);
 	std::cout.write(sprint_buf, n);
 #if RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
     printf("\e[m");
+#endif
+}
+
+static const char* progress_str[] = {
+	"[          ]",
+	"[#         ]",
+	"[##        ]",
+	"[###       ]",
+	"[####      ]",
+	"[#####     ]",
+	"[######    ]",
+	"[#######   ]",
+	"[########  ]",
+	"[######### ]",
+	"[##########]"
+};
+
+void progress(float percentage)
+{
+#if RENDERFISH_LOG_IS_WINDOWS
+	SetConsoleTextAttribute(hstdout, 0x0F);
+#elif RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
+	// http://stackoverflow.com/questions/9005769/any-way-to-print-in-color-with-nslog#
+	// https://wiki.archlinux.org/index.php/Color_Bash_Prompt#List_of_colors_for_prompt_and_Bash
+	printf("\e[0;37m");    // white
+#endif
+	int p = int(percentage * 10);
+	if (p < 0) p = 0;
+	if (p > 10) p = 10;
+	cout << "[progress]" << progress_str[p];
+	if (p == 0) cout << "  ";
+	else if (p != 10) cout << " ";
+	cout << p << "0%\n";
+#if RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
+	printf("\e[m");
 #endif
 }
 

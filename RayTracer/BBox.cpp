@@ -18,5 +18,5 @@ bool BBox::intersect_p(const Ray & ray, float * hit_t0, float * hit_t1) const
 
 	if (hit_t0 != nullptr) *hit_t0 = t0;
 	if (hit_t1 != nullptr) *hit_t1 = t1;
-	return false;
+	return true;
 }

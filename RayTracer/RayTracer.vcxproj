@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -18,13 +18,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -64,29 +64,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Aggregate.cpp" />
+    <ClCompile Include="AreaLight.cpp" />
     <ClCompile Include="BBox.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="DifferentialGeometry.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="ImageIO.cpp" />
+    <ClCompile Include="Intersection.cpp" />
+    <ClCompile Include="KdTree.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
+    <ClCompile Include="MemoryArena.cpp" />
+    <ClCompile Include="ModelIO.cpp" />
+    <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="random.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="ReferenceCounted.cpp" />
     <ClCompile Include="ShadeRec.cpp" />
     <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Tracer.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="TriangleMesh.cpp" />
     <ClCompile Include="ViewPlane.cpp" />
+    <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Aggregate.hpp" />
+    <ClInclude Include="AreaLight.hpp" />
     <ClInclude Include="BBox.hpp" />
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Color.hpp" />
@@ -94,8 +106,14 @@
     <ClInclude Include="Error.hpp" />
     <ClInclude Include="Geometry.hpp" />
     <ClInclude Include="ImageIO.hpp" />
+    <ClInclude Include="Intersection.hpp" />
+    <ClInclude Include="KdTree.hpp" />
+    <ClInclude Include="Material.hpp" />
     <ClInclude Include="MathHelper.hpp" />
     <ClInclude Include="Matrix4x4.hpp" />
+    <ClInclude Include="MemoryArena.hpp" />
+    <ClInclude Include="ModelIO.hpp" />
+    <ClInclude Include="Primitive.hpp" />
     <ClInclude Include="Probes.hpp" />
     <ClInclude Include="Random.hpp" />
     <ClInclude Include="Ray.hpp" />
@@ -103,6 +121,7 @@
     <ClInclude Include="ReferenceCounted.hpp" />
     <ClInclude Include="RenderFish.hpp" />
     <ClInclude Include="Shape.hpp" />
+    <ClInclude Include="Sphere.hpp" />
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="TriangleMesh.hpp" />
     <ClInclude Include="Vector.hpp" />

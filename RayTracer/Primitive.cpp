@@ -16,7 +16,7 @@ void Primitive::fully_refine(vector<Reference<Primitive>>& refined) const
 	}
 }
 
-inline bool GeometryPrimitive::intersect(const Ray & r, Intersection * isect) const {
+bool GeometryPrimitive::intersect(const Ray & r, Intersection * isect) const {
 	float thit, ray_epsilon;
 	if (!_shape->intersect(r, &thit, &ray_epsilon, &isect->dg))
 		return false;

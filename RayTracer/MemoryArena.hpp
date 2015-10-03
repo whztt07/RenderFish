@@ -6,18 +6,18 @@
 #define RENDERFISH_L1_CACHE_LINE_SIZE 64
 #endif
 
-static void * alloc_aligned(size_t size) {
+inline void * alloc_aligned(size_t size) {
 #ifdef _WIN32
 	return _aligned_malloc(size, RENDERFISH_L1_CACHE_LINE_SIZE);
 #endif
 }
 
 template <typename T>
-static T * alloc_aligned(uint32_t count) {
+inline T * alloc_aligned(uint32_t count) {
 	return (T *)alloc_aligned(count * sizeof(T));
 }
 
-static void free_aligned(void * ptr) {
+inline void free_aligned(void * ptr) {
 #ifdef _WIN32
 	_aligned_free(ptr);
 #endif

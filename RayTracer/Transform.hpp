@@ -21,10 +21,16 @@ public:
 		return Transform(t.m_inv, t.m);
 	}
 
+	bool operator==(const Transform& t) const {
+		for (int i = 0; i < 4; i++)
+			for (int j = 0; j < 4; j++) {
+				if (!equal(m[i][j], t.m[i][j]))
+					return false;
+			}
+		return true;
+	}
+	bool operator!=(const Transform& t) const { return !operator==(t); }
 
-//	bool operator==(const Transform& t) const {
-//		// TODO
-//	}
 	Transform operator*(const Transform& t2) const {
 		auto m1 = m * t2.m;
 		auto m2 = t2.m_inv * m_inv;

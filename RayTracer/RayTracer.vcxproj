@@ -65,9 +65,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Aggregate.cpp" />
+    <ClCompile Include="AnimatedTransform.cpp" />
     <ClCompile Include="AreaLight.cpp" />
     <ClCompile Include="BBox.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Spectrum.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="DifferentialGeometry.cpp" />
     <ClCompile Include="Error.cpp" />
@@ -81,9 +83,12 @@
     <ClCompile Include="MemoryArena.cpp" />
     <ClCompile Include="ModelIO.cpp" />
     <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="random.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="ReferenceCounted.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShadeRec.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Sphere.cpp" />
@@ -98,9 +103,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aggregate.hpp" />
+    <ClInclude Include="AnimatedTransform.hpp" />
     <ClInclude Include="AreaLight.hpp" />
     <ClInclude Include="BBox.hpp" />
     <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Spectrum.hpp" />
     <ClInclude Include="Color.hpp" />
     <ClInclude Include="DifferentialGeometry.hpp" />
     <ClInclude Include="Error.hpp" />
@@ -115,11 +122,14 @@
     <ClInclude Include="ModelIO.hpp" />
     <ClInclude Include="Primitive.hpp" />
     <ClInclude Include="Probes.hpp" />
+    <ClInclude Include="Quaternion.hpp" />
     <ClInclude Include="Random.hpp" />
     <ClInclude Include="Ray.hpp" />
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="ReferenceCounted.hpp" />
+    <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="RenderFish.hpp" />
+    <ClInclude Include="Scene.hpp" />
     <ClInclude Include="Shape.hpp" />
     <ClInclude Include="Sphere.hpp" />
     <ClInclude Include="Texture.hpp" />

@@ -3,7 +3,7 @@
 Transform Transform::identity = Transform(Matrix4x4(), Matrix4x4());
 
 BBox Transform::operator()(const BBox& b) const {
-#if 0
+#if 1
 	const Transform &M = *this;
 	BBox ret(M(Point(b.pmin.x, b.pmin.y, b.pmin.z)));
 	ret = combine(ret, M(Point(b.pmax.x, b.pmin.y, b.pmin.z)));

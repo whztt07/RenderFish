@@ -135,5 +135,18 @@ struct Matrix4x4
 		}
 		return result;
 	}
+
+	void operator*=(const Matrix4x4& rhs) {
+		for (int i = 0; i < 4; i++) {
+			float f[4];
+			for (int j = 0; j < 4; j++) {
+				f[j] = m[i][0] * rhs.m[0][j] + m[i][1] * rhs.m[1][j] +
+					   m[i][2] * rhs.m[2][j] + m[i][3] * rhs.m[3][j];
+			}
+			for (int j = 0; j < 4; j++) {
+				m[i][j] = f[j];
+			}
+		}
+	}
 };
 

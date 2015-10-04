@@ -31,7 +31,7 @@ public:
 
 	virtual bool intersect_p(const Ray &ray) const override;
 
-	void get_uvs(float uv[3][2]) const;
+	void get_uvs(Vec2 uv[3]) const;
 
 	virtual float area() const override;
 
@@ -49,42 +49,25 @@ public:
 	Point*	position;
 	Normal* normal;
 	Vec3*	tangent;	// tangent
-	float*	uv;
+	Vec2*	uv;
 	Reference<Texture<float> > alpha_texture;	// [optional] alpha mask
 
-	TriangleMesh() : Shape(), n_triangles(0), n_vertices(0), alpha_texture(nullptr) {
+	//TriangleMesh() : Shape(), n_triangles(0), n_vertices(0), alpha_texture(nullptr) { }
 
-	}
+	//TriangleMesh(const vector<int> vi, const vector<Point> P,
+	//	const vector<Normal> normal, const vector<Vec2> uv)
+	//	: TriangleMesh(&Transform::identity, &Transform::identity, false, vi.size() / 3, P.size(),
+	//		&vi[0], &P[0], &normal[0], nullptr, &uv[0], nullptr) {
+	//}
 
 	TriangleMesh(const Transform *o2w, const Transform *w2o,
-		bool reverse_orientation, int nt, int nv, const int vi, const Point *P,
-		const Normal *normal, const Vec3 *tangent, const float *uv,
-		const Reference<Texture<float> > &alpha_texture)
-		: Shape(o2w, w2o, reverse_orientation), alpha_texture(alpha_texture),
-		n_triangles(nt), n_vertices(nv)
-	{
-		vertex_index = new int[3 * n_triangles];
-		memcpy(vertex_index, (void *)vi, 3 * n_triangles * sizeof(int));
-		if (normal != nullptr) {
-			this->normal = new Normal[3 * n_triangles];
-			memcpy(this->normal, normal, 3 * n_triangles * sizeof(Normal));
-		}
-		if (tangent != nullptr) {
-			this->tangent = new Vec3[3 * n_triangles];
-			memcpy(this->tangent, tangent, 3 * n_triangles * sizeof(Vec3));
-		}
-		if (uv != nullptr) {
-			this->uv = new float[2 * 3 * n_triangles];
-			memcpy(this->uv, uv, 2 * 3 * n_triangles * sizeof(float));
-		}
-		for (int i = 0; i < n_vertices; ++i) {
-			position[i] = (*object_to_world)(P[i]);
-		}
-	}
+		bool reverse_orientation, int nt, int nv, const int* vi, const Point *P,
+		const Normal *normal, const Vec3 *tangent, const Vec2 *uv,
+		const Reference<Texture<float> > &alpha_texture);
 
 	virtual BBox object_bound() const override {
 		BBox obj_bounds;
-		for (int i = 0; i < n_triangles; i++)
+		for (int i = 0; i < n_vertices; i++)
 			obj_bounds = combine(obj_bounds, (*world_to_object)(position[i]));
 		return obj_bounds;
 	}

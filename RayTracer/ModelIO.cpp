@@ -36,35 +36,34 @@ void split_string(const string & str, int *vertex_id, int *uv_id, int *normal_id
 	--(*normal_id);
 }
 
-void ModelIO::load(const string & path, TriangleMesh* mesh)
+TriangleMesh* ModelIO::load(const string & path)
 {
 	std::ifstream in(path.c_str());
 
 	if (!in.good())
 	{
 		error("file not exists: %s", path.c_str());
-		return;
+		return nullptr;
 	}
 
 	string ext = get_file_type(path);
 	if (ext == "obj")
-		load_obj(path, in, mesh);
+		return load_obj(path, in);
 	else
 		error("Unsupported model file type: %s\n", ext.c_str());
+	return nullptr;
 }
 
-void ModelIO::load_obj(const string & path, std::ifstream & fin, TriangleMesh* mesh)
+TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 {
-	//error("unimplemented function\n");
-
 	char buffer[256];
 	char str[256];
 	float f1, f2, f3;
 
 	int n_triangles = 0;
 	int n_vertices = 0;
-	vector<Point> verts;
-	vector<Vec3> normals;
+	vector<Point> positions;
+	vector<Normal> normals;
 	vector<Vec2> uvs;
 	vector<int> p_index;
 	vector<int> uv_index;
@@ -86,13 +85,13 @@ void ModelIO::load_obj(const string & path, std::ifstream & fin, TriangleMesh* m
 		// vertex
 		if ((buffer[0] == 'v') && (buffer[1] == ' ' || buffer[1] == 32)) {
 			if (sscanf_s(buffer, "v %f %f %f", &f1, &f2, &f3) == 3) {
-				verts.push_back(Point(f1, f2, f3));
+				positions.push_back(Point(f1, f2, f3));
 				//info("%f %f %f\n", f1, f2, f3);
 				n_vertices++;
 			}
 			else {
 				error("vertex not in wanted format in load_obj at line: %d\n", line_number);
-				return;
+				return nullptr;
 			}
 		}
 		else if(buffer[0] == 'v' && (buffer[1] == 't')) {
@@ -101,16 +100,16 @@ void ModelIO::load_obj(const string & path, std::ifstream & fin, TriangleMesh* m
 			}
 			else {
 				error("vertex not in wanted format in load_obj at line: %d\n", line_number);
-				return;
+				return nullptr;
 			}
 		}
 		else if (buffer[0] == 'v' && (buffer[1] == 'n')) {
 			if (sscanf_s(buffer, "vn %f %f %f", &f1, &f2, &f3) == 3) {
-				normals.push_back(Vec3(f1, f2, f3));
+				normals.push_back(Normal(f1, f2, f3));
 			}
 			else {
 				error("vertex not in wanted format in load_obj at line: %d\n", line_number);
-				return;
+				return nullptr;
 			}
 		}
 		else if(buffer[0] == 'f' && buffer[1] == ' ') {
@@ -122,7 +121,7 @@ void ModelIO::load_obj(const string & path, std::ifstream & fin, TriangleMesh* m
 					split_string(face[i], &v, &u, &n);
 					if (v < 0) {
 						error("    load_obj at line: %d\n", line_number);
-						return;
+						return nullptr;
 					}
 					p_index.push_back(v);
 					if (u >= 0) uv_index.push_back(u);
@@ -132,22 +131,61 @@ void ModelIO::load_obj(const string & path, std::ifstream & fin, TriangleMesh* m
 			}
 			else {
 				error("vertex not in wanted format in load_obj at line: %d\n", line_number);
-				return;
+				return nullptr;
 			}
 		}
 	}
 
-	Assert(verts.size() == n_vertices);
+	Assert(positions.size() == n_vertices);
 	Assert(p_index.size() == n_triangles * 3);
-	
-	info("Model loading finished. n_triangles = %d, n_vertives = %d.\n", n_triangles, n_vertices);
+	if (!normals.empty()) {
+		//Assert(n_index.size() == n_triangles * 3);
+		if (n_index.size() != n_triangles * 3) {
+			error("some vertices do not have normal!\n");
+			return nullptr;
+		}
+	}
+	if (!uvs.empty()) {
+		//Assert(uv_index.size() == n_triangles * 3);
+		if (uv_index.size() != n_triangles * 3) {
+			error("some vertices do not have uv!\n");
+			return nullptr;
+		}
+	}
 
-	mesh->n_triangles = n_triangles;
-	mesh->n_vertices = n_vertices;
-	mesh->position = new Point[n_vertices];
-	memcpy(mesh->position, (void *)&verts[0], n_vertices * sizeof(Point));
-	mesh->vertex_index = new int[n_triangles * 3];
-	memcpy(mesh->vertex_index, (void*)&p_index[0], n_triangles * 3 * sizeof(int));
-	//mesh->refine(mesh->refined_shapes);
+	info("Model loading finished. n_triangles = %d, n_vertives = %d.\n", n_triangles, n_vertices);
+	
+	vector<Point> new_points;
+	vector<Vec2> new_uvs;
+	vector<Normal> new_normals;
+	vector<int> uv_id_at_p(n_vertices, -1);
+
+	new_uvs.resize(n_vertices);
+	new_normals.resize(n_vertices);
+	uv_id_at_p.resize(n_vertices);
+	for (int i = 0; i < n_triangles; i++) {
+		int v = i * 3;
+		for (int j = 0; j < 3; ++j) {
+			int id_at_p_array = p_index[v];
+			if (uv_id_at_p[id_at_p_array] == -1) {
+				uv_id_at_p[id_at_p_array] = uv_index[v];
+				new_uvs[id_at_p_array] = uvs[uv_index[v]];
+				new_normals[id_at_p_array] = normals[n_index[v]];
+			}
+			else if (uv_id_at_p[id_at_p_array] != uv_index[v]) {	// this vertex has other uv already
+				int new_id = positions.size();
+				positions.push_back(positions[p_index[v]]);				// add a new vertex
+				new_uvs.push_back(uvs[uv_index[v]]);
+				new_normals.push_back(normals[n_index[v]]);
+				p_index[v] = new_id;
+			}
+			v++;
+		}
+	}
+
+	info("Model processing finished. Add %d new vertives. %d vertives in all\n", positions.size() - n_vertices, positions.size());
+	n_vertices = positions.size();
+	return new TriangleMesh(&Transform::identity, &Transform::identity, false, n_triangles, n_vertices,
+		&p_index[0], &positions[0], &new_normals[0], nullptr, &new_uvs[0], nullptr);
 }
 

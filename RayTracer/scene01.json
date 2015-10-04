@@ -1,0 +1,39 @@
+{
+	width: 800,
+	height: 600,
+	shapes: {
+		sphere_group: {
+			type: group
+			components: {
+				sphere1:  {
+					type: Sphere,
+					transfom: {
+						translation: (-2, 0, 0)
+					},
+					parm: {
+						radius: 1.0
+					}
+				}
+
+				sphere2: {
+					type: Sphere,
+					transform: {
+						translation: (2, 0, 0)
+					},
+					parm: {
+						radius: 1.0
+						z0: -0.6
+						z1: 0.8
+						phi_max: 360
+					}
+				}
+			
+			}
+		}
+
+		mesh: {
+			type: TriangleMesh,
+			file: "teapot.obj"
+		}
+	}
+}

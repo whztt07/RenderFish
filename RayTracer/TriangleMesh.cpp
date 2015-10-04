@@ -14,13 +14,13 @@ Triangle::Triangle(const Transform *o2w, const Transform *w2o, bool reverse_orie
 	auto e1 = p2 - p1;
 	auto e2 = p3 - p1;
 	//Vec3 dpdu, dpdv;
-	float uvs[3][2];
+	Vec2 uvs[3];
 	get_uvs(uvs);
 
-	float du1 = uvs[0][0] - uvs[2][0];
-	float du2 = uvs[1][0] - uvs[2][0];
-	float dv1 = uvs[0][1] - uvs[2][1];
-	float dv2 = uvs[1][1] - uvs[2][1];
+	float du1 = uvs[0].x - uvs[2].x;
+	float du2 = uvs[1].x - uvs[2].x;
+	float dv1 = uvs[0].y - uvs[2].y;
+	float dv2 = uvs[1].y - uvs[2].y;
 	auto dp1 = p1 - p3, dp2 = p2 - p3;
 
 	float determinant = du1 * dv2 - dv1 * du2;
@@ -79,13 +79,13 @@ bool Triangle::intersect(const Ray &ray, float *t_hit, float *ray_epsilon, Diffe
 		return false;
 
 	//Vec3 dpdu, dpdv;
-	float uvs[3][2];
+	Vec2 uvs[3];
 	get_uvs(uvs);
 
-	//float du1 = uvs[0][0] - uvs[2][0];
-	//float du2 = uvs[1][0] - uvs[2][0];
-	//float dv1 = uvs[0][1] - uvs[2][1];
-	//float dv2 = uvs[1][1] - uvs[2][1];
+	//float du1 = uvs[0].x - uvs[2].x;
+	//float du2 = uvs[1].x - uvs[2].x;
+	//float dv1 = uvs[0].y - uvs[2].y;
+	//float dv2 = uvs[1].y - uvs[2].y;
 	//auto dp1 = p1 - p3, dp2 = p2 - p3;
 
 	//float determinant = du1 * dv2 - dv1 * du2;
@@ -99,8 +99,8 @@ bool Triangle::intersect(const Ray &ray, float *t_hit, float *ray_epsilon, Diffe
 	//}
 
 	float b0 = 1 - b1 - b2;
-	float tu = b0*uvs[0][0] + b1*uvs[1][0] + b2*uvs[2][0];
-	float tv = b0*uvs[0][1] + b1*uvs[1][1] + b2*uvs[2][1];
+	float tu = b0*uvs[0].x + b1*uvs[1].x + b2*uvs[2].x;
+	float tv = b0*uvs[0].y + b1*uvs[1].y + b2*uvs[2].y;
 
 	if (mesh->alpha_texture) {
 		DifferentialGeometry dg_local(ray(t), dpdu, dpdv, Normal(0, 0, 0), Normal(0, 0, 0), tu, tv, this);
@@ -109,6 +109,8 @@ bool Triangle::intersect(const Ray &ray, float *t_hit, float *ray_epsilon, Diffe
 	}
 
 	*diff_geo = DifferentialGeometry(ray(t), dpdu, dpdv, Normal(0, 0, 0), Normal(0, 0, 0), tu, tv, this);
+	*t_hit = t;
+	*ray_epsilon = 1e-3f * t;
 	diff_geo->b1 = b1;
 	diff_geo->b2 = b2;
 	return true;
@@ -144,20 +146,17 @@ bool Triangle::intersect_p(const Ray & ray) const
 	return true;
 }
 
-void Triangle::get_uvs(float uv[3][2]) const
+void Triangle::get_uvs(Vec2 uv[3]) const
 {
 	if (mesh->uv) {
-		uv[0][0] = mesh->uv[2 * v[0]];
-		uv[0][1] = mesh->uv[2 * v[0] + 1];
-		uv[1][0] = mesh->uv[2 * v[1]];
-		uv[1][1] = mesh->uv[2 * v[1] + 1];
-		uv[2][0] = mesh->uv[2 * v[2]];
-		uv[2][1] = mesh->uv[2 * v[2] + 1];
+		uv[0] = mesh->uv[v[0]];
+		uv[1] = mesh->uv[v[1]];
+		uv[2] = mesh->uv[v[2]];
 	}
 	else {
-		uv[0][0] = 0.; uv[0][1] = 0.;
-		uv[1][0] = 1.; uv[1][1] = 0.;
-		uv[2][0] = 1.; uv[2][1] = 1.;
+		uv[0].x = 0.; uv[0].y = 0.;
+		uv[1].x = 1.; uv[1].y = 0.;
+		uv[2].x = 1.; uv[2].y = 1.;
 	}
 }
 
@@ -205,13 +204,13 @@ void Triangle::get_shading_geometry(const Transform & obj2world, const Different
 		coordinate_system(Vec3(ns), &ss, &ts);
 
 	Normal dndu, dndv;
-	float uvs[3][2];
+	Vec2 uvs[3];
 	get_uvs(uvs);
 
-	float du1 = uvs[0][0] - uvs[2][0];
-	float du2 = uvs[1][0] - uvs[2][0];
-	float dv1 = uvs[0][1] - uvs[2][1];
-	float dv2 = uvs[1][1] - uvs[2][1];
+	float du1 = uvs[0].x - uvs[2].x;
+	float du2 = uvs[1].x - uvs[2].x;
+	float dv1 = uvs[0].y - uvs[2].y;
+	float dv2 = uvs[1].y - uvs[2].y;
 	const Normal& n1 = mesh->normal[v[0]];
 	const Normal& n2 = mesh->normal[v[1]];
 	const Normal& n3 = mesh->normal[v[2]];
@@ -230,4 +229,28 @@ void Triangle::get_shading_geometry(const Transform & obj2world, const Different
 	*dg_shading = DifferentialGeometry(dg.p, ss, ts,
 		(*object_to_world)(dndu), (*object_to_world)(dndv),
 		dg.u, dg.v, dg.shape);
+}
+
+TriangleMesh::TriangleMesh(const Transform * o2w, const Transform * w2o, bool reverse_orientation, int nt, int nv, const int * vi, const Point * P, const Normal * normal, const Vec3 * tangent, const Vec2 * uv, const Reference<Texture<float>>& alpha_texture)
+	: Shape(o2w, w2o, reverse_orientation), alpha_texture(alpha_texture),
+	n_triangles(nt), n_vertices(nv)
+{
+	vertex_index = new int[3 * nt];
+	memcpy(vertex_index, (void *)vi, 3 * nt * sizeof(int));
+	if (normal != nullptr) {
+		this->normal = new Normal[nv];
+		memcpy(this->normal, normal, nv * sizeof(Normal));
+	}
+	if (tangent != nullptr) {
+		this->tangent = new Vec3[nv];
+		memcpy(this->tangent, tangent, nv * sizeof(Vec3));
+	}
+	if (uv != nullptr) {
+		this->uv = new Vec2[nv];
+		memcpy(this->uv, uv, nv * sizeof(Vec2));
+	}
+	position = new Point[n_vertices];
+	for (int i = 0; i < n_vertices; ++i) {
+		position[i] = (*object_to_world)(P[i]);
+	}
 }

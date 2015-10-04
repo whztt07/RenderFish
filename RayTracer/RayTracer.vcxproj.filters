@@ -69,9 +69,6 @@
     <ClCompile Include="Matrix4x4.cpp">
       <Filter>Source Files\core\math</Filter>
     </ClCompile>
-    <ClCompile Include="random.cpp">
-      <Filter>Source Files\core\math</Filter>
-    </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
@@ -143,6 +140,12 @@
     </ClCompile>
     <ClCompile Include="AnimatedTransform.cpp">
       <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>Source Files\core\math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="AnimatedTransform.hpp">
       <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -27,6 +27,7 @@ public:
 	}
 
 	virtual BBox object_bound() const override {
+#if 0
 		// P176 exercise 3.2
 		float x_min = -_radius, y_max = _radius, y_min = -_radius;
 		if (_phi_max < M_PI_4 * 3)
@@ -39,8 +40,10 @@ public:
 			y_max = _radius * sinf(_phi_max);
 		}
 
-		//return BBox(Point(x_min, y_min, _z_min), Point(_radius, y_max, _z_max));
+		return BBox(Point(x_min, y_min, _z_min), Point(_radius, y_max, _z_max));
+#else
 		return BBox(Point(-_radius, -_radius, _z_min), Point(_radius, _radius, _z_max));
+#endif
 	}
 
 	virtual bool intersect(const Ray &ray, float *t_hit, float *ray_epsilon,

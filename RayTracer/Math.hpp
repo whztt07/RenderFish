@@ -9,6 +9,7 @@
 #include "MathHelper.hpp"
 #include "Vector.hpp"
 #include "Matrix4x4.hpp"
+#include "Random.hpp"
 
 // note: Vector in RenderFish is COLUMN vector
 // Matrix4x4 in RenderFish is ROW matrix

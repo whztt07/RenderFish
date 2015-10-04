@@ -36,6 +36,10 @@ public:
 		auto m2 = t2.m_inv * m_inv;
 		return Transform(m1, m2);
 	}
+	void operator*=(const Transform& t) {
+		m *= t.m;
+		m_inv = t.m_inv * m_inv;
+	}
 
 #pragma region apply transformation
 	inline Vec4 operator()(const Vec4& v4) const {

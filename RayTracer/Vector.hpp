@@ -7,12 +7,23 @@
 #include "Error.hpp"
 #include "MathHelper.hpp"
 
-class Vec2 {
+template<typename T>
+class Vector2D {
 public:
-	float x, y;
-	
-	Vec2(float x, float y) : x(x), y(y) {}
+	T x, y;
+	Vector2D() : x(0), y(0) {}
+	Vector2D(T x, T y) : x(x), y(y) {}
 };
+
+typedef Vector2D<float> Vec2;
+typedef Vector2D<int> IntVec2;
+
+//class Vec2 {
+//public:
+//	float x, y;
+//	
+//	Vec2(float x, float y) : x(x), y(y) {}
+//};
 
 template < class T, class U >
 inline float dot(const T& lhs, const U& rhs)

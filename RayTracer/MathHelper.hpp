@@ -81,19 +81,19 @@ inline int float2int(float f)
 	return (int)f; // cut off fractional part
 }
 
-inline int round2int(float f)
-{
-	return int(round(f));
-}
-
 inline int floor2int(float f)
 {
-	return int(floor(f));
+	return int(floorf(f));
+}
+
+inline int round2int(float f)
+{
+	return floor2int(f + 0.5f);
 }
 
 inline int ceil2int(float f)
 {
-	return int(ceil(f));
+	return int(ceilf(f));
 }
 
 inline int log2int(float f)

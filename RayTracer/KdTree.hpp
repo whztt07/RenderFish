@@ -2,6 +2,9 @@
 #include "Aggregate.hpp"
 #include "MemoryArena.hpp"
 
+//#define USE_PBRT_KDTREE
+
+#if 1
 struct BoundEdge;
 struct KdTreeNode;
 
@@ -41,3 +44,45 @@ public:
 		return false;
 	}
 };
+
+#else
+
+// KdTreeAccel Declarations
+struct KdAccelNode;
+struct BoundEdge;
+class KdTreeAccel : public Aggregate {
+public:
+	// KdTreeAccel Public Methods
+	KdTreeAccel(const vector<Reference<Primitive> > &p,
+		int icost = 80, int scost = 1, float ebonus = 0.5f, int maxp = 1,
+		int maxDepth = -1);
+	virtual BBox world_bound() const { return bounds; }
+	virtual bool can_intersect() const { return true; }
+	~KdTreeAccel();
+	virtual bool intersect(const Ray &ray, Intersection *isect) const;
+	virtual bool intersect_p(const Ray &ray) const;
+private:
+	// KdTreeAccel Private Methods
+	void buildTree(int nodeNum, const BBox &bounds,
+		const vector<BBox> &primBounds, uint32_t *primNums, int nprims, int depth,
+		BoundEdge *edges[3], uint32_t *prims0, uint32_t *prims1, int badRefines = 0);
+
+	// KdTreeAccel Private Data
+	int isectCost, traversalCost, maxPrims, maxDepth;
+	float emptyBonus;
+	vector<Reference<Primitive> > primitives;
+	KdAccelNode *nodes;
+	int nAllocedNodes, nextFreeNode;
+	BBox bounds;
+	MemoryArena arena;
+};
+
+
+struct KdToDo {
+	const KdAccelNode *node;
+	float tmin, tmax;
+};
+
+typedef KdTreeAccel KdTree;
+
+#endif

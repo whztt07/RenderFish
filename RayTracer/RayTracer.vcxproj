@@ -69,6 +69,8 @@
     <ClCompile Include="AreaLight.cpp" />
     <ClCompile Include="BBox.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Spectrum.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="DifferentialGeometry.cpp" />
@@ -84,7 +86,6 @@
     <ClCompile Include="ModelIO.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Quaternion.cpp" />
-    <ClCompile Include="random.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="ReferenceCounted.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -107,6 +108,7 @@
     <ClInclude Include="AreaLight.hpp" />
     <ClInclude Include="BBox.hpp" />
     <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Sampler.hpp" />
     <ClInclude Include="Spectrum.hpp" />
     <ClInclude Include="Color.hpp" />
     <ClInclude Include="DifferentialGeometry.hpp" />

@@ -35,14 +35,17 @@ public:
 };
 
 
-//class PRTCamera
-//{
-//public:
-//	Transform camera_to_world;
-//	const float shutter_open, shutter_close;
-//	Film *film;
-//
-//public:
-//	PRTCamera(const Transform &cam2world, float sopen, float sclose, Film* film)
-//		:
-//};
+class PRTCamera
+{
+public:
+	Transform camera_to_world;
+	//const float shutter_open, shutter_close;
+	//Film *film;
+
+public:
+	//PRTCamera(const Transform &cam2world, float sopen, float sclose, Film* film);
+	PRTCamera(const Transform &cam2world)
+		: camera_to_world(cam2world) {}
+
+	//virtual float generate_ray(const CameraSample &sample, Ray *ray) const = 0;
+};

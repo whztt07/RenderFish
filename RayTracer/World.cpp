@@ -18,23 +18,30 @@ void World::build( int width, int height)
 
 	// TODO: Transform pool
 	Transform *t1 = new Transform(), *t2 = new Transform();
+#if 1
 	*t1 = Transform::translate(-2, 0, 0);
+	//*t1 *= Transform::scale(2, 2, 2);
+#else
+	*t1 = Transform::scale(2, 2, 2);
+	*t1 *= Transform::translate(-2, 0, 0);
+#endif
 	*t2 = inverse(*t1);
 	auto sphere = new Sphere(t1, t2, false, 1.0f);
-	//add_shape(sphere);
 	auto gp = new GeometryPrimitive(sphere, &material, nullptr);
-	primitives.push_back(gp);
+	//primitives.push_back(gp);
+
+	// test
+	auto b = sphere->world_bound();
+	info("%f, %f, %f,  %f, %f, %f\n", b.pmin.x, b.pmin.y, b.pmin.z, b.pmax.x, b.pmax.y, b.pmax.z);
 
 	Transform *t3 = new Transform(), *t4 = new Transform();
-	*t3 = Transform::translate(2, 0, 0);
+	*t3 = Transform::translate(2.5f, 0, 0);
 	*t4 = inverse(*t3);
 	auto sphere2 = new Sphere(t3, t4, false, 1.0f, -0.6f, 0.8f, 360);
 	auto gp2 = new GeometryPrimitive(sphere2, &material, nullptr);
 	primitives.push_back(gp2);
 
-	TriangleMesh *mesh = new TriangleMesh();
-	ModelIO::load("teapot.obj", mesh);
-	//add_shape(mesh);
+	auto mesh = ModelIO::load("teapot.obj");
 	auto gp3 = new GeometryPrimitive(mesh, &material, nullptr);
 	primitives.push_back(gp3);
 
@@ -47,29 +54,8 @@ Color World::intersect(const Ray& ray) const
 	Intersection isec;
 
 	if (kdTree->intersect(ray, &isec)) {
-		ret_color = Color::green;
+		ret_color = Color(isec.dg.normal);
 	}
-	//for (unsigned int j = 0; j < shapes.size(); j++) {
-	//	auto s = shapes[j];
-	//	if (s->can_intersect()) {
-	//		if (s->intersect(ray, &t, &ray_epsilon, &dg)) {
-	//			ray.maxt = t;
-	//			ret_color = Color(dg.normal);
-	//		}
-	//	}
-	//	else {
-	//		//vector<Reference<Shape>> vs;
-	//		//s->refine(vs);
-	//		auto& vs = s->refined_shapes;
-	//		for (auto i = vs.begin(); i != vs.end(); ++i) {
-	//			if ((*i)->intersect(ray, &t, &ray_epsilon, &dg)) {
-	//				ray.maxt = t;
-	//				//ret_color = Color(Vec3(t/10.f, t/10.f, t/10.f));
-	//				ret_color = Color::green;
-	//			}
-	//		}
-	//	}
-	//}
 	return ret_color;
 }
 

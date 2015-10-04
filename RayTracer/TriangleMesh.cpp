@@ -66,12 +66,14 @@ bool Triangle::intersect(const Ray &ray, float *t_hit, float *ray_epsilon, Diffe
 	float inv_divisor = 1.0f / divisor;
 	
 	float b1 = dot(s1, s) * inv_divisor;
-	if (b1 < 0. || b1 > 1.)
+	if (b1 < -0.00001f || b1 > 1.00001f)
+	//if (b1 < 0. || b1 > 1.)
 		return false;
 
 	auto s2 = cross(s, e1);
 	float b2 = dot(ray.d, s2) * inv_divisor;
-	if (b2 < 0.f || b1 + b2 > 1.)
+	if (b2 < -0.00001f || b1 + b2 > 1.00001f)
+	//if (b2 < 0. || b1 + b2 > 1.)
 		return false;
 
 	float t = dot(e2, s2) * inv_divisor;

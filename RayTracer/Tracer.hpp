@@ -2,7 +2,6 @@
 #include "Ray.hpp"
 #include "Color.hpp"
 #include "World.hpp"
-#include "ShadeRec.hpp"
 #include "DifferentialGeometry.hpp"
 
 template<typename T>

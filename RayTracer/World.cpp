@@ -28,14 +28,14 @@ void World::build( int width, int height)
 	*t2 = inverse(*t1);
 	auto sphere = new Sphere(t1, t2, false, 1.0f);
 	auto gp = new GeometryPrimitive(sphere, &material, nullptr);
-	//primitives.push_back(gp);
+	primitives.push_back(gp);
 
 	// test
 	auto b = sphere->world_bound();
 	info("%f, %f, %f,  %f, %f, %f\n", b.pmin.x, b.pmin.y, b.pmin.z, b.pmax.x, b.pmax.y, b.pmax.z);
 
 	Transform *t3 = new Transform(), *t4 = new Transform();
-	*t3 = Transform::translate(2.5f, 0, 0);
+	*t3 = Transform::translate(1.f, 0, 0);
 	*t4 = inverse(*t3);
 	auto sphere2 = new Sphere(t3, t4, false, 1.0f, -0.6f, 0.8f, 360);
 	auto gp2 = new GeometryPrimitive(sphere2, &material, nullptr);
@@ -55,6 +55,7 @@ Color World::intersect(const Ray& ray) const
 
 	if (kdTree->intersect(ray, &isec)) {
 		ret_color = Color(isec.dg.normal);
+		//ret_color = Color::white;
 	}
 	return ret_color;
 }

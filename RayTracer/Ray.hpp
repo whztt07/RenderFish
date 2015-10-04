@@ -17,8 +17,8 @@ public:
 		: o(origin), d(direction) {}
 	Ray(const Point & origin, const Vec3 & direction, float start, float end = INFINITY, float time = 0.0f, int depth = 0)
 		: o(origin), d(direction), mint(start), maxt(end), time(time), depth(depth) {}
-	Ray(const Ray& ray) 
-		: Ray(ray.o, ray.d) {}
+	//Ray(const Ray& ray) 
+	//	: Ray(ray.o, ray.d, ray.mint, ray.maxt, ray.time, ray.depth) {}
 
 	// spawn from a "parent" ray
 	Ray(const Point& origin, const Vec3& direction, const Ray& parent, float start, float end = INFINITY)
@@ -27,7 +27,7 @@ public:
 	//Point point_at(float t) const { return o + d * t; }
 	Point operator()(float t) const { return o + d * t; }
 
-    Ray& operator=(const Ray& rhs) { o = rhs.o; d = rhs.d; return *this;}
+    //Ray& operator=(const Ray& rhs) { o = rhs.o; d = rhs.d; return *this;}
 };
 
 class RayDifferential : public Ray

@@ -82,6 +82,12 @@ public:
 			m_inv.m[0][2] * x + m_inv.m[1][2] * y + m_inv.m[2][2] * z);
 	}
 	inline void operator()(const Ray &r, Ray* transformed_r) const {
+		if (&r != transformed_r) {
+			transformed_r->mint = r.mint;
+			transformed_r->maxt = r.maxt;
+			transformed_r->time = r.time;
+			transformed_r->depth = r.depth;
+		}
 		(*this)(r.o, &transformed_r->o);
 		(*this)(r.d, &transformed_r->d);
 	}

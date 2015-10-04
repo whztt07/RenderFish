@@ -90,7 +90,6 @@
     <ClCompile Include="ReferenceCounted.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="ShadeRec.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -113,7 +112,6 @@
     <ClInclude Include="Color.hpp" />
     <ClInclude Include="DifferentialGeometry.hpp" />
     <ClInclude Include="Error.hpp" />
-    <ClInclude Include="Geometry.hpp" />
     <ClInclude Include="ImageIO.hpp" />
     <ClInclude Include="Intersection.hpp" />
     <ClInclude Include="KdTree.hpp" />
@@ -138,7 +136,6 @@
     <ClInclude Include="TriangleMesh.hpp" />
     <ClInclude Include="Vector.hpp" />
     <ClInclude Include="Window.hpp" />
-    <ClInclude Include="ShadeRec.hpp" />
     <ClInclude Include="Tracer.hpp" />
     <ClInclude Include="Transform.hpp" />
     <ClInclude Include="ViewPlane.hpp" />

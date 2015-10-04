@@ -51,9 +51,6 @@
     <ClCompile Include="Ray.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="ShadeRec.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
     <ClCompile Include="Tracer.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
@@ -158,9 +155,6 @@
     <ClInclude Include="Error.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry.hpp">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
     <ClInclude Include="Probes.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
@@ -171,9 +165,6 @@
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="Window.hpp">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadeRec.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="Tracer.hpp">

@@ -49,7 +49,7 @@ bool Sphere::intersect(const Ray &ray, float *t_hit, float *ray_epsilon, Differe
 			(_z_max <  _radius && phit.z > _z_max) || phi > _phi_max)	// clip t1
 			return false;
 	}
-	// Find parametric representation of sphere hit
+	// Find parametric representatio n of sphere hit
 	float u = phi / _phi_max;
 	float theta = acosf(clamp(phit.z / _radius, -1.f, 1.f));
 	float v = (theta - _theta_min) / (_theta_max - _theta_min);

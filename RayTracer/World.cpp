@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 #include "TriangleMesh.hpp"
 #include "ModelIO.hpp"
+#include "Box.hpp"
 
 void World::build( int width, int height)
 {
@@ -44,6 +45,10 @@ void World::build( int width, int height)
 	auto mesh = ModelIO::load("teapot.obj");
 	auto gp3 = new GeometryPrimitive(mesh, &material, nullptr);
 	primitives.push_back(gp3);
+
+	auto box = new Box(2, 2, 1);
+	auto gp4 = new GeometryPrimitive(box, &material, nullptr);
+	primitives.push_back(gp4);
 
 	kdTree = new KdTree(primitives, 80, 1, 0.5f, 1, -1);
 }

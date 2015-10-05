@@ -27,48 +27,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\RayTracer\BBox.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\Color.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\Error.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\ImageIO.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\main.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\Math.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\Matrix4x4.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\random.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\Ray.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\ShadeRec.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\Tracer.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\Transform.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\ViewPlane.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayTracer\World.cpp">
-      <Filter>RayTracer\src</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\RayTracer\BBox.hpp">
@@ -105,9 +63,6 @@
       <Filter>RayTracer\header</Filter>
     </ClInclude>
     <ClInclude Include="..\RayTracer\RenderFish.hpp">
-      <Filter>RayTracer\header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\RayTracer\ShadeRec.hpp">
       <Filter>RayTracer\header</Filter>
     </ClInclude>
     <ClInclude Include="..\RayTracer\Tracer.hpp">

@@ -114,7 +114,7 @@ int main()
 		randv;
 		randm;
 		//randm2;
-		result = m * v;
+		result = m * v4;
 		//result_m = Matrix4x4::mul(m, m2);
 	}
 	ms = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - start).count();

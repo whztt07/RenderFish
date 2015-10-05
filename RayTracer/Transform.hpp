@@ -17,6 +17,15 @@ public:
 	Transform(const Matrix4x4& mat, const Matrix4x4& mat_inv)
 		: m(mat), m_inv(mat_inv) {}
 
+	//Transform& operator=(const Transform& t) {
+	//	for (int i = 0; i < 4; ++i)
+	//		for (int j = 0; j < 4; ++j) {
+	//			m[i][j] = t.m[i][j];
+	//			m_inv[i][j] = t.m_inv[i][j];
+	//		}
+	//	return *this;
+	//}
+
 	friend Transform inverse(const Transform& t) {
 		return Transform(t.m_inv, t.m);
 	}
@@ -156,5 +165,5 @@ public:
 	static Transform rotate_z(float degrees);
 	static Transform rotate(float degrees, const Vec3 &axis);
 
-	static Transform look_at(const Point& pos, const Point& look, const Vec3& up);
+	static Transform look_at(const Point& pos, const Point& look, const Vec3& up = Vec3::axis_y);
 };

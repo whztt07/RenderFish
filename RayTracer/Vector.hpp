@@ -95,6 +95,8 @@ public:
 		};
 		float m[3];
 	};
+
+	static const Point zero;
 	
 	Point() : Point(0, 0, 0) {}
 	Point(float x, float y, float z) : x(x), y(y), z(z) {}

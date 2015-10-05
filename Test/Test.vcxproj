@@ -66,20 +66,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\RayTracer\BBox.cpp" />
-    <ClCompile Include="..\RayTracer\Color.cpp" />
-    <ClCompile Include="..\RayTracer\Error.cpp" />
-    <ClCompile Include="..\RayTracer\ImageIO.cpp" />
-    <ClCompile Include="..\RayTracer\main.cpp" />
-    <ClCompile Include="..\RayTracer\Math.cpp" />
-    <ClCompile Include="..\RayTracer\Matrix4x4.cpp" />
-    <ClCompile Include="..\RayTracer\random.cpp" />
-    <ClCompile Include="..\RayTracer\Ray.cpp" />
-    <ClCompile Include="..\RayTracer\ShadeRec.cpp" />
-    <ClCompile Include="..\RayTracer\Tracer.cpp" />
-    <ClCompile Include="..\RayTracer\Transform.cpp" />
-    <ClCompile Include="..\RayTracer\ViewPlane.cpp" />
-    <ClCompile Include="..\RayTracer\World.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -95,7 +81,6 @@
     <ClInclude Include="..\RayTracer\Random.hpp" />
     <ClInclude Include="..\RayTracer\Ray.hpp" />
     <ClInclude Include="..\RayTracer\RenderFish.hpp" />
-    <ClInclude Include="..\RayTracer\ShadeRec.hpp" />
     <ClInclude Include="..\RayTracer\Tracer.hpp" />
     <ClInclude Include="..\RayTracer\Transform.hpp" />
     <ClInclude Include="..\RayTracer\Vector.h" />

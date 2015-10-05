@@ -68,7 +68,11 @@
     <ClCompile Include="AnimatedTransform.cpp" />
     <ClCompile Include="AreaLight.cpp" />
     <ClCompile Include="BBox.cpp" />
+    <ClCompile Include="Box.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Film.cpp" />
+    <ClCompile Include="Filter.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Spectrum.cpp" />
@@ -106,7 +110,11 @@
     <ClInclude Include="AnimatedTransform.hpp" />
     <ClInclude Include="AreaLight.hpp" />
     <ClInclude Include="BBox.hpp" />
+    <ClInclude Include="Box.hpp" />
     <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Film.hpp" />
+    <ClInclude Include="Filter.hpp" />
+    <ClInclude Include="Light.hpp" />
     <ClInclude Include="Sampler.hpp" />
     <ClInclude Include="Spectrum.hpp" />
     <ClInclude Include="Color.hpp" />

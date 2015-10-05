@@ -25,14 +25,17 @@
     <Filter Include="Header Files\core\math">
       <UniqueIdentifier>{efe72cf8-fdca-4631-960c-4bd70393b45a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\shapes">
-      <UniqueIdentifier>{3f735006-9ca3-4cb5-8ff4-547c3a57579b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\shapes">
       <UniqueIdentifier>{a4ffce75-fab8-4989-8fd6-cc33f9cf9ba8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IO">
       <UniqueIdentifier>{9a005f0a-efef-4242-9761-d24e30a96b7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\TODO">
+      <UniqueIdentifier>{051673ff-4b33-426a-8f00-0200ba281299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Shapes">
+      <UniqueIdentifier>{3f735006-9ca3-4cb5-8ff4-547c3a57579b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +147,18 @@
     <ClCompile Include="Random.cpp">
       <Filter>Source Files\core\math</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Film.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BBox.hpp">
@@ -153,9 +168,6 @@
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="Error.hpp">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="Probes.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="Ray.hpp">
@@ -194,9 +206,6 @@
     <ClInclude Include="Vector.hpp">
       <Filter>Header Files\core\math</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.hpp">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
     <ClInclude Include="DifferentialGeometry.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
@@ -206,26 +215,17 @@
     <ClInclude Include="Shape.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.hpp">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
     <ClInclude Include="TriangleMesh.hpp">
-      <Filter>Header Files\shapes</Filter>
+      <Filter>Header Files\Shapes</Filter>
     </ClInclude>
     <ClInclude Include="ImageIO.hpp">
       <Filter>Header Files\IO</Filter>
     </ClInclude>
     <ClInclude Include="Sphere.hpp">
-      <Filter>Header Files\shapes</Filter>
+      <Filter>Header Files\Shapes</Filter>
     </ClInclude>
     <ClInclude Include="ModelIO.hpp">
       <Filter>Header Files\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="AreaLight.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.hpp">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Quaternion.hpp">
       <Filter>Header Files\core\math</Filter>
@@ -245,19 +245,46 @@
     <ClInclude Include="Aggregate.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Spectrum.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AnimatedTransform.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
+    <ClInclude Include="AreaLight.hpp">
+      <Filter>Header Files\TODO</Filter>
+    </ClInclude>
+    <ClInclude Include="Film.hpp">
+      <Filter>Header Files\TODO</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.hpp">
+      <Filter>Header Files\TODO</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.hpp">
+      <Filter>Header Files\TODO</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.hpp">
+      <Filter>Header Files\TODO</Filter>
+    </ClInclude>
     <ClInclude Include="Sampler.hpp">
+      <Filter>Header Files\TODO</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.hpp">
+      <Filter>Header Files\TODO</Filter>
+    </ClInclude>
+    <ClInclude Include="Spectrum.hpp">
+      <Filter>Header Files\TODO</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.hpp">
+      <Filter>Header Files\TODO</Filter>
+    </ClInclude>
+    <ClInclude Include="Probes.hpp">
+      <Filter>Header Files\TODO</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.hpp">
+      <Filter>Header Files\TODO</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Filter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,17 +3,21 @@
 #include "Ray.hpp"
 #include "Intersection.hpp"
 
+class Light;
+
 class Scene
 {
 public:
 	Aggregate *aggregate;
-	//vector<Light *> light;
+	vector<Light *> light;
 	//VolumeRegion *volumeRegion;
 	BBox bound;
 
 public:
-	Scene();
-	~Scene();
+	Scene(Aggregate* aggregate) : aggregate(aggregate) {
+		bound = aggregate->world_bound();
+		//if (volumeRegion) bound = Union(bound, volumeRegion->WorldBound());
+	};
 
 	bool intersect(const Ray &ray, Intersection *isect) const {
 		return aggregate->intersect(ray, isect);

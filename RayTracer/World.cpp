@@ -20,7 +20,7 @@ void World::build( int width, int height)
 	// TODO: Transform pool
 	Transform *t1 = new Transform(), *t2 = new Transform();
 #if 1
-	*t1 = Transform::translate(-2, 0, 0);
+	*t1 = translate(-2, 0, 0);
 	//*t1 *= Transform::scale(2, 2, 2);
 #else
 	*t1 = Transform::scale(2, 2, 2);
@@ -36,7 +36,7 @@ void World::build( int width, int height)
 	info("%f, %f, %f,  %f, %f, %f\n", b.pmin.x, b.pmin.y, b.pmin.z, b.pmax.x, b.pmax.y, b.pmax.z);
 
 	Transform *t3 = new Transform(), *t4 = new Transform();
-	*t3 = Transform::translate(1.f, 0, 0);
+	*t3 = translate(1.f, 0, 0);
 	*t4 = inverse(*t3);
 	auto sphere2 = new Sphere(t3, t4, false, 1.0f, -0.6f, 0.8f, 360);
 	auto gp2 = new GeometryPrimitive(sphere2, &material, nullptr);

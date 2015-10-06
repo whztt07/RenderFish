@@ -31,12 +31,12 @@ void Box::refine(vector<Reference<Shape>>& refined) const {
 
 	// TODO
 	static const Transform ts[6] = {
-		Transform::translate(width / 2.f, 0, 0) * Transform::rotate_y(-90),
-		Transform::translate(-width / 2.f, 0, 0) * Transform::rotate_y(90),
-		Transform::translate(0, height / 2.f, 0) * Transform::rotate_x(90) ,
-		Transform::translate(0, -height / 2.f, 0) * Transform::rotate_x(-90),
-		Transform::translate(0, 0, depth / 2.f),
-		Transform::translate(0, 0, -depth / 2.f) * Transform::rotate_y(180)};
+		translate(width / 2.f, 0, 0) * rotate_y(-90),
+		translate(-width / 2.f, 0, 0) * rotate_y(90),
+		translate(0, height / 2.f, 0) * rotate_x(90) ,
+		translate(0, -height / 2.f, 0) * rotate_x(-90),
+		translate(0, 0, depth / 2.f),
+		translate(0, 0, -depth / 2.f) * rotate_y(180)};
 	float w[3] = { depth, width, width };
 	float h[3] = { height, depth, height };
 	for (int i = 0; i < 6; i++) {

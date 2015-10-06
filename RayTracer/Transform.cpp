@@ -2,6 +2,15 @@
 
 Transform Transform::identity = Transform(Matrix4x4(), Matrix4x4());
 
+bool Transform::operator==(const Transform& t) const {
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++) {
+			if (!equal(m[i][j], t.m[i][j]))
+				return false;
+		}
+	return true;
+}
+
 BBox Transform::operator()(const BBox& b) const {
 #if 1
 	const Transform &M = *this;
@@ -40,7 +49,58 @@ BBox Transform::operator()(const BBox& b) const {
 #endif
 }
 
-Transform Transform::rotate_x(float degrees)
+bool Transform::has_scale() const {
+	float lx2 = (*this)(Vec3(1, 0, 0)).length_squared();
+	float ly2 = (*this)(Vec3(0, 1, 0)).length_squared();
+	float lz2 = (*this)(Vec3(0, 0, 1)).length_squared();
+#define NOT_ONE(x) ((x) < .999f || (x) > 1.001f)
+	return (NOT_ONE(lx2) || NOT_ONE(ly2) || NOT_ONE(lz2));
+#undef NOT_ONE
+}
+
+bool Transform::swaps_handedness() const {
+	float det = (
+		m.m[0][0] * (m.m[1][1] * m.m[2][2] - m.m[1][2] * m.m[2][1]) -
+		m.m[0][1] * (m.m[1][0] * m.m[2][2] - m.m[1][2] * m.m[2][0]) +
+		m.m[0][2] * (m.m[1][0] * m.m[2][1] - m.m[1][1] * m.m[2][0]));
+	return det < 0.0f;
+}
+
+Transform translate(float x, float y, float z) {
+	Matrix4x4 m(
+		1, 0, 0, x,
+		0, 1, 0, y,
+		0, 0, 1, z,
+		0, 0, 0, 1);
+	Matrix4x4 minv(
+		1, 0, 0, -x,
+		0, 1, 0, -y,
+		0, 0, 1, -z,
+		0, 0, 0, 1
+		);
+	return Transform(m, minv);
+}
+
+Transform translate(const Vec3& delta) {
+	return translate(delta.x, delta.y, delta.z);
+}
+
+Transform scale(float x, float y, float z) {
+	Matrix4x4 m(
+		x, 0, 0, 0,
+		0, y, 0, 0,
+		0, 0, z, 0,
+		0, 0, 0, 1);
+	Matrix4x4 minv(
+		1.f / x, 0, 0, 0,
+		0, 1.f / y, 0, 0,
+		0, 0, 1.f / z, 0,
+		0, 0, 0, 1
+		);
+	return Transform(m, minv);
+}
+
+Transform rotate_x(float degrees)
 {
 	float sin_t = sinf(radians(degrees));
 	float cos_t = cosf(radians(degrees));
@@ -52,7 +112,7 @@ Transform Transform::rotate_x(float degrees)
 	return Transform(m, transpose(m));
 }
 
-Transform Transform::rotate_y(float degrees)
+Transform rotate_y(float degrees)
 {
 	float sin_t = sinf(radians(degrees));
 	float cos_t = cosf(radians(degrees));
@@ -64,7 +124,7 @@ Transform Transform::rotate_y(float degrees)
 	return Transform(m, transpose(m));
 }
 
-Transform Transform::rotate_z(float degrees)
+Transform rotate_z(float degrees)
 {
 	float sin_t = sinf(radians(degrees));
 	float cos_t = cosf(radians(degrees));
@@ -76,7 +136,7 @@ Transform Transform::rotate_z(float degrees)
 	return Transform(m, transpose(m));
 }
 
-Transform Transform::rotate(float degrees, const Vec3 &axis)
+Transform rotate(float degrees, const Vec3 &axis)
 {
 	Vec3 a = normalize(axis);
 	float s = sinf(radians(degrees));
@@ -107,7 +167,7 @@ Transform Transform::rotate(float degrees, const Vec3 &axis)
 	return Transform(mat, transpose(mat));
 }
 
-Transform Transform::look_at(const Point& pos, const Point& look, const Vec3& up)
+Transform look_at(const Point& pos, const Point& look, const Vec3& up)
 {
 	float m[4][4];
 	m[0][3] = pos.x;
@@ -133,4 +193,8 @@ Transform Transform::look_at(const Point& pos, const Point& look, const Vec3& up
 	auto camToWorld(m);
 	return Transform(inverse(camToWorld), camToWorld);
 
+}
+
+Transform orthographic(float z_near, float z_far) {
+	return scale(1.f, 1.f, 1.f / (z_far - z_near)) * translate(0.f, 0.f, -z_near);
 }

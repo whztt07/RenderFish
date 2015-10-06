@@ -58,7 +58,7 @@ void AnimatedTransform::interpolate(float time, Transform * t) const {
 		for (int j = 0; j < 3; ++j)
 			scale[i][j] = lerp(dt, S[0][i][j], S[1][i][j]);
 
-	*t = Transform::translate(trans) * rotate.to_transform() * Transform(scale);
+	*t = translate(trans) * rotate.to_transform() * Transform(scale);
 }
 
 inline BBox AnimatedTransform::motion_bounds(const BBox & b, bool use_inverse) const {

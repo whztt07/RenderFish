@@ -30,14 +30,7 @@ public:
 		return Transform(t.m_inv, t.m);
 	}
 
-	bool operator==(const Transform& t) const {
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++) {
-				if (!equal(m[i][j], t.m[i][j]))
-					return false;
-			}
-		return true;
-	}
+	bool operator==(const Transform& t) const;
 	bool operator!=(const Transform& t) const { return !operator==(t); }
 
 	Transform operator*(const Transform& t2) const {
@@ -109,61 +102,17 @@ public:
 	BBox operator()(const BBox& b) const;
 #pragma endregion
 
-	bool has_scale() const {
-		float lx2 = (*this)(Vec3(1, 0, 0)).length_squared();
-		float ly2 = (*this)(Vec3(0, 1, 0)).length_squared();
-		float lz2 = (*this)(Vec3(0, 0, 1)).length_squared();
-#define NOT_ONE(x) ((x) < .999f || (x) > 1.001f)
-		return (NOT_ONE(lx2) || NOT_ONE(ly2) || NOT_ONE(lz2));
-#undef NOT_ONE
-	}
+	bool has_scale() const;
 
-	bool swaps_handedness() const {
-		float det = (
-			m.m[0][0] * (m.m[1][1] * m.m[2][2] - m.m[1][2] * m.m[2][1]) -
-			m.m[0][1] * (m.m[1][0] * m.m[2][2] - m.m[1][2] * m.m[2][0]) +
-			m.m[0][2] * (m.m[1][0] * m.m[2][1] - m.m[1][1] * m.m[2][0]));
-		return det < 0.0f;
-	}
-
-	static Transform translate(float x, float y, float z) {
-		Matrix4x4 m(
-			1, 0, 0, x,
-			0, 1, 0, y,
-			0, 0, 1, z,
-			0, 0, 0, 1);
-		Matrix4x4 minv(
-			1, 0, 0, -x,
-			0, 1, 0, -y,
-			0, 0, 1, -z,
-			0, 0, 0, 1
-			);
-		return Transform(m, minv);
-	}
-
-	static Transform translate(const Vec3& delta) {
-		return translate(delta.x, delta.y, delta.z);
-	}
-
-	static Transform scale(float x, float y, float z) {
-		Matrix4x4 m(
-			x, 0, 0, 0,
-			0, y, 0, 0,
-			0, 0, z, 0,
-			0, 0, 0, 1);
-		Matrix4x4 minv(
-			1.f/x,	    0,		0,	0,
-			0,		1.f/y,		0,	0,
-			0,		    0,	1.f/z,	0,
-			0,		    0,		0,	1
-			);
-		return Transform(m, minv);
-	}
-
-	static Transform rotate_x(float degrees);
-	static Transform rotate_y(float degrees);
-	static Transform rotate_z(float degrees);
-	static Transform rotate(float degrees, const Vec3 &axis);
-
-	static Transform look_at(const Point& pos, const Point& look, const Vec3& up = Vec3::axis_y);
+	bool swaps_handedness() const;
 };
+
+Transform translate(float x, float y, float z);
+Transform translate(const Vec3& delta);
+Transform scale(float x, float y, float z);
+Transform rotate_x(float degrees);
+Transform rotate_y(float degrees);
+Transform rotate_z(float degrees);
+Transform rotate(float degrees, const Vec3 &axis);
+Transform look_at(const Point& pos, const Point& look, const Vec3& up = Vec3::axis_y);
+Transform orthographic(float z_near, float z_far);

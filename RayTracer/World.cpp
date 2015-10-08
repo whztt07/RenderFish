@@ -10,6 +10,7 @@
 
 void World::build( int width, int height)
 {
+	log_group("Build world");
 	vp.set_hres(width);
 	vp.set_vres(height);
 	vp.set_pixel_size(1.0f);
@@ -47,9 +48,15 @@ void World::build( int width, int height)
 	auto gp3 = new GeometryPrimitive(mesh, &material, nullptr);
 	primitives.push_back(gp3);
 
-	auto box = new Box(2, 2, 1);
-	auto gp4 = new GeometryPrimitive(box, &material, nullptr);
-	primitives.push_back(gp4);
+	//auto box = new Box(2, 2, 1);
+	//auto gp4 = new GeometryPrimitive(box, &material, nullptr);
+	//primitives.push_back(gp4);
+	auto mesh2 = ModelIO::load("../Models/head_optimized.obj");
+	if (mesh2 != nullptr) {
+		auto gp5 = new GeometryPrimitive(mesh2, &material, nullptr);
+		primitives.push_back(gp5);
+	}
+
 
 	kdTree = new KdTree(primitives, 80, 1, 0.5f, 1, -1);
 }
@@ -75,7 +82,7 @@ void World::render_scene(void)
 
 	open_window(vp.hres, vp.vres);
 
-	info("Start rendering scene.\n");
+	log_group("Start rendering scene");
 	Timer timer("render scene");
 	timer.begin();
 	float percentage = 0;

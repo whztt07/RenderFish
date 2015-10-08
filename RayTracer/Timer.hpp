@@ -5,7 +5,8 @@
 class Timer
 {
 private:
-	typedef std::chrono::time_point<std::chrono::steady_clock> time_point;
+	typedef std::chrono::high_resolution_clock::time_point time_point;
+	//typedef std::chrono::time_point<std::chrono::steady_clock> time_point;
 	time_point _start;
 	time_point _end;
 	string _label;
@@ -38,7 +39,7 @@ public:
 		//info("Time info for [%s]: ", _label.c_str());
 		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - _start).count();
 		if (ms >= 1000)
-			info("Time info for [%s]: %f ms\n", _label.c_str(), float(ms) / 1000);
+			info("Time info for [%s]: %f s\n", _label.c_str(), float(ms) / 1000);
 		else
 			info("Time info for [%s]: %lld ms\n", _label.c_str(), ms);
 	}

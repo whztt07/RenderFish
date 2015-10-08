@@ -1,6 +1,7 @@
 #include "ModelIO.hpp"
 #include <fstream>
 #include "Vector.hpp"
+#include "ModelProcessing.h"
 
 string get_file_type(const string & name)
 {
@@ -138,20 +139,29 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 
 	Assert(positions.size() == n_vertices);
 	Assert(p_index.size() == n_triangles * 3);
-	if (!normals.empty()) {
+
+	if (n_index.size() != n_triangles * 3) {
+		error("some vertices do not have normal!\n");
+		info("some vertices do not have normal. Generate normals\n");
+		ModelProcessing::Mesh mesh(positions, p_index);
+		
+		//return nullptr;
+	}
+
+	//if (!normals.empty()) {
 		//Assert(n_index.size() == n_triangles * 3);
 		if (n_index.size() != n_triangles * 3) {
 			error("some vertices do not have normal!\n");
 			return nullptr;
 		}
-	}
-	if (!uvs.empty()) {
+	//}
+	//if (!uvs.empty()) {
 		//Assert(uv_index.size() == n_triangles * 3);
 		if (uv_index.size() != n_triangles * 3) {
 			error("some vertices do not have uv!\n");
 			return nullptr;
 		}
-	}
+	//}
 
 	info("Model loading finished. n_triangles = %d, n_vertives = %d.\n", n_triangles, n_vertices);
 	

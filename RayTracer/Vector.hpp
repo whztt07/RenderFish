@@ -172,4 +172,23 @@ public:
 	Point as_point() const{ return Point(x / w, y / w, z / w); }
 };
 
+inline Vec3 spherical_direction(float sin_theta, float cos_theta, float phi) {
+	return Vec3(sin_theta * cosf(phi), sin_theta * sinf(phi), cos_theta);
+}
+
+// x, y, z basis vectors
+inline Vec3 spherical_direction(float sin_theta, float cos_theta, float phi,
+	const Vec3 &x, const Vec3 &y, const Vec3 &z) {
+	return sin_theta * cosf(phi)* x + sin_theta * sinf(phi) * y + cos_theta * z;
+}
+
+inline float spherical_theta(const Vec3 &v) {
+	return acosf(clamp(v.z, -1.f, 1.f));
+}
+
+inline float spherical_phi(const Vec3 &v) {
+	float p = atan2f(v.y, v.x);
+	return (p < 0.f) ? p + 2.f*M_PI : p;
+}
+
 #endif // VECTOR_H

@@ -54,7 +54,8 @@ public:
 	}
 
 	ImageFilm(int x_res, int y_res)
-		: Film(x_res, y_res), filter(nullptr), crop_window{0, 0, 1, 1}, filename("") {
+		//: Film(x_res, y_res), filter(nullptr), crop_window{0, 0, 1, 1}, filename("") {
+		: Film(x_res, y_res), filter(nullptr), filename("") {
 		x_pixel_start = 0;
 		y_pixel_count = x_resolution;
 		y_pixel_start = 0;

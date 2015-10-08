@@ -3,6 +3,8 @@
 
 void log_system_init();
 
+void log_group(const char *label);
+
 void info(const char *fmt, ...);
 
 void warning(const char *fmt, ...);

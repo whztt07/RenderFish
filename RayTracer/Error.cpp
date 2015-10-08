@@ -34,6 +34,20 @@ void log_system_init()
 #endif
 }
 
+
+void log_group(const char *label)
+{
+#if RENDERFISH_LOG_IS_WINDOWS
+	SetConsoleTextAttribute(hstdout, 0x0A);
+#elif RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
+	printf("\e[0;32m");    // green
+#endif
+	std::cout << "===== " << label << "\n";
+#if RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
+	printf("\e[m");
+#endif
+}
+
 void info(const char *fmt, ...)
 {
 #if RENDERFISH_LOG_IS_WINDOWS
@@ -41,7 +55,8 @@ void info(const char *fmt, ...)
 #elif RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
     // http://stackoverflow.com/questions/9005769/any-way-to-print-in-color-with-nslog#
     // https://wiki.archlinux.org/index.php/Color_Bash_Prompt#List_of_colors_for_prompt_and_Bash
-     printf("\e[0;37m");    // white
+
+	printf("\e[0;37m");    // white
 #endif
 	std::cout << "[info]";
 	va_list args;
@@ -77,7 +92,7 @@ void error(const char *fmt, ...)
 #if RENDERFISH_LOG_IS_WINDOWS
 	SetConsoleTextAttribute(hstdout, 0x0C);
 #elif RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
-    printf("\e[0;33m");    // yellow
+    printf("\e[0;31m");    // red
 #endif
 	std::cout << "[error]";
 	va_list args;
@@ -109,8 +124,6 @@ void progress(float percentage)
 #if RENDERFISH_LOG_IS_WINDOWS
 	SetConsoleTextAttribute(hstdout, 0x0F);
 #elif RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
-	// http://stackoverflow.com/questions/9005769/any-way-to-print-in-color-with-nslog#
-	// https://wiki.archlinux.org/index.php/Color_Bash_Prompt#List_of_colors_for_prompt_and_Bash
 	printf("\e[0;37m");    // white
 #endif
 	int p = int(percentage * 10);

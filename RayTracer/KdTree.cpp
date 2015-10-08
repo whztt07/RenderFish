@@ -75,7 +75,7 @@ struct KdToDo {
 KdTree::KdTree(const vector<Reference<Primitive>>& p, int icost, int tcost, float ebonus, int maxp, int max_depth)
 	: _isect_cost(icost), _traversal_cost(tcost), _max_prims(maxp), _max_depth(max_depth), _empty_bouns() {
 	
-	info("Start building Kd-Tree.\n");
+	log_group("Start building Kd-Tree");
 	Timer timer("Build Kd-Tree");
 	timer.begin();
 

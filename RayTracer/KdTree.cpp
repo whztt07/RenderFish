@@ -1,5 +1,6 @@
 #include "KdTree.hpp"
 #include "MathHelper.hpp"
+#include "Timer.hpp"
 
 #if 1
 struct KdTreeNode {
@@ -75,6 +76,8 @@ KdTree::KdTree(const vector<Reference<Primitive>>& p, int icost, int tcost, floa
 	: _isect_cost(icost), _traversal_cost(tcost), _max_prims(maxp), _max_depth(max_depth), _empty_bouns() {
 	
 	info("Start building Kd-Tree.\n");
+	Timer timer("Build Kd-Tree");
+	timer.begin();
 
 	for (uint32_t i = 0; i < p.size(); ++i) {
 		p[i]->fully_refine(primitives);
@@ -118,7 +121,9 @@ KdTree::KdTree(const vector<Reference<Primitive>>& p, int icost, int tcost, floa
 	delete[] prims1;
 	delete[] prim_nums;
 
+	timer.end();
 	info("Finished!\n");
+	timer.print();
 }
 
 void KdTree::build_tree(int node_num, const BBox & node_bounds, const vector<BBox>& all_prim_bounds,

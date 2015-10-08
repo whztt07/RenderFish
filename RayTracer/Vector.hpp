@@ -38,6 +38,7 @@ static T cross(const T& u, const U& v)
 }
 
 class Normal;
+class Point;
 
 class Vec3 {
 public:
@@ -56,6 +57,7 @@ public:
 	}
 	Vec3(float x, float y, float z) : x(x), y(y), z(z) { Assert(!has_NaNs()); }
 	explicit Vec3(const Normal& n);
+	explicit Vec3(const Point& p);
 
 	bool has_NaNs() const { return isnan(x) || isnan(y) || isnan(z); }
 

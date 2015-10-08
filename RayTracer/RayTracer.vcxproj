@@ -97,6 +97,7 @@
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Tracer.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Vector.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="Shape.hpp" />
     <ClInclude Include="Sphere.hpp" />
     <ClInclude Include="Texture.hpp" />
+    <ClInclude Include="Timer.hpp" />
     <ClInclude Include="TriangleMesh.hpp" />
     <ClInclude Include="Vector.hpp" />
     <ClInclude Include="Window.hpp" />

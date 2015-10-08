@@ -198,3 +198,14 @@ Transform look_at(const Point& pos, const Point& look, const Vec3& up)
 Transform orthographic(float z_near, float z_far) {
 	return scale(1.f, 1.f, 1.f / (z_far - z_near)) * translate(0.f, 0.f, -z_near);
 }
+
+Transform perspective(float fov, float z_near, float z_far)
+{
+	Matrix4x4 persp = Matrix4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, z_far / (z_far - z_near), -z_far*z_near / (z_far - z_near),
+		0, 0, 1, 0);
+	float inv_tan_ang = 1.f / tanf(radians(fov) / 2.f);
+	return scale(inv_tan_ang, inv_tan_ang, 1) * Transform(persp);
+}

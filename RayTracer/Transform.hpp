@@ -116,3 +116,4 @@ Transform rotate_z(float degrees);
 Transform rotate(float degrees, const Vec3 &axis);
 Transform look_at(const Point& pos, const Point& look, const Vec3& up = Vec3::axis_y);
 Transform orthographic(float z_near, float z_far);
+Transform perspective(float fov, float z_near, float z_far);

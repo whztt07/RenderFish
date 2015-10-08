@@ -6,6 +6,7 @@
 #include "TriangleMesh.hpp"
 #include "ModelIO.hpp"
 #include "Box.hpp"
+#include "Timer.hpp"
 
 void World::build( int width, int height)
 {
@@ -74,7 +75,9 @@ void World::render_scene(void)
 
 	open_window(vp.hres, vp.vres);
 
-	info("Strat rendering scene.\n");
+	info("Start rendering scene.\n");
+	Timer timer("render scene");
+	timer.begin();
 	float percentage = 0;
 
 	for (int r = 0; r < vp.vres; r++)
@@ -92,8 +95,9 @@ void World::render_scene(void)
 			progress(percentage);
 		}
 	}
-
+	timer.end();
 	info("Rendering finished!\n");
+	timer.print();
 	window.run();
 }
 

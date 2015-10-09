@@ -52,6 +52,7 @@ void World::build( int width, int height)
 	//auto gp4 = new GeometryPrimitive(box, &material, nullptr);
 	//primitives.push_back(gp4);
 	auto mesh2 = ModelIO::load("../Models/head_optimized.obj");
+	Transform *t5 = new Transform(rotate_y(180));
 	if (mesh2 != nullptr) {
 		auto gp5 = new GeometryPrimitive(mesh2, &material, nullptr);
 		primitives.push_back(gp5);

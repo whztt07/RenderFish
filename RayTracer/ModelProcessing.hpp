@@ -11,11 +11,14 @@ namespace ModelProcessing
 		HalfEdge*	half_edge;
 
 		// additional
+		int id;
 		//Normal normal;
 	};
 
 	struct Vertex {
 		HalfEdge*	outgoing_halfedge = nullptr;
+
+		//Point position;
 		//Normal normal;
 	};
 
@@ -31,6 +34,9 @@ namespace ModelProcessing
 		vector<HalfEdge> half_edges;
 		vector<Vertex> vertices;
 		vector<Face> faces;
+
+		vector<Point> positions;
+		vector<int> indices;
 
 	public:
 		// triangles: 3 vertex ids for each face

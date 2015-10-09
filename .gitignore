@@ -5,5 +5,7 @@
 /RayTracer/Release/
 /Test/Debug/
 /Test/Release
+/GUI/Debug
+/GUI/Release
 
 *.sdf

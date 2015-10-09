@@ -1,11 +1,12 @@
 #include <windows.h>
 #include <D2D1.h>// header for Direct2D
 #include <d2d1_1helper.h>
+#include <dwrite.h>
 #include <chrono>
 
 #define SAFE_RELEASE(P) if(P){P->Release() ; P = NULL ;}
 #define HR(hr) \
-	if (FAILED(hr)) { MessageBox(g_Hwnd, __FILE__, "Error", MB_OK); exit(1); }
+	if (FAILED(hr)) { MessageBoxA(g_Hwnd, __FILE__, "Error", MB_OK); exit(1); }
 
 ID2D1Factory* pD2DFactory = NULL; // Direct2D factory
 IDWriteFactory* pDWriteFactory = NULL;
@@ -14,6 +15,7 @@ ID2D1SolidColorBrush* pBlackBrush = NULL; // A black brush, reflect the line col
 ID2D1SolidColorBrush* pGrayBrush = NULL;
 ID2D1SolidColorBrush* pRedBrush = NULL;
 IDWriteTextFormat * pTexFormat = NULL;
+IDWriteTextLayout * pTextLayout = NULL;
 
 RECT rc; // Render area
 HWND g_Hwnd; // Window handle
@@ -36,16 +38,12 @@ VOID CreateD2DResource(HWND hWnd)
 	if (pRenderTarget) {
 		return;
 	}
-	
-	HRESULT hr;
-	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
-	if (FAILED(hr))
-	{
-		MessageBox(hWnd, "Create D2D factory failed!", "Error", MB_OK);
-		return;
-	}
 
-	HR(-1);
+	HRESULT hr;
+	HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory));
+
+	hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&pDWriteFactory));
+	HR(hr);
 
 	// Obtain the size of the drawing area
 	GetClientRect(hWnd, &rc);
@@ -53,57 +51,31 @@ VOID CreateD2DResource(HWND hWnd)
 	// Create a Direct2D render target
 	hr = pD2DFactory->CreateHwndRenderTarget(
 		D2D1::RenderTargetProperties(),
-		D2D1::HwndRenderTargetProperties(
-			hWnd,
-			D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)
-			),
-		&pRenderTarget
-		);
-	if (FAILED(hr))
-	{
-		MessageBox(hWnd, "Create render target failed!", "Error", 0);
-		return;
-	}
+		D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)),
+		&pRenderTarget);
+	HR(hr);
 
 	// Create a brush
-	hr = pRenderTarget->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF::Black),
-		&pBlackBrush
-		);
-	if (FAILED(hr))
-	{
-		MessageBox(hWnd, "Create brush failed!", "Error", 0);
-		return;
-	}
+	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &pBlackBrush));
+	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &pRedBrush));
+	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Gray), &pGrayBrush));
 
-	hr = pRenderTarget->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF::Red),
-		&pRedBrush
-		);
-	if (FAILED(hr))
-	{
-		MessageBox(hWnd, "Create brush failed!", "Error", 0);
-		return;
-	}
+	HR(pDWriteFactory->CreateTextFormat(L"Consolas", nullptr, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
+		DWRITE_FONT_STRETCH_NORMAL, 14.f, L"", &pTexFormat));
+	IDWriteInlineObject * trimming_sign = nullptr;
+	pDWriteFactory->CreateEllipsisTrimmingSign(pTexFormat, &trimming_sign);
+	DWRITE_TRIMMING trim;
+	trim.granularity = DWRITE_TRIMMING_GRANULARITY_CHARACTER;
+	trim.delimiter = 0;
+	trim.delimiterCount = 0;
+	pTexFormat->SetTrimming(&trim, trimming_sign);
+	pTexFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 
-	hr = pRenderTarget->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF::Gray),
-		&pGrayBrush
-		);
-	if (FAILED(hr))
-	{
-		MessageBox(hWnd, "Create brush failed!", "Error", 0);
-		return;
-	}
+	HR(pDWriteFactory->CreateTextLayout(L"LooooooooooongWorld", 20, pTexFormat, 0, 0, &pTextLayout));
 }
 
 VOID draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* brush, ID2D1SolidColorBrush* fill_brush = nullptr)
 {
-	pRenderTarget->BeginDraw();
-
-	// Clear background color white
-	pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
-
 	// Draw Rectangle
 	//pRenderTarget->DrawRectangle(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), brush);
 	if (fill_brush != nullptr)
@@ -111,15 +83,6 @@ VOID draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* brush, 
 			D2D1::RoundedRect(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), 5.f, 5.f), fill_brush);
 	pRenderTarget->DrawRoundedRectangle(
 		D2D1::RoundedRect(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), 5.f, 5.f), brush);
-
-
-	HRESULT hr = pRenderTarget->EndDraw();
-
-	if (FAILED(hr))
-	{
-		MessageBox(NULL, "Draw failed!", "Error", 0);
-		return;
-	}
 }
 
 VOID Cleanup()
@@ -138,37 +101,47 @@ inline bool mouse_in_region(int x, int y, int w, int h) {
 	return true;
 }
 
-int button(int id, int x, int y, const char* label = "")
+int button(int id, int x, int y, const char* label = nullptr)
 {
-	if (mouse_in_region(x, y, 64, 48)) {
+	int width = 128, height = 30;
+	if (mouse_in_region(x, y, width, height)) {
 		ui_state.hot_item = id;
 		if (ui_state.mouse_down) {
 			ui_state.active_item = id;
-			draw_rounded_rect(x, y, 64, 48, pBlackBrush, pBlackBrush);
+			draw_rounded_rect(x+1, y+1, width-2, height-2, pBlackBrush, pBlackBrush);
 		}
 		else {
-			draw_rounded_rect(x, y, 64, 48, pBlackBrush, pGrayBrush);
+			draw_rounded_rect(x, y, width, height, pBlackBrush, pGrayBrush);
 		}
 		if (ui_state.active_item == 0 && ui_state.mouse_down)
 			ui_state.active_item = id;
 	}
 	else {
-		draw_rounded_rect(x, y, 64, 48, pBlackBrush);
+		draw_rounded_rect(x, y, width, height, pBlackBrush);
 	}
-	//pRenderTarget->BeginDraw();
-	//pRenderTarget->DrawTextA("hello", 6, );
-	//pRenderTarget->EndDraw();
+	if (label == nullptr) {
+		float margin = 10;
+		pRenderTarget->DrawTextA(L"This is a loooooooooooooooooooooooooooooooong word.",
+			20, pTexFormat, D2D1::RectF(x + margin, y + (height - 17) / 2.f, width, height), pBlackBrush);
 
-
-	if (ui_state.mouse_down == 0 && ui_state.hot_item == id && ui_state.active_item == id)
-		return 1;
-	return 0;
+		if (ui_state.mouse_down == 0 && ui_state.hot_item == id && ui_state.active_item == id)
+			return 1;
+		return 0;
+	}
 }
 
 VOID Render() {
+	CreateD2DResource(g_Hwnd);
+
+	pRenderTarget->BeginDraw();
+	// Clear background color white
+	pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
+
 	if (button(1, 10, 10)) {
 	}
 	last_render_time = std::chrono::high_resolution_clock::now();
+
+	HR(pRenderTarget->EndDraw());
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -255,7 +228,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	ShowWindow(g_Hwnd, iCmdShow);
 	UpdateWindow(g_Hwnd);
 
-	CreateD2DResource(g_Hwnd);
+	//CreateD2DResource(g_Hwnd);
 
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));

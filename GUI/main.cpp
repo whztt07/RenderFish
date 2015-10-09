@@ -1,13 +1,19 @@
 #include <windows.h>
 #include <D2D1.h>// header for Direct2D
+#include <d2d1_1helper.h>
+#include <chrono>
 
 #define SAFE_RELEASE(P) if(P){P->Release() ; P = NULL ;}
+#define HR(hr) \
+	if (FAILED(hr)) { MessageBox(g_Hwnd, __FILE__, "Error", MB_OK); exit(1); }
 
 ID2D1Factory* pD2DFactory = NULL; // Direct2D factory
+IDWriteFactory* pDWriteFactory = NULL;
 ID2D1HwndRenderTarget* pRenderTarget = NULL; // Render target
 ID2D1SolidColorBrush* pBlackBrush = NULL; // A black brush, reflect the line color
-ID2D1SolidColorBrush* pg
+ID2D1SolidColorBrush* pGrayBrush = NULL;
 ID2D1SolidColorBrush* pRedBrush = NULL;
+IDWriteTextFormat * pTexFormat = NULL;
 
 RECT rc; // Render area
 HWND g_Hwnd; // Window handle
@@ -23,58 +29,71 @@ struct UIState {
 
 static UIState ui_state = { 0, 0, 0, 0, 0 };
 
+static std::chrono::high_resolution_clock::time_point last_render_time;
 
 VOID CreateD2DResource(HWND hWnd)
 {
-	if (!pRenderTarget)
+	if (pRenderTarget) {
+		return;
+	}
+	
+	HRESULT hr;
+	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
+	if (FAILED(hr))
 	{
-		HRESULT hr;
+		MessageBox(hWnd, "Create D2D factory failed!", "Error", MB_OK);
+		return;
+	}
 
-		hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
-		if (FAILED(hr))
-		{
-			MessageBox(hWnd, "Create D2D factory failed!", "Error", 0);
-			return;
-		}
+	HR(-1);
 
-		// Obtain the size of the drawing area
-		GetClientRect(hWnd, &rc);
+	// Obtain the size of the drawing area
+	GetClientRect(hWnd, &rc);
 
-		// Create a Direct2D render target
-		hr = pD2DFactory->CreateHwndRenderTarget(
-			D2D1::RenderTargetProperties(),
-			D2D1::HwndRenderTargetProperties(
-				hWnd,
-				D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)
-				),
-			&pRenderTarget
-			);
-		if (FAILED(hr))
-		{
-			MessageBox(hWnd, "Create render target failed!", "Error", 0);
-			return;
-		}
+	// Create a Direct2D render target
+	hr = pD2DFactory->CreateHwndRenderTarget(
+		D2D1::RenderTargetProperties(),
+		D2D1::HwndRenderTargetProperties(
+			hWnd,
+			D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)
+			),
+		&pRenderTarget
+		);
+	if (FAILED(hr))
+	{
+		MessageBox(hWnd, "Create render target failed!", "Error", 0);
+		return;
+	}
 
-		// Create a brush
-		hr = pRenderTarget->CreateSolidColorBrush(
-			D2D1::ColorF(D2D1::ColorF::Black),
-			&pBlackBrush
-			);
-		if (FAILED(hr))
-		{
-			MessageBox(hWnd, "Create brush failed!", "Error", 0);
-			return;
-		}
+	// Create a brush
+	hr = pRenderTarget->CreateSolidColorBrush(
+		D2D1::ColorF(D2D1::ColorF::Black),
+		&pBlackBrush
+		);
+	if (FAILED(hr))
+	{
+		MessageBox(hWnd, "Create brush failed!", "Error", 0);
+		return;
+	}
 
-		hr = pRenderTarget->CreateSolidColorBrush(
-			D2D1::ColorF(D2D1::ColorF::Red),
-			&pRedBrush
-			);
-		if (FAILED(hr))
-		{
-			MessageBox(hWnd, "Create brush failed!", "Error", 0);
-			return;
-		}
+	hr = pRenderTarget->CreateSolidColorBrush(
+		D2D1::ColorF(D2D1::ColorF::Red),
+		&pRedBrush
+		);
+	if (FAILED(hr))
+	{
+		MessageBox(hWnd, "Create brush failed!", "Error", 0);
+		return;
+	}
+
+	hr = pRenderTarget->CreateSolidColorBrush(
+		D2D1::ColorF(D2D1::ColorF::Gray),
+		&pGrayBrush
+		);
+	if (FAILED(hr))
+	{
+		MessageBox(hWnd, "Create brush failed!", "Error", 0);
+		return;
 	}
 }
 
@@ -90,10 +109,8 @@ VOID draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* brush, 
 	if (fill_brush != nullptr)
 		pRenderTarget->FillRoundedRectangle(
 			D2D1::RoundedRect(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), 5.f, 5.f), fill_brush);
-	//else {
-		pRenderTarget->DrawRoundedRectangle(
-			D2D1::RoundedRect(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), 5.f, 5.f), brush);
-	//}
+	pRenderTarget->DrawRoundedRectangle(
+		D2D1::RoundedRect(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), 5.f, 5.f), brush);
 
 
 	HRESULT hr = pRenderTarget->EndDraw();
@@ -110,6 +127,8 @@ VOID Cleanup()
 	SAFE_RELEASE(pRenderTarget);
 	SAFE_RELEASE(pBlackBrush);
 	SAFE_RELEASE(pD2DFactory);
+	SAFE_RELEASE(pRedBrush);
+	SAFE_RELEASE(pGrayBrush);
 }
 
 inline bool mouse_in_region(int x, int y, int w, int h) {
@@ -119,27 +138,37 @@ inline bool mouse_in_region(int x, int y, int w, int h) {
 	return true;
 }
 
-int button(int id, int x, int y, ID2D1SolidColorBrush* brush, ID2D1SolidColorBrush* fill_brush = nullptr)
+int button(int id, int x, int y, const char* label = "")
 {
-	draw_rounded_rect(x, y, 64, 48, brush, fill_brush);
-	
 	if (mouse_in_region(x, y, 64, 48)) {
 		ui_state.hot_item = id;
+		if (ui_state.mouse_down) {
+			ui_state.active_item = id;
+			draw_rounded_rect(x, y, 64, 48, pBlackBrush, pBlackBrush);
+		}
+		else {
+			draw_rounded_rect(x, y, 64, 48, pBlackBrush, pGrayBrush);
+		}
 		if (ui_state.active_item == 0 && ui_state.mouse_down)
 			ui_state.active_item = id;
 	}
+	else {
+		draw_rounded_rect(x, y, 64, 48, pBlackBrush);
+	}
+	//pRenderTarget->BeginDraw();
+	//pRenderTarget->DrawTextA("hello", 6, );
+	//pRenderTarget->EndDraw();
+
+
 	if (ui_state.mouse_down == 0 && ui_state.hot_item == id && ui_state.active_item == id)
 		return 1;
 	return 0;
 }
 
 VOID Render() {
-	static auto b = pBlackBrush;
-	static auto fb = pRedBrush;
-	fb = nullptr;
-	if (button(1, 10, 10, b, fb)) {
-		//fb = nullptr;
+	if (button(1, 10, 10)) {
 	}
+	last_render_time = std::chrono::high_resolution_clock::now();
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -147,7 +176,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_PAINT:
-		//Render();
+		Render();
 		ValidateRect(g_Hwnd, NULL);
 		return 0;
 
@@ -171,12 +200,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_LBUTTONDOWN:
 		ui_state.mouse_down = true;
+		//Render();
 		break;
 	case WM_LBUTTONUP:
 		ui_state.mouse_down = false;
+		//Render();
 		break;
 	case WM_DESTROY:
-		Cleanup();
+		//Cleanup();
 		PostQuitMessage(0);
 		return 0;
 	}
@@ -234,8 +265,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 
-		Render();
+		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - last_render_time).count();
+		if (ms > 16.6f) {
+			Render();
+		}
 	}
 
+	Cleanup();
 	return msg.wParam;
 }

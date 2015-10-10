@@ -3,6 +3,12 @@
 #include <d2d1_1helper.h>
 #include <dwrite.h>
 #include <chrono>
+#include <Wincodec.h>
+
+//#if defined(CLSID_WICImagingFactory)
+//#undef CLSID_WICImagingFactory
+//#endif
+//#define CLSID_WICImagingFactory CLSID_WICImagingFactory2
 
 #define SAFE_RELEASE(P) if(P){P->Release() ; P = NULL ;}
 #define HR(hr) \
@@ -94,6 +100,19 @@ VOID Cleanup()
 	SAFE_RELEASE(pGrayBrush);
 }
 
+
+struct SideBar {
+	D2D1_RECT_F rect;
+	//int left;
+	//int right;
+	//int width = 200;
+	//int height;
+	int x_margin = 10;
+	int y_margin = 5;
+	int y_cell_height = 30;
+	int y_filled = 0;
+} g_side_bar;
+
 inline bool mouse_in_region(int x, int y, int w, int h) {
 	if (ui_state.mouse_x < x || ui_state.mouse_y < y ||
 		ui_state.mouse_x >= x+w || ui_state.mouse_y >= y + h)
@@ -101,9 +120,22 @@ inline bool mouse_in_region(int x, int y, int w, int h) {
 	return true;
 }
 
-int button(int id, int x, int y, const char* label = nullptr)
+struct GUIButton{
+	int next_id = 0;
+
+	void reset() {
+		next_id = 0;
+	}
+} g_button;
+
+bool button(const WCHAR* label = nullptr)
 {
-	int width = 128, height = 30;
+	int id = g_button.next_id;
+	g_button.next_id++;
+	int width = 128, height = g_side_bar.y_cell_height;
+	int x = (int)g_side_bar.rect.left + g_side_bar.x_margin, y = g_side_bar.y_filled + g_side_bar.y_margin;
+	width = int(g_side_bar.rect.right - g_side_bar.rect.left) - g_side_bar.x_margin * 2;
+	g_side_bar.y_filled += g_side_bar.y_margin * 2 + height;
 	if (mouse_in_region(x, y, width, height)) {
 		ui_state.hot_item = id;
 		if (ui_state.mouse_down) {
@@ -119,25 +151,68 @@ int button(int id, int x, int y, const char* label = nullptr)
 	else {
 		draw_rounded_rect(x, y, width, height, pBlackBrush);
 	}
-	if (label == nullptr) {
+	if (label != nullptr) {
 		float margin = 10;
-		pRenderTarget->DrawTextA(L"This is a loooooooooooooooooooooooooooooooong word.",
-			20, pTexFormat, D2D1::RectF(x + margin, y + (height - 17) / 2.f, width, height), pBlackBrush);
-
-		if (ui_state.mouse_down == 0 && ui_state.hot_item == id && ui_state.active_item == id)
-			return 1;
-		return 0;
+		//pRenderTarget->DrawTextA(label, wcslen(label), pTexFormat, D2D1::RectF(x + margin, y + (height - 17) / 2.f, width, height), pBlackBrush);
+		
+		pTexFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+		pTexFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+		SAFE_RELEASE(pTextLayout);
+		HR(pDWriteFactory->CreateTextLayout(label, wcslen(label), pTexFormat, (float)width - margin*2.f, (float)height, &pTextLayout));
+		DWRITE_TEXT_METRICS mertics;
+		pTextLayout->GetMetrics(&mertics);
+		pRenderTarget->DrawTextLayout(D2D1::Point2F(x + margin, y + (height - height)/2.f), pTextLayout, pBlackBrush);
 	}
+
+	if (ui_state.mouse_down == 0 && ui_state.hot_item == id && ui_state.active_item == id)
+		return true;
+	return false;
+}
+
+bool side_bar(int width = 200) {
+	GetClientRect(g_Hwnd, &rc);
+	int window_width = rc.right - rc.left;
+	g_side_bar.rect = D2D1::RectF((float)window_width - width, 0.f, (float)window_width, float(rc.bottom - rc.top));
+	g_side_bar.y_filled = g_side_bar.y_margin;
+	pRenderTarget->FillRectangle(D2D1::RectF(float(window_width - width), 0.f, (float)window_width, float(rc.bottom - rc.top)), pGrayBrush);
+	return true;
+}
+
+void label(const WCHAR* text, DWRITE_TEXT_ALIGNMENT text_alignment = DWRITE_TEXT_ALIGNMENT_LEADING) {
+	float width = 128.f, height = (float)g_side_bar.y_cell_height;
+	float x = g_side_bar.rect.left + g_side_bar.x_margin, y = float(g_side_bar.y_filled + g_side_bar.y_margin);
+	width = (g_side_bar.rect.right - g_side_bar.rect.left) - g_side_bar.x_margin * 2;
+	pTexFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+	pTexFormat->SetTextAlignment(text_alignment);
+	SAFE_RELEASE(pTextLayout);
+	HR(pDWriteFactory->CreateTextLayout(text, wcslen(text), pTexFormat, width, height, &pTextLayout));
+	//DWRITE_TEXT_METRICS mertics;
+	//pTextLayout->GetMetrics(&mertics);
+	//if (height < mertics.height) height = mertics.height;
+	//pTextLayout->SetMaxHeight(height);
+	pRenderTarget->DrawTextLayout(D2D1::Point2F(x, y), pTextLayout, pBlackBrush);
+	
+	g_side_bar.y_filled += int(g_side_bar.y_margin * 2 + height);
 }
 
 VOID Render() {
-	CreateD2DResource(g_Hwnd);
 
 	pRenderTarget->BeginDraw();
 	// Clear background color white
 	pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
-	if (button(1, 10, 10)) {
+	g_button.reset();
+
+	side_bar();
+
+	label(L"test label left");
+	button(L"hello");
+	label(L"test label center", DWRITE_TEXT_ALIGNMENT_CENTER);
+	label(L"test label right", DWRITE_TEXT_ALIGNMENT_TRAILING);
+
+	button(L"This is a a a a a loooooooooooooooooooooooooooooooong word.");
+	if (button(L"Render")) {
+		// render
 	}
 	last_render_time = std::chrono::high_resolution_clock::now();
 
@@ -173,11 +248,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_LBUTTONDOWN:
 		ui_state.mouse_down = true;
-		//Render();
 		break;
 	case WM_LBUTTONUP:
 		ui_state.mouse_down = false;
-		//Render();
 		break;
 	case WM_DESTROY:
 		//Cleanup();
@@ -188,9 +261,87 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
+HRESULT load_bitmap_from_file(ID2D1Bitmap **ppBitmap, ID2D1RenderTarget *pRenderTarget, UINT destinationWidth = 800, UINT destinationHeight = 600) {
+	HRESULT hr = S_OK;
+
+	IWICImagingFactory *pIWICFactory;
+	//CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));
+	CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));
+	
+	IWICBitmapDecoder * p_decoder = nullptr;
+	pIWICFactory->CreateDecoder(GUID_ContainerFormatBmp, NULL, &p_decoder);
+	IWICBitmapFrameDecode *pSource = NULL;
+	IWICStream *pStream = NULL;
+	IWICFormatConverter *pConverter = NULL;
+	IWICBitmapScaler *pScaler = NULL;
+	hr = pIWICFactory->CreateDecoderFromFilename(
+		L"test.bmp",
+		NULL,
+		GENERIC_READ,
+		WICDecodeMetadataCacheOnLoad,
+		&p_decoder );
+	HR(hr);
+	hr = p_decoder->GetFrame(0, &pSource);
+	HR(hr);
+	hr = pIWICFactory->CreateFormatConverter(&pConverter);
+
+	// If a new width or height was specified, create an
+	// IWICBitmapScaler and use it to resize the image.
+	if (destinationWidth != 0 || destinationHeight != 0)
+	{
+		UINT originalWidth, originalHeight;
+		hr = pSource->GetSize(&originalWidth, &originalHeight);
+		if (SUCCEEDED(hr))
+		{
+			if (destinationWidth == 0)
+			{
+				FLOAT scalar = static_cast<FLOAT>(destinationHeight) / static_cast<FLOAT>(originalHeight);
+				destinationWidth = static_cast<UINT>(scalar * static_cast<FLOAT>(originalWidth));
+			}
+			else if (destinationHeight == 0)
+			{
+				FLOAT scalar = static_cast<FLOAT>(destinationWidth) / static_cast<FLOAT>(originalWidth);
+				destinationHeight = static_cast<UINT>(scalar * static_cast<FLOAT>(originalHeight));
+			}
+
+			hr = pIWICFactory->CreateBitmapScaler(&pScaler);
+			if (SUCCEEDED(hr))
+			{
+				hr = pScaler->Initialize(
+					pSource,
+					destinationWidth,
+					destinationHeight,
+					WICBitmapInterpolationModeCubic
+					);
+			}
+			if (SUCCEEDED(hr))
+			{
+				hr = pConverter->Initialize(
+					pScaler,
+					GUID_WICPixelFormat32bppPBGRA,
+					WICBitmapDitherTypeNone,
+					NULL,
+					0.f,
+					WICBitmapPaletteTypeMedianCut
+					);
+			}
+		}
+	}
+
+	HR(hr);
+	
+	pRenderTarget->CreateBitmapFromWicBitmap(pConverter, nullptr, ppBitmap);
+
+	SAFE_RELEASE(p_decoder);
+	SAFE_RELEASE(pSource);
+	SAFE_RELEASE(pStream);
+	SAFE_RELEASE(pConverter);
+	SAFE_RELEASE(pScaler);
+	return hr;
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow)
 {
-
 	WNDCLASSEX winClass;
 
 	winClass.lpszClassName = "Direct2D";
@@ -212,23 +363,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 		return 0;
 	}
 
+	int window_width = 800 + 200 + 16;
+	int window_height = 600 + 38;
+
 	g_Hwnd = CreateWindowEx(NULL,
 		"Direct2D", // window class name
 		"Draw Rectangle", // window caption
 		WS_OVERLAPPEDWINDOW, // window style
 		CW_USEDEFAULT, // initial x position
 		CW_USEDEFAULT, // initial y position
-		600, // initial x size
-		600, // initial y size
+		window_width, // initial x size
+		window_height, // initial y size
 		NULL, // parent window handle
 		NULL, // window menu handle
 		hInstance, // program instance handle
-		NULL); // creation parameters
+		NULL); // creation parameter
+
+	CreateD2DResource(g_Hwnd);
+
+	ID2D1Bitmap *pBitmap;
+	load_bitmap_from_file(&pBitmap, pRenderTarget, 800, 600);
 
 	ShowWindow(g_Hwnd, iCmdShow);
 	UpdateWindow(g_Hwnd);
-
-	//CreateD2DResource(g_Hwnd);
 
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));

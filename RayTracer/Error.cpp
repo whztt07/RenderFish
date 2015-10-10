@@ -24,6 +24,8 @@ void log_system_init()
 #ifdef RENDERFISH_LOG_IS_WINDOWS
 	AllocConsole();
 	AttachConsole(GetCurrentProcessId());
+	FILE* dont_care;
+	freopen_s(&dont_care, "CON", "w", stdout);
 	//freopen("CON", "w", stdout);
 
 	//HANDLE hstdin = GetStdHandle(STD_INPUT_HANDLE);

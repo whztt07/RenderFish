@@ -30,15 +30,15 @@ public:
 		screen_fb[p++] = r;
 	}
 
-	void run() {
-		while (screen_exit == 0 && screen_keys[VK_ESCAPE] == 0)
-		{
-			screen_dispatch();
-			screen_update();
-			static float elapse = 1.0f / 30 * 1000;
-			Sleep(DWORD(elapse));
-		}
-	}
+	//void run() {
+	//	while (screen_exit == 0 && screen_keys[VK_ESCAPE] == 0)
+	//	{
+	//		screen_dispatch();
+	//		screen_update();
+	//		static float elapse = 1.0f / 30 * 1000;
+	//		Sleep(DWORD(elapse));
+	//	}
+	//}
 
 private:
 	static LRESULT screen_events(HWND, UINT, WPARAM, LPARAM);

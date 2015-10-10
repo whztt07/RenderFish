@@ -4,11 +4,29 @@
 #include <dwrite.h>
 #include <chrono>
 #include <Wincodec.h>
+#include <sstream>
 
 //#if defined(CLSID_WICImagingFactory)
 //#undef CLSID_WICImagingFactory
 //#endif
 //#define CLSID_WICImagingFactory CLSID_WICImagingFactory2
+
+template<typename T>
+inline std::wstring ToWString(const T& s)
+{
+	std::wostringstream oss;
+	oss << s;
+	return oss.str();
+}
+
+template<typename T>
+inline T ToString(const std::wstring& s)
+{
+	T x;
+	std::wistringstream iss(s);
+	iss >> x;
+	return x;
+}
 
 #define SAFE_RELEASE(P) if(P){P->Release() ; P = NULL ;}
 #define HR(hr) \
@@ -19,9 +37,11 @@ IDWriteFactory* pDWriteFactory = NULL;
 ID2D1HwndRenderTarget* pRenderTarget = NULL; // Render target
 ID2D1SolidColorBrush* pBlackBrush = NULL; // A black brush, reflect the line color
 ID2D1SolidColorBrush* pGrayBrush = NULL;
+ID2D1SolidColorBrush* pWhiteBrush = NULL;
 ID2D1SolidColorBrush* pRedBrush = NULL;
 IDWriteTextFormat * pTexFormat = NULL;
 IDWriteTextLayout * pTextLayout = NULL;
+ID2D1Bitmap *pBitmap;
 
 RECT rc; // Render area
 HWND g_Hwnd; // Window handle
@@ -31,11 +51,11 @@ struct UIState {
 	int mouse_y;
 
 	int hot_item;
-	int active_item;
+	//int active_item;
 	bool mouse_down;
 };
 
-static UIState ui_state = { 0, 0, 0, 0, 0 };
+static UIState ui_state = { -1, -1, -1, false};
 
 static std::chrono::high_resolution_clock::time_point last_render_time;
 
@@ -65,6 +85,7 @@ VOID CreateD2DResource(HWND hWnd)
 	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &pBlackBrush));
 	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &pRedBrush));
 	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Gray), &pGrayBrush));
+	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &pWhiteBrush));
 
 	HR(pDWriteFactory->CreateTextFormat(L"Consolas", nullptr, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
 		DWRITE_FONT_STRETCH_NORMAL, 14.f, L"", &pTexFormat));
@@ -122,7 +143,7 @@ inline bool mouse_in_region(int x, int y, int w, int h) {
 
 struct GUIButton{
 	int next_id = 0;
-
+	int button_id_clicked = -1;
 	void reset() {
 		next_id = 0;
 	}
@@ -130,23 +151,31 @@ struct GUIButton{
 
 bool button(const WCHAR* label = nullptr)
 {
+	bool clicked = false;
+
 	int id = g_button.next_id;
 	g_button.next_id++;
 	int width = 128, height = g_side_bar.y_cell_height;
 	int x = (int)g_side_bar.rect.left + g_side_bar.x_margin, y = g_side_bar.y_filled + g_side_bar.y_margin;
 	width = int(g_side_bar.rect.right - g_side_bar.rect.left) - g_side_bar.x_margin * 2;
 	g_side_bar.y_filled += g_side_bar.y_margin * 2 + height;
+
 	if (mouse_in_region(x, y, width, height)) {
 		ui_state.hot_item = id;
 		if (ui_state.mouse_down) {
-			ui_state.active_item = id;
-			draw_rounded_rect(x+1, y+1, width-2, height-2, pBlackBrush, pBlackBrush);
+			//ui_state.active_item = id;
+			draw_rounded_rect(x+1, y+1, width-2, height-2, pBlackBrush, pGrayBrush);
+			g_button.button_id_clicked = id;
 		}
 		else {
-			draw_rounded_rect(x, y, width, height, pBlackBrush, pGrayBrush);
+			draw_rounded_rect(x, y, width, height, pBlackBrush, pWhiteBrush);
+			if (g_button.button_id_clicked == id) {
+				clicked = true;
+				g_button.button_id_clicked = -1;
+			}
 		}
-		if (ui_state.active_item == 0 && ui_state.mouse_down)
-			ui_state.active_item = id;
+		//if (ui_state.active_item == -1 && ui_state.mouse_down)
+		//	ui_state.active_item = id;
 	}
 	else {
 		draw_rounded_rect(x, y, width, height, pBlackBrush);
@@ -164,9 +193,13 @@ bool button(const WCHAR* label = nullptr)
 		pRenderTarget->DrawTextLayout(D2D1::Point2F(x + margin, y + (height - height)/2.f), pTextLayout, pBlackBrush);
 	}
 
-	if (ui_state.mouse_down == 0 && ui_state.hot_item == id && ui_state.active_item == id)
-		return true;
-	return false;
+	//if (ui_state.mouse_down == 0 && ui_state.hot_item == id && ui_state.active_item == id)
+	//	clicked = true;
+	return clicked;
+}
+
+bool button(const char* label) {
+	return button(ToWString<const char*>(label).c_str());
 }
 
 bool side_bar(int width = 200) {
@@ -195,6 +228,10 @@ void label(const WCHAR* text, DWRITE_TEXT_ALIGNMENT text_alignment = DWRITE_TEXT
 	g_side_bar.y_filled += int(g_side_bar.y_margin * 2 + height);
 }
 
+void draw_texture() {
+	pRenderTarget->DrawBitmap(pBitmap, D2D1::RectF(0, 0, 800, 600));
+}
+
 VOID Render() {
 
 	pRenderTarget->BeginDraw();
@@ -202,6 +239,10 @@ VOID Render() {
 	pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
 	g_button.reset();
+	//ui_state.active_item = -1;
+	ui_state.hot_item = -1;
+
+	draw_texture();
 
 	side_bar();
 
@@ -209,6 +250,10 @@ VOID Render() {
 	button(L"hello");
 	label(L"test label center", DWRITE_TEXT_ALIGNMENT_CENTER);
 	label(L"test label right", DWRITE_TEXT_ALIGNMENT_TRAILING);
+
+	if (button(L"warning")) {
+		MessageBox(g_Hwnd, "warning", "warning", MB_OK);
+	}
 
 	button(L"This is a a a a a loooooooooooooooooooooooooooooooong word.");
 	if (button(L"Render")) {
@@ -265,8 +310,10 @@ HRESULT load_bitmap_from_file(ID2D1Bitmap **ppBitmap, ID2D1RenderTarget *pRender
 	HRESULT hr = S_OK;
 
 	IWICImagingFactory *pIWICFactory;
-	//CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));
-	CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));
+	// http://stackoverflow.com/questions/29125216/cant-initialize-iwicimagingfactory-in-a-direct2d-project
+	CoInitializeEx(NULL, COINIT_MULTITHREADED);
+	hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));
+	HR(hr);
 	
 	IWICBitmapDecoder * p_decoder = nullptr;
 	pIWICFactory->CreateDecoder(GUID_ContainerFormatBmp, NULL, &p_decoder);
@@ -381,7 +428,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 
 	CreateD2DResource(g_Hwnd);
 
-	ID2D1Bitmap *pBitmap;
 	load_bitmap_from_file(&pBitmap, pRenderTarget, 800, 600);
 
 	ShowWindow(g_Hwnd, iCmdShow);

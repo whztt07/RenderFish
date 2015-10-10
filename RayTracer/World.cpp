@@ -16,6 +16,8 @@ void World::build( int width, int height)
 	vp.set_pixel_size(1.0f);
 	vp.set_gamma(1.0f);
 
+	color_buffer.resize(width * height * 4);
+
 	background_color = Color::black;
 	tracer = new Tracer(this);
 
@@ -81,7 +83,7 @@ void World::render_scene(void)
 
 	static Camera camera(Point(0, 0, -7), Vec3(0, 0, 1), float(vp.hres) / vp.vres);
 
-	open_window(vp.hres, vp.vres);
+	//open_window(vp.hres, vp.vres);
 
 	log_group("Start rendering scene");
 	Timer timer("render scene");
@@ -106,7 +108,7 @@ void World::render_scene(void)
 	timer.end();
 	info("Rendering finished!\n");
 	timer.print();
-	window.run();
+	//window.run();
 }
 
 void World::draw_line(int x0, int y0, int x1, int y1)

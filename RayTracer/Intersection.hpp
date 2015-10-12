@@ -14,4 +14,9 @@ struct Intersection {
 	float ray_epsilon;
 
 	BSDF* get_BSDF(const RayDifferential &ray, MemoryArena &arena) const;
+	Spectrum Le(const Vec3 &w) const {
+		//const AreaLight *area = primitive->get_area_light();
+		//return area ? area->L(dg.p, dg.normal, w) : Spectrum(0.f);
+		return Spectrum(0.f);
+	}
 };

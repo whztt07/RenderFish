@@ -53,12 +53,16 @@ inline bool zero(int val)
 
 inline bool equal(float lhs, float rhs)
 {
-	return zero(lhs - rhs);
+	return fabsf(lhs - rhs) < EPSILON;
 }
 
-inline float lerp(float t, float a, float b)
-{
-	return (1.0f - t) * a + t * b;;
+template<typename T>
+inline T lerp(float t, const T &a, const T &b) {
+	return (1.0f - t) * a + t * b;
+}
+
+inline float lerp(float t, const float a, const float b) {
+	return (1.0f - t) * a + t * b;
 }
 
 inline float clamp(float val, float low, float high)

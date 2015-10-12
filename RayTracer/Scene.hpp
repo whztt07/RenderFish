@@ -9,7 +9,7 @@ class Scene
 {
 public:
 	Aggregate *aggregate;
-	//vector<Light *> light;
+	vector<Light *> lights;
 	//VolumeRegion *volumeRegion;
 	BBox bound;
 

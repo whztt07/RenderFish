@@ -33,8 +33,8 @@ void DifferentialGeometry::compute_differentials(const RayDifferential & ray) co
 		a11 = dpdv[axes1];
 		Bx0 = px[axes0] - p[axes0];
 		Bx1 = px[axes1] - p[axes1];
-		Bx0 = py[axes0] - p[axes0];
-		Bx1 = py[axes1] - p[axes1];
+		By0 = py[axes0] - p[axes0];
+		By1 = py[axes1] - p[axes1];
 
 		if (!solve_linear_system_2x2(a00, a01, a10, a11, Bx0, Bx1, &dudx, &dvdx)) {
 			dudx = 0; dvdx = 0;

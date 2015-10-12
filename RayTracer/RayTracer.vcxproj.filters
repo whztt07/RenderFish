@@ -22,9 +22,6 @@
     <Filter Include="Source Files\core\math">
       <UniqueIdentifier>{edbf7c9b-1444-4dec-87f4-62340adebf51}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\core\math">
-      <UniqueIdentifier>{efe72cf8-fdca-4631-960c-4bd70393b45a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\shapes">
       <UniqueIdentifier>{a4ffce75-fab8-4989-8fd6-cc33f9cf9ba8}</UniqueIdentifier>
     </Filter>
@@ -42,6 +39,9 @@
     </Filter>
     <Filter Include="Header Files\Material">
       <UniqueIdentifier>{b286032f-913f-4034-983a-7f94faaf0ae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\math">
+      <UniqueIdentifier>{efe72cf8-fdca-4631-960c-4bd70393b45a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +180,9 @@
     <ClCompile Include="MatteMaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Reflection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BBox.hpp">
@@ -210,22 +213,22 @@
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="Math.hpp">
-      <Filter>Header Files\core\math</Filter>
+      <Filter>Header Files\math</Filter>
     </ClInclude>
     <ClInclude Include="Matrix4x4.hpp">
-      <Filter>Header Files\core\math</Filter>
+      <Filter>Header Files\math</Filter>
     </ClInclude>
     <ClInclude Include="Random.hpp">
-      <Filter>Header Files\core\math</Filter>
+      <Filter>Header Files\math</Filter>
     </ClInclude>
     <ClInclude Include="Transform.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="MathHelper.hpp">
-      <Filter>Header Files\core\math</Filter>
+      <Filter>Header Files\math</Filter>
     </ClInclude>
     <ClInclude Include="Vector.hpp">
-      <Filter>Header Files\core\math</Filter>
+      <Filter>Header Files\math</Filter>
     </ClInclude>
     <ClInclude Include="DifferentialGeometry.hpp">
       <Filter>Header Files\core</Filter>
@@ -249,7 +252,7 @@
       <Filter>Header Files\IO</Filter>
     </ClInclude>
     <ClInclude Include="Quaternion.hpp">
-      <Filter>Header Files\core\math</Filter>
+      <Filter>Header Files\math</Filter>
     </ClInclude>
     <ClInclude Include="KdTree.hpp">
       <Filter>Header Files\core</Filter>
@@ -324,6 +327,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MatteMaterial.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

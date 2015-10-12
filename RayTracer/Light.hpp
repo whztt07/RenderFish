@@ -5,8 +5,18 @@
 #include "Renderer.hpp"
 #include "Sampler.hpp"
 
-class LightSample {
+struct LightSample {
+public:
+	float u_pos[2];
+	float u_component;
 
+	LightSample() {}
+	//LightSample(const Sample *sample, const LightSampleOffsets &offsets, uint32_t num);
+	LightSample(RNG &rng) {
+		u_pos[0] = rng.random_float();
+		u_pos[1] = rng.random_float();
+		u_component = rng.random_float();
+	}
 };
 
 struct VisibilityTester {

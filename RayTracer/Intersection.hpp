@@ -3,6 +3,7 @@
 #include "Transform.hpp"
 #include "Material.hpp"
 #include "MemoryArena.hpp"
+#include "Spectrum.hpp"
 
 class Primitive;
 

@@ -67,3 +67,32 @@ Matrix4x4 inverse(const Matrix4x4& rhs)
 			+invDet * (rhs(0, 0) * _2233_2332 - rhs(0, 1) * _2133_2331 + rhs(0, 2) * _2132_2231));
 	}
 }
+
+// t0 and t1 are roots of Ax^2 + Bx + C = 0
+// t0 <= t1
+bool quadratic(float A, float B, float C, float * t0, float * t1) {
+	float discrim = B * B - 4.f * A * C;
+	if (discrim < 0.) return false;
+	float rootDiscrim = sqrtf(discrim);
+	float q;
+	if (B < 0)	q = -0.5f * (B - rootDiscrim);
+	else		q = -0.5f * (B + rootDiscrim);
+	*t0 = q / A;
+	*t1 = C / q;
+	if (*t0 > *t1) std::swap(*t0, *t1);
+	return true;
+}
+
+// a00 a01  x0  b0
+// a10 a11  x1  b1
+bool solve_linear_system_2x2(float a00, float a01, float a10, float a11, float b0, float b1, float * x0, float * x1)
+{
+	float det = a00*a11 - a01*a10;
+	if (fabsf(det) < 1e-10f)
+		return false;
+	*x0 = (a11*b0 - a01*b1) / det;
+	*x1 = (-a10*b0 + a00*b1) / det;
+	if (isnan(*x0) || isnan(*x1))
+		return false;
+	return true;
+}

@@ -74,7 +74,9 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Film.cpp" />
     <ClCompile Include="Filter.cpp" />
+    <ClCompile Include="Integrator.cpp" />
     <ClCompile Include="Light.cpp" />
+    <ClCompile Include="MatteMaterial.cpp" />
     <ClCompile Include="ModelProcessing.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Sampler.cpp" />
@@ -106,6 +108,7 @@
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="TriangleMesh.cpp" />
     <ClCompile Include="ViewPlane.cpp" />
+    <ClCompile Include="WhittedIntegrator.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -118,8 +121,11 @@
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Film.hpp" />
     <ClInclude Include="Filter.hpp" />
+    <ClInclude Include="Integrator.hpp" />
     <ClInclude Include="Light.hpp" />
+    <ClInclude Include="MatteMaterial.hpp" />
     <ClInclude Include="ModelProcessing.hpp" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Sampler.hpp" />
     <ClInclude Include="Spectrum.hpp" />
     <ClInclude Include="Color.hpp" />
@@ -149,11 +155,15 @@
     <ClInclude Include="Timer.hpp" />
     <ClInclude Include="TriangleMesh.hpp" />
     <ClInclude Include="Vector.hpp" />
+    <ClInclude Include="WhittedIntegrator.hpp" />
     <ClInclude Include="Window.hpp" />
     <ClInclude Include="Tracer.hpp" />
     <ClInclude Include="Transform.hpp" />
     <ClInclude Include="ViewPlane.hpp" />
     <ClInclude Include="World.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RayTracer.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

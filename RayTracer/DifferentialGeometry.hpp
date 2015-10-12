@@ -13,6 +13,9 @@ public:
 	Vec3 dpdu, dpdv;
 	Normal dndu, dndv;
 
+	mutable Vec3 dpdx, dpdy;
+	mutable float dudx, dvdx, dudy, dvdy;
+
 	// barycentric coordinates
 	// for Triangle only
 	float b1, b2;
@@ -26,7 +29,10 @@ public:
 	{
 		if (shape != nullptr && (shape->reverse_orientation ^ shape->transform_swaps_handedness))
 			normal *= -1;
+		dudx = dvdx = dudy = dvdy = 0;
 	}
 	~DifferentialGeometry() {};
+
+	void compute_differentials(const RayDifferential &ray) const;
 };
 

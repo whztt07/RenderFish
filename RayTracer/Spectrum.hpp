@@ -64,6 +64,13 @@ public:
 			ret.c[i] += s2.c[i];
 		return ret;
 	}
+
+	CoefficientSpectrum operator*(float f) const {
+		CoefficientSpectrum ret = *this;
+		for (int i = 0; i < n_samples; ++i)
+			ret.c[i] *= f;
+		return ret;
+	}
 };
 
 enum SpectrumType { SPECTRUM_REFLECTANCE, SPECTRUM_ILLUMINANT };

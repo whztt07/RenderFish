@@ -9,3 +9,6 @@
 /GUI/Release
 
 *.sdf
+*.suo
+*.user
+*.opensdf

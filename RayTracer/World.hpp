@@ -7,6 +7,7 @@
 #include "Window.hpp"
 #include "DifferentialGeometry.hpp"
 #include "KdTree.hpp"
+#include "MatteMaterial.hpp"
 
 class Tracer;
 
@@ -21,7 +22,7 @@ public:
 	vector<Reference<Primitive>> primitives;
 	KdTree* kdTree;
 
-	Material material;
+	MatteMaterial material;
 
 	vector<unsigned char> color_buffer;
 

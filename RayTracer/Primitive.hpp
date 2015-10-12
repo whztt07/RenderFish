@@ -27,8 +27,12 @@ public:
 	virtual const AreaLight *get_area_light() const {
 		return nullptr;
 	}
-	//virtual BSDF *GetBSDF(const DifferentialGeometry &dg,
-	//	const Transform &ObjectToWorld, MemoryArena &arena) const = 0;
+	virtual BSDF *get_BSDF(const DifferentialGeometry &dg,
+		const Transform &ObjectToWorld, MemoryArena &arena) const {
+		error("Aggregate::GetBSDF() method"
+			"called; should have gone to GeometricPrimitive");
+		return nullptr;
+	}
 	//virtual BSSRDF *GetBSSRDF(const DifferentialGeometry &dg,
 	//	const Transform &ObjectToWorld, MemoryArena &arena) const = 0;
 };
@@ -59,6 +63,7 @@ public:
 			return false;
 		return true;
 	}
+
 	virtual void refine(vector<Reference<Primitive>> &refined) const {
 		vector<Reference<Shape>> vs;
 		_shape->refine(vs);
@@ -66,7 +71,16 @@ public:
 			refined.push_back(new GeometryPrimitive(*i, _material, _area_light));
 		}
 	}
+
 	virtual const AreaLight *get_area_light() const {
 		return _area_light;
+	}
+
+	virtual BSDF *get_BSDF(const DifferentialGeometry &dg,
+		const Transform &ObjectToWorld, MemoryArena &arena) const override {
+
+		DifferentialGeometry dgs;
+		_shape->get_shading_geometry(ObjectToWorld, dg, &dgs);
+		return _material->get_BSDF(dg, dgs, arena);
 	}
 };

@@ -17,24 +17,13 @@ Spectrum fresnel_dielectric(float cosi, float cost, const Spectrum &etai,
 // k:	absorption coefficient (wavelength-dependent)
 Spectrum fresnel_conductor(float cosi, const Spectrum &eta, const Spectrum &k);
 
+class BSDF;
+
 Spectrum specular_reflect(const RayDifferential &ray, BSDF *bsdf,
 	RNG &rng, const Intersection &isect, const Renderer *renderer,
-	const Scene *scene, const Sample *sample, MemoryArena &arena) {
+	const Scene *scene, const Sample *sample, MemoryArena &arena);
 
-	Vec3 wo = -ray.d, wi;
-	float pdf;
-	const Point &p = bsdf->shading_diff_geom.p;
-	const Normal &n = bsdf->shading_diff_geom.normal;
-	Spectrum f = bsdf->sample_f(wo, &wi, BSDFSample(rng), &pdf, 
-		BxDFType(BSDF_REFLECTION | BSDF_SPECULAR));
 
-	Spectrum L = 0.f;
-	if (pdf > 0.f && !f.is_black() && fabsf(dot(wi, n) != 0.f)) {
-		// compute ray differential rd for specular reflection
-	}
-}
-
-#include "Spectrum.hpp"
 #define MAX_BxDFS 8
 
 enum BxDFType {

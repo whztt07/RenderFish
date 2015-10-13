@@ -21,6 +21,21 @@ Spectrum fresnel_conductor(float cosi, const Spectrum &eta, const Spectrum &k)
 	return (r_paral_2 + r_perp_2) * 0.f;
 }
 
+Spectrum specular_reflect(const RayDifferential & ray, BSDF * bsdf, RNG & rng, const Intersection & isect, const Renderer * renderer, const Scene * scene, const Sample * sample, MemoryArena & arena) {
+
+	Vec3 wo = -ray.d, wi;
+	float pdf;
+	const Point &p = bsdf->shading_diff_geom.p;
+	const Normal &n = bsdf->shading_diff_geom.normal;
+	Spectrum f = bsdf->sample_f(wo, &wi, BSDFSample(rng), &pdf,
+		BxDFType(BSDF_REFLECTION | BSDF_SPECULAR));
+
+	Spectrum L = 0.f;
+	if (pdf > 0.f && !f.is_black() && fabsf(dot(wi, n) != 0.f)) {
+		// compute ray differential rd for specular reflection
+	}
+}
+
 Spectrum FresnelDielectric::evaluate(float cosi) const
 {
 	cosi = clamp(cosi, -1.f, 1.f);

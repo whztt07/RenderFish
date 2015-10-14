@@ -40,8 +40,6 @@ struct MouseState {
 	bool mouse_down;
 };
 
-
-
 class RenderFishGUI
 {
 public:
@@ -60,6 +58,8 @@ public:
 	static void Label(const WCHAR* text, DWRITE_TEXT_ALIGNMENT text_alignment = DWRITE_TEXT_ALIGNMENT_LEADING);
 	static void Label(const char* text, DWRITE_TEXT_ALIGNMENT text_alignment = DWRITE_TEXT_ALIGNMENT_LEADING);
 	static void SideBar(int width = 200);
+
+	static void Slider(const char* str, float *pVal, float min, float max);
 
 private:
 	RenderFishGUI();

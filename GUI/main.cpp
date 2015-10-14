@@ -69,6 +69,8 @@ VOID Render() {
 	static float counter1 = 0;
 	static int counter2 = 0;
 
+	RenderFishGUI::Slider("float slider", &counter1, 0.f, 20.f);
+
 	RenderFishGUI::Label(L"test label center", DWRITE_TEXT_ALIGNMENT_CENTER);
 	RenderFishGUI::Label(L"test label right", DWRITE_TEXT_ALIGNMENT_TRAILING);
 

@@ -14,13 +14,19 @@ struct SideBarState {
 
 static SideBarState g_side_bar;
 
-struct ButtonState {
+struct GUIState {
 	int next_id = 0;
-	int button_id_clicked = -1;
 
 	void reset() {
 		next_id = 0;
 	}
+};
+
+static GUIState gui_state;
+
+struct ButtonState {
+	//int next_id = 0;
+	int button_id_clicked = -1;
 };
 
 static ButtonState g_button;
@@ -70,7 +76,7 @@ void RenderFishGUI::Cleanup()
 
 void RenderFishGUI::BeginFrame()
 {
-	g_button.reset();
+	gui_state.reset();
 	mouse_state.hot_item = -1;
 	SideBar();
 }
@@ -84,8 +90,7 @@ bool RenderFishGUI::Button(const WCHAR* label /*= nullptr*/)
 {
 	bool clicked = false;
 
-	int id = g_button.next_id;
-	g_button.next_id++;
+	int id = gui_state.next_id ++;
 	int width = 128, height = g_side_bar.y_cell_height;
 	int x = (int)g_side_bar.rect.left + g_side_bar.x_margin, y = g_side_bar.y_filled + g_side_bar.y_margin;
 	width = int(g_side_bar.rect.right - g_side_bar.rect.left) - g_side_bar.x_margin * 2;
@@ -136,6 +141,7 @@ bool RenderFishGUI::Button(const char* label)
 
 void RenderFishGUI::Label(const WCHAR* text, DWRITE_TEXT_ALIGNMENT text_alignment /*= DWRITE_TEXT_ALIGNMENT_LEADING*/)
 {
+	int id = gui_state.next_id++;
 	float width = 128.f, height = (float)g_side_bar.y_cell_height;
 	float x = g_side_bar.rect.left + g_side_bar.x_margin, y = float(g_side_bar.y_filled + g_side_bar.y_margin);
 	width = (g_side_bar.rect.right - g_side_bar.rect.left) - g_side_bar.x_margin * 2;
@@ -165,13 +171,16 @@ void RenderFishGUI::SideBar(int width /*= 200*/)
 	pRenderTarget->FillRectangle(D2D1::RectF(float(window_width - width), 0.f, (float)window_width, float(rc.bottom - rc.top)), pGrayBrush);
 }
 
-ID2D1Factory* RenderFishGUI::pD2DFactory(nullptr);
+void RenderFishGUI::Slider(const char* str, float *pVal, float min, float max)
+{
+	int id = gui_state.next_id++;
+	Label(str);
 
-ID2D1HwndRenderTarget* RenderFishGUI::pRenderTarget(nullptr);
+	pRenderTarget->DrawRectangle(D2D1::RectF(100, 100, 150, 102), pGrayBrush);
 
-IDWriteFactory* RenderFishGUI::pDWriteFactory(nullptr);
-
-IDWriteTextLayout * RenderFishGUI::pTextLayout(nullptr);
+	D2D1_ELLIPSE circle{ D2D1_POINT_2F{100, 100}, 5, 5 };
+	pRenderTarget->FillEllipse(circle, pGrayBrush);
+}
 
 void RenderFishGUI::draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* brush, ID2D1SolidColorBrush* fill_brush /*= nullptr*/)
 {
@@ -186,13 +195,12 @@ void RenderFishGUI::draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColo
 
 RECT RenderFishGUI::rc;
 MouseState RenderFishGUI::mouse_state = { -1, -1, -1, false };
-
+ID2D1Factory* RenderFishGUI::pD2DFactory(nullptr);
+ID2D1HwndRenderTarget* RenderFishGUI::pRenderTarget(nullptr);
+IDWriteFactory* RenderFishGUI::pDWriteFactory(nullptr);
+IDWriteTextLayout * RenderFishGUI::pTextLayout(nullptr);
 IDWriteTextFormat * RenderFishGUI::pTexFormat(nullptr);
-
 ID2D1SolidColorBrush* RenderFishGUI::pRedBrush(nullptr);
-
 ID2D1SolidColorBrush* RenderFishGUI::pWhiteBrush(nullptr);
-
 ID2D1SolidColorBrush* RenderFishGUI::pGrayBrush(nullptr);
-
 ID2D1SolidColorBrush* RenderFishGUI::pBlackBrush(nullptr);

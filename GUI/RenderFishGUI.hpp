@@ -59,7 +59,12 @@ public:
 	static void Label(const char* text, DWRITE_TEXT_ALIGNMENT text_alignment = DWRITE_TEXT_ALIGNMENT_LEADING);
 	static void SideBar(int width = 200);
 
+	template<typename T>
+	static void Slider(const char* str, T *pVal, T min, T max);
+	template<>
 	static void Slider(const char* str, float *pVal, float min, float max);
+
+	//static void Slider(const char* str, float *pVal, float min, float max);
 
 private:
 	RenderFishGUI();

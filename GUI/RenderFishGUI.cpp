@@ -168,19 +168,65 @@ void RenderFishGUI::SideBar(int width /*= 200*/)
 	int window_width = rc.right - rc.left;
 	g_side_bar.rect = D2D1::RectF((float)window_width - width, 0.f, (float)window_width, float(rc.bottom - rc.top));
 	g_side_bar.y_filled = g_side_bar.y_margin;
+
 	pRenderTarget->FillRectangle(D2D1::RectF(float(window_width - width), 0.f, (float)window_width, float(rc.bottom - rc.top)), pGrayBrush);
 }
 
-void RenderFishGUI::Slider(const char* str, float *pVal, float min, float max)
+template<typename T>
+void RenderFishGUI::Slider(const char* str, T *pVal, T min, T max)
 {
 	int id = gui_state.next_id++;
 	Label(str);
+	int width = int(g_side_bar.rect.right - g_side_bar.rect.left) - g_side_bar.x_margin * 2;
+	int x = g_side_bar.rect.left + g_side_bar.x_margin;
+	//x = 10;
+	int y = g_side_bar.y_filled;
+	g_side_bar.y_filled += g_side_bar.y_cell_height;
+	int y_cneter = y + g_side_bar.y_cell_height / 2;
 
-	pRenderTarget->DrawRectangle(D2D1::RectF(100, 100, 150, 102), pGrayBrush);
+	auto pBrush = pBlackBrush;
+	float percent = float(*pVal - min) / (max - min);
+	if (mouse_in_region(x, y_cneter - 5 / 2, width, 5)) {
+		pBrush = pWhiteBrush;
+		if (mouse_state.mouse_down) {
+			percent = float(T(float(mouse_state.mouse_x - x) / width * (max - min))) / width;
+			*pVal = min + (max - min) * percent;
+		}
+	}
 
-	D2D1_ELLIPSE circle{ D2D1_POINT_2F{100, 100}, 5, 5 };
-	pRenderTarget->FillEllipse(circle, pGrayBrush);
+	pRenderTarget->DrawRectangle(D2D1::RectF(x, y_cneter - 2 / 2, x + width, y_cneter + 2 / 2), pBrush);
+	D2D1_ELLIPSE circle{ D2D1_POINT_2F{ x + int(percent * width), y + g_side_bar.y_cell_height / 2 }, 5, 5 };
+	pRenderTarget->FillEllipse(circle, pBrush);
 }
+
+template<>
+void RenderFishGUI::Slider(const char* str, float *pVal, float min, float max);
+
+//void RenderFishGUI::Slider(const char* str, float *pVal, float min, float max)
+//{
+//	int id = gui_state.next_id++;
+//	Label(str);
+//	int width = int(g_side_bar.rect.right - g_side_bar.rect.left) - g_side_bar.x_margin * 2;
+//	int x = g_side_bar.rect.left + g_side_bar.x_margin;
+//	//x = 10;
+//	int y = g_side_bar.y_filled;
+//	g_side_bar.y_filled += g_side_bar.y_cell_height;
+//	int y_cneter = y + g_side_bar.y_cell_height / 2;
+//
+//	auto pBrush = pBlackBrush;
+//	float percent = float(*pVal - min) / (max - min);
+//	if (mouse_in_region(x, y_cneter - 5/2, width, 5)) {
+//		pBrush = pWhiteBrush;
+//		if (mouse_state.mouse_down) {
+//			percent = float(mouse_state.mouse_x - x) / width;
+//			*pVal = min + (max - min) * percent;
+//		}
+//	}
+//
+//	pRenderTarget->DrawRectangle(D2D1::RectF(x, y_cneter - 2 / 2, x + width, y_cneter + 2 / 2),pBrush);
+//	D2D1_ELLIPSE circle{ D2D1_POINT_2F{x + int(percent * width), y + g_side_bar.y_cell_height / 2}, 5, 5 };
+//	pRenderTarget->FillEllipse(circle, pBrush);
+//}
 
 void RenderFishGUI::draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* brush, ID2D1SolidColorBrush* fill_brush /*= nullptr*/)
 {

@@ -119,6 +119,18 @@ public:
 	}
 };
 
+class BSDFSample {
+public:
+	float u_dir[2], u_component;
+
+	BSDFSample(float up0, float up1, float ucomp);
+	BSDFSample(RNG &rng) {
+		u_dir[0] = rng.random_float();
+		u_dir[1] = rng.random_float();
+		u_component = rng.random_float();
+	}
+};
+
 class BSDF {
 public:
 	const DifferentialGeometry shading_diff_geom;
@@ -150,6 +162,14 @@ public:
 		}
 		return f;
 	}
+
+	Spectrum sample_f(const Vec3 &wo, Vec3 *wi, const BSDFSample &bsdf_sample,
+		float *pdf, BxDFType flags = BSDF_ALL, BxDFType *sampled_type = nullptr) const {
+		info("not implemented\n");
+		return Spectrum(0.f);
+	}
+
+	float Pdf(const Vec3 &wo, const Vec3 &wi, BxDFType flags = BSDF_ALL) const;
 
 	//Spectrum rho(RNG &rng, BxDFType flags = BSDF_ALL, int sqrt_samples = 6) const;
 	//Spectrum rho(const Vec3 &wo, RNG &rng, BxDFType flags = BSDF_ALL,

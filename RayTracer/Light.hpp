@@ -19,8 +19,11 @@ public:
 	}
 };
 
-struct VisibilityTester {
+class VisibilityTester 
+{
+private:
 	Ray r;
+public:
 	void set_segment(const Point &p1, float eps1, const Point &p2, float eps2, float time) {
 		float dist = distance(p1, p2);
 		r = Ray(p1, (p2 - p1) / dist, eps1, dist*(1.f - eps2), time);
@@ -52,9 +55,8 @@ public:
 		Assert(!light_to_world.has_scale());
 	}
 
-	virtual Spectrum sample_L(const Point &p_w, float pEpsilon,
-		const LightSample &light_sample, float time, Vec3 *wi, float *pdf,
-		VisibilityTester *vis) const = 0;
+	virtual Spectrum sample_L(const Point &p_w, float pEpsilon, const LightSample &light_sample,
+		float time, Vec3 *wi, float *pdf, VisibilityTester *vis) const = 0;
 
 	virtual Spectrum power(const Scene *) const = 0;
 };

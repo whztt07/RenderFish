@@ -34,6 +34,8 @@ Spectrum specular_reflect(const RayDifferential & ray, BSDF * bsdf, RNG & rng, c
 	if (pdf > 0.f && !f.is_black() && fabsf(dot(wi, n) != 0.f)) {
 		// compute ray differential rd for specular reflection
 	}
+
+	return L;
 }
 
 Spectrum FresnelDielectric::evaluate(float cosi) const

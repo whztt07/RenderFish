@@ -44,6 +44,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -57,6 +58,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -66,106 +68,105 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Aggregate.cpp" />
-    <ClCompile Include="AnimatedTransform.cpp" />
-    <ClCompile Include="AreaLight.cpp" />
-    <ClCompile Include="BBox.cpp" />
-    <ClCompile Include="Box.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Film.cpp" />
-    <ClCompile Include="Filter.cpp" />
-    <ClCompile Include="Integrator.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="MatteMaterial.cpp" />
-    <ClCompile Include="ModelProcessing.cpp" />
-    <ClCompile Include="Random.cpp" />
-    <ClCompile Include="Reflection.cpp" />
-    <ClCompile Include="Sampler.cpp" />
-    <ClCompile Include="Spectrum.cpp" />
-    <ClCompile Include="Color.cpp" />
-    <ClCompile Include="DifferentialGeometry.cpp" />
-    <ClCompile Include="Error.cpp" />
-    <ClCompile Include="ImageIO.cpp" />
-    <ClCompile Include="Intersection.cpp" />
+    <ResourceCompile Include="RayTracer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Core\Aggregate.cpp" />
+    <ClCompile Include="Core\AnimatedTransform.cpp" />
+    <ClCompile Include="Core\BBox.cpp" />
+    <ClCompile Include="Core\Camera.cpp" />
+    <ClCompile Include="Core\Color.cpp" />
+    <ClCompile Include="Core\DifferentialGeometry.cpp" />
+    <ClCompile Include="Core\Error.cpp" />
+    <ClCompile Include="Core\Film.cpp" />
+    <ClCompile Include="Core\Filter.cpp" />
+    <ClCompile Include="Core\Integrator.cpp" />
+    <ClCompile Include="Core\Intersection.cpp" />
+    <ClCompile Include="Core\Light.cpp" />
+    <ClCompile Include="Core\Material.cpp" />
+    <ClCompile Include="Core\MemoryArena.cpp" />
+    <ClCompile Include="Core\Primitive.cpp" />
+    <ClCompile Include="Core\Ray.cpp" />
+    <ClCompile Include="Core\ReferenceCounted.cpp" />
+    <ClCompile Include="Core\Reflection.cpp" />
+    <ClCompile Include="Core\Renderer.cpp" />
+    <ClCompile Include="Core\Sampler.cpp" />
+    <ClCompile Include="Core\Scene.cpp" />
+    <ClCompile Include="Core\Shape.cpp" />
+    <ClCompile Include="Core\Texture.cpp" />
+    <ClCompile Include="Core\Tracer.cpp" />
+    <ClCompile Include="Core\Transform.cpp" />
+    <ClCompile Include="IO\ImageIO.cpp" />
+    <ClCompile Include="IO\ModelIO.cpp" />
     <ClCompile Include="KdTree.cpp" />
+    <ClCompile Include="Light\AreaLight.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Math.cpp" />
-    <ClCompile Include="Matrix4x4.cpp" />
-    <ClCompile Include="MemoryArena.cpp" />
-    <ClCompile Include="ModelIO.cpp" />
-    <ClCompile Include="Primitive.cpp" />
-    <ClCompile Include="Quaternion.cpp" />
-    <ClCompile Include="Ray.cpp" />
-    <ClCompile Include="ReferenceCounted.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Shape.cpp" />
-    <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Material\MatteMaterial.cpp" />
+    <ClCompile Include="Math\Math.cpp" />
+    <ClCompile Include="Math\Matrix4x4.cpp" />
+    <ClCompile Include="Math\Quaternion.cpp" />
+    <ClCompile Include="Math\random.cpp" />
+    <ClCompile Include="Math\Vector.cpp" />
+    <ClCompile Include="ModelProcessing.cpp" />
+    <ClCompile Include="Shape\Box.cpp" />
+    <ClCompile Include="Shape\Sphere.cpp" />
+    <ClCompile Include="Shape\TriangleMesh.cpp" />
+    <ClCompile Include="Spectrum.cpp" />
     <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="Tracer.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Vector.cpp" />
-    <ClCompile Include="TriangleMesh.cpp" />
     <ClCompile Include="ViewPlane.cpp" />
     <ClCompile Include="WhittedIntegrator.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Aggregate.hpp" />
-    <ClInclude Include="AnimatedTransform.hpp" />
-    <ClInclude Include="AreaLight.hpp" />
-    <ClInclude Include="BBox.hpp" />
-    <ClInclude Include="Box.hpp" />
-    <ClInclude Include="Camera.hpp" />
-    <ClInclude Include="Film.hpp" />
-    <ClInclude Include="Filter.hpp" />
-    <ClInclude Include="Integrator.hpp" />
-    <ClInclude Include="Light.hpp" />
-    <ClInclude Include="MatteMaterial.hpp" />
-    <ClInclude Include="ModelProcessing.hpp" />
-    <ClInclude Include="Reflection.hpp" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="Sampler.hpp" />
-    <ClInclude Include="Spectrum.hpp" />
-    <ClInclude Include="Color.hpp" />
-    <ClInclude Include="DifferentialGeometry.hpp" />
-    <ClInclude Include="Error.hpp" />
-    <ClInclude Include="ImageIO.hpp" />
-    <ClInclude Include="Intersection.hpp" />
-    <ClInclude Include="KdTree.hpp" />
-    <ClInclude Include="Material.hpp" />
-    <ClInclude Include="MathHelper.hpp" />
-    <ClInclude Include="Matrix4x4.hpp" />
-    <ClInclude Include="MemoryArena.hpp" />
-    <ClInclude Include="ModelIO.hpp" />
-    <ClInclude Include="Primitive.hpp" />
-    <ClInclude Include="Probes.hpp" />
-    <ClInclude Include="Quaternion.hpp" />
-    <ClInclude Include="Random.hpp" />
-    <ClInclude Include="Ray.hpp" />
-    <ClInclude Include="Math.hpp" />
-    <ClInclude Include="ReferenceCounted.hpp" />
-    <ClInclude Include="Renderer.hpp" />
-    <ClInclude Include="RenderFish.hpp" />
-    <ClInclude Include="Scene.hpp" />
-    <ClInclude Include="Shape.hpp" />
-    <ClInclude Include="Sphere.hpp" />
-    <ClInclude Include="Texture.hpp" />
-    <ClInclude Include="Timer.hpp" />
-    <ClInclude Include="TriangleMesh.hpp" />
-    <ClInclude Include="Vector.hpp" />
-    <ClInclude Include="WhittedIntegrator.hpp" />
-    <ClInclude Include="Window.hpp" />
-    <ClInclude Include="Tracer.hpp" />
-    <ClInclude Include="Transform.hpp" />
-    <ClInclude Include="ViewPlane.hpp" />
-    <ClInclude Include="World.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="RayTracer.rc" />
+    <ClInclude Include="Include\Aggregate.hpp" />
+    <ClInclude Include="Include\AnimatedTransform.hpp" />
+    <ClInclude Include="Include\AreaLight.hpp" />
+    <ClInclude Include="Include\BBox.hpp" />
+    <ClInclude Include="Include\Box.hpp" />
+    <ClInclude Include="Include\Camera.hpp" />
+    <ClInclude Include="Include\Color.hpp" />
+    <ClInclude Include="Include\DifferentialGeometry.hpp" />
+    <ClInclude Include="Include\Error.hpp" />
+    <ClInclude Include="Include\Film.hpp" />
+    <ClInclude Include="Include\Filter.hpp" />
+    <ClInclude Include="Include\ImageIO.hpp" />
+    <ClInclude Include="Include\Integrator.hpp" />
+    <ClInclude Include="Include\Intersection.hpp" />
+    <ClInclude Include="Include\KdTree.hpp" />
+    <ClInclude Include="Include\Light.hpp" />
+    <ClInclude Include="Include\Material.hpp" />
+    <ClInclude Include="Include\Math.hpp" />
+    <ClInclude Include="Include\MathHelper.hpp" />
+    <ClInclude Include="Include\Matrix4x4.hpp" />
+    <ClInclude Include="Include\MatteMaterial.hpp" />
+    <ClInclude Include="Include\MemoryArena.hpp" />
+    <ClInclude Include="Include\ModelIO.hpp" />
+    <ClInclude Include="Include\ModelProcessing.hpp" />
+    <ClInclude Include="Include\Primitive.hpp" />
+    <ClInclude Include="Include\Probes.hpp" />
+    <ClInclude Include="Include\Quaternion.hpp" />
+    <ClInclude Include="Include\Random.hpp" />
+    <ClInclude Include="Include\Ray.hpp" />
+    <ClInclude Include="Include\ReferenceCounted.hpp" />
+    <ClInclude Include="Include\Reflection.hpp" />
+    <ClInclude Include="Include\Renderer.hpp" />
+    <ClInclude Include="Include\RenderFish.hpp" />
+    <ClInclude Include="Include\Sampler.hpp" />
+    <ClInclude Include="Include\Scene.hpp" />
+    <ClInclude Include="Include\Shape.hpp" />
+    <ClInclude Include="Include\Spectrum.hpp" />
+    <ClInclude Include="Include\Sphere.hpp" />
+    <ClInclude Include="Include\Texture.hpp" />
+    <ClInclude Include="Include\Timer.hpp" />
+    <ClInclude Include="Include\Tracer.hpp" />
+    <ClInclude Include="Include\Transform.hpp" />
+    <ClInclude Include="Include\TriangleMesh.hpp" />
+    <ClInclude Include="Include\Vector.hpp" />
+    <ClInclude Include="Include\ViewPlane.hpp" />
+    <ClInclude Include="Include\WhittedIntegrator.hpp" />
+    <ClInclude Include="Include\Window.hpp" />
+    <ClInclude Include="Include\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

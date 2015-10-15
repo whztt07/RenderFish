@@ -52,6 +52,7 @@ public:
 	static void Cleanup();
 
 	static void BeginFrame();
+	static void EndFrame();
 	static void BeginDialog();
 	static bool Button(const WCHAR* label = nullptr);
 	static bool Button(const char* label);
@@ -79,6 +80,7 @@ private:
 	static ID2D1SolidColorBrush*	pGrayBrush;
 	static ID2D1SolidColorBrush*	pWhiteBrush;
 	static ID2D1SolidColorBrush*	pRedBrush;
+	static ID2D1SolidColorBrush*	pReuseableBrush;
 	static IDWriteTextFormat *		pTexFormat;
 	static IDWriteTextLayout *		pTextLayout;
 

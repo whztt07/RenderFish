@@ -85,6 +85,13 @@ VOID Render() {
 	if (RenderFishGUI::Button(L"Render")) {
 		// render
 	}
+	
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+
+	RenderFishGUI::EndFrame();
+
 	last_render_time = std::chrono::high_resolution_clock::now();
 
 	HR(pRenderTarget->EndDraw());

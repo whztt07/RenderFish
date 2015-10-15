@@ -55,9 +55,8 @@ VOID Render() {
 	// Clear background color white
 	pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
-	RenderFishGUI::BeginFrame();
-
 	draw_texture();
+	RenderFishGUI::BeginFrame();
 
 	static string buf("");
 	RenderFishGUI::Label(buf.c_str());
@@ -66,10 +65,14 @@ VOID Render() {
 	if (RenderFishGUI::Button(L"Button 2"))
 		buf = "button 2 clicked";
 
-	static float counter1 = 0;
-	static int counter2 = 0;
+	static float counter1 = 10.f;
+	static int counter2 = 3;
 
-	RenderFishGUI::Slider("float slider", &counter1, 0.f, 20.f);
+	RenderFishGUI::Slider<float>("float slider", &counter1, 0.f, 20.f);
+	RenderFishGUI::Slider<int>("int slider", &counter2, 0, 10);
+
+	static int number1 = 10;
+	RenderFishGUI::NumberBox(&number1);
 
 	RenderFishGUI::Label(L"test label center", DWRITE_TEXT_ALIGNMENT_CENTER);
 	RenderFishGUI::Label(L"test label right", DWRITE_TEXT_ALIGNMENT_TRAILING);

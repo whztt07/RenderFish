@@ -57,12 +57,14 @@ public:
 	static bool Button(const char* label);
 	static void Label(const WCHAR* text, DWRITE_TEXT_ALIGNMENT text_alignment = DWRITE_TEXT_ALIGNMENT_LEADING);
 	static void Label(const char* text, DWRITE_TEXT_ALIGNMENT text_alignment = DWRITE_TEXT_ALIGNMENT_LEADING);
-	static void SideBar(int width = 200);
+	static void NumberBox(int* val);
+	
+	static void SideBar(int width = 250);
+
+
 
 	template<typename T>
 	static void Slider(const char* str, T *pVal, T min, T max);
-	template<>
-	static void Slider(const char* str, float *pVal, float min, float max);
 
 	//static void Slider(const char* str, float *pVal, float min, float max);
 
@@ -89,6 +91,8 @@ private:
 			return false;
 		return true;
 	}
-
 };
 
+template void RenderFishGUI::Slider<float>(const char* str, float *pVal, float min, float max);
+template void RenderFishGUI::Slider<int>(const char* str, int *pVal, int min, int max);
+template void RenderFishGUI::Slider<double>(const char* str, double *pVal, double min, double max);

@@ -163,7 +163,38 @@ void RenderFishGUI::Label(const char* text, DWRITE_TEXT_ALIGNMENT text_alignment
 	Label(ToWString(text).c_str(), text_alignment);
 }
 
-void RenderFishGUI::SideBar(int width /*= 200*/)
+void RenderFishGUI::NumberBox(int* val)
+{
+	int id = gui_state.next_id++;
+	float width = 128.f, height = (float)g_side_bar.y_cell_height;
+	float x = g_side_bar.rect.left + g_side_bar.x_margin, y = float(g_side_bar.y_filled + g_side_bar.y_margin);
+	width = (g_side_bar.rect.right - g_side_bar.rect.left) - g_side_bar.x_margin * 2;
+	pTexFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+	pTexFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+	SAFE_RELEASE(pTextLayout);
+	auto text = L"10";
+	HR(pDWriteFactory->CreateTextLayout(text, wcslen(text), pTexFormat, width, height, &pTextLayout));
+	//DWRITE_TEXT_METRICS mertics;
+	//pTextLayout->GetMetrics(&mertics);
+	//if (height < mertics.height) height = mertics.height;
+	//pTextLayout->SetMaxHeight(height);
+	const int w = 50;
+	const int h = 20;
+	const int x_margin = 4;
+	pRenderTarget->DrawRectangle(D2D1::RectF(x, y + (30 - h) / 2, x + w, y + (30+h)/2), pBlackBrush);
+	if (mouse_in_region(x, y + (30 - h) / 2, w, h)) {
+		pRenderTarget->FillRectangle(D2D1::RectF(x, y + (30 - h) / 2, x + w, y + (30 + h) / 2), pWhiteBrush);
+		//pTextLayout->SetDrawingEffect()
+		if (mouse_state.mouse_down) {
+			pRenderTarget->FillRectangle(D2D1::RectF(x + x_margin, y + (30 - 15) / 2, x + 20, y + (30 + 15) / 2), pRedBrush);
+		}
+	}
+	pRenderTarget->DrawTextLayout(D2D1::Point2F(x+x_margin, y), pTextLayout, pBlackBrush);
+
+	g_side_bar.y_filled += int(g_side_bar.y_margin * 2 + height);
+}
+
+void RenderFishGUI::SideBar(int width /*= 250*/)
 {
 	int window_width = rc.right - rc.left;
 	g_side_bar.rect = D2D1::RectF((float)window_width - width, 0.f, (float)window_width, float(rc.bottom - rc.top));
@@ -178,29 +209,30 @@ void RenderFishGUI::Slider(const char* str, T *pVal, T min, T max)
 	int id = gui_state.next_id++;
 	Label(str);
 	int width = int(g_side_bar.rect.right - g_side_bar.rect.left) - g_side_bar.x_margin * 2;
-	int x = g_side_bar.rect.left + g_side_bar.x_margin;
+	int x = int(g_side_bar.rect.left) + g_side_bar.x_margin;
 	//x = 10;
 	int y = g_side_bar.y_filled;
 	g_side_bar.y_filled += g_side_bar.y_cell_height;
 	int y_cneter = y + g_side_bar.y_cell_height / 2;
 
 	auto pBrush = pBlackBrush;
-	float percent = float(*pVal - min) / (max - min);
-	if (mouse_in_region(x, y_cneter - 5 / 2, width, 5)) {
+	float percent = float(*pVal - min) / float(max - min);
+	const int region_height = 16;
+	if (mouse_in_region(x, y_cneter - region_height / 2, width, region_height)) {
 		pBrush = pWhiteBrush;
 		if (mouse_state.mouse_down) {
-			percent = float(T(float(mouse_state.mouse_x - x) / width * (max - min))) / width;
-			*pVal = min + (max - min) * percent;
+			percent = float(T(float(mouse_state.mouse_x - x) / width * (max - min))) / (max - min);
+			*pVal = min + T((max - min) * percent);
 		}
 	}
 
-	pRenderTarget->DrawRectangle(D2D1::RectF(x, y_cneter - 2 / 2, x + width, y_cneter + 2 / 2), pBrush);
-	D2D1_ELLIPSE circle{ D2D1_POINT_2F{ x + int(percent * width), y + g_side_bar.y_cell_height / 2 }, 5, 5 };
+	pRenderTarget->DrawRectangle(D2D1::RectF(float(x), float(y_cneter - 2 / 2), float(x + width), float(y_cneter + 2 / 2)), pBrush);
+	D2D1_ELLIPSE circle{ D2D1_POINT_2F{ float(x + int(percent * width)), float(y + g_side_bar.y_cell_height / 2) }, 5.f, 5.f };
 	pRenderTarget->FillEllipse(circle, pBrush);
 }
 
-template<>
-void RenderFishGUI::Slider(const char* str, float *pVal, float min, float max);
+//template<>
+//void RenderFishGUI::Slider(const char* str, float *pVal, float min, float max);
 
 //void RenderFishGUI::Slider(const char* str, float *pVal, float min, float max)
 //{

@@ -32,12 +32,15 @@ inline T ToString(const std::wstring& s)
 
 
 struct MouseState {
-	int mouse_x;
-	int mouse_y;
+	int mouse_x = -1;
+	int mouse_y = -1;
 
-	int hot_item;
+	int hot_item = -1;
 	//int active_item;
-	bool mouse_down;
+	bool mouse_down = false;
+
+	bool mouse_wheel_rotating = false;
+	short mouse_wheel_z_delta = 0;
 };
 
 class RenderFishGUI

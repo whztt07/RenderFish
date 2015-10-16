@@ -89,6 +89,21 @@ VOID Render() {
 	RenderFishGUI::Button(L"Button");
 	RenderFishGUI::Button(L"Button");
 	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
+	RenderFishGUI::Button(L"Button");
 
 	RenderFishGUI::EndFrame();
 
@@ -129,6 +144,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_LBUTTONUP:
 		RenderFishGUI::mouse_state.mouse_down = false;
+		break;
+	case WM_MOUSEWHEEL:
+		RenderFishGUI::mouse_state.mouse_wheel_rotating = true;
+		RenderFishGUI::mouse_state.mouse_wheel_z_delta = (short)HIWORD(wParam);
 		break;
 	case WM_DESTROY:
 		//Cleanup();

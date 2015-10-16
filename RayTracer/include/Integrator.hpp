@@ -8,7 +8,7 @@ class Integrator
 public:
 	Integrator() {};
 
-	virtual void preprocess(const Scene *scene, const Camera *camera, const Renderer *renderer) {};
+	virtual void preprocess(const Scene *scene, const PBRTCamera *camera, const Renderer *renderer) {};
 	virtual void request_samples(Sampler *sampler, Sample *sample, const Scene* scene) {};
 
 };

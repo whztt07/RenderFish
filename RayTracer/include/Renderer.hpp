@@ -6,15 +6,17 @@
 #include "Spectrum.hpp"
 #include "Camera.hpp"
 
+class SurfaceIntegrator;
+
 class Renderer
 {
 public:
 	Renderer() {}
 
-	virtual void Render(const Scene * scene) = 0;
+	virtual void render(const Scene * scene) const = 0;
 
 	// returns the incident radiance along the given ray
-	virtual void Li(const Scene *scene, const RayDifferential &ray,
+	virtual Spectrum Li(const Scene *scene, const RayDifferential &ray,
 		const Sample *sample, RNG &rng, MemoryArena &arena,
 		Intersection *isect = nullptr, Spectrum *T = nullptr) const = 0;
 
@@ -22,33 +24,31 @@ public:
 		const Sample *sample, RNG &rng, MemoryArena &arena) const = 0;
 };
 
-class SimpleRender : public Renderer {
+//class SamplerRenderTask : public Task {
+//
+//};
+
+class SamplerRender : public Renderer {
 public:
 
+	Sampler *sampler;
 	PBRTCamera *camera;
+	SurfaceIntegrator *suface_integrator;
 
-	virtual void Li(const Scene *scene, const RayDifferential &ray,
+	virtual void render(const Scene * scene) const override;
+
+	SamplerRender(PBRTCamera* camera, SurfaceIntegrator* suface_integrator)
+		: camera(camera), suface_integrator(suface_integrator) {
+	}
+
+	virtual Spectrum Li(const Scene *scene, const RayDifferential &ray,
 		const Sample *sample, RNG &rng, MemoryArena &arena,
 		Intersection *isect = nullptr, Spectrum *T = nullptr) const override {
 		scene->intersect(ray, isect);
 	}
-
-	void render() {
-		//for (int i = 0; i < 800; i++)
-		//	for (int j = 0; j < 600; j++) {
-		//		CameraSample sample;
-		//		camera->generate_ray()
-		//	}
-
+	
+	virtual Spectrum transmittance(const Scene *scene, const RayDifferential &ray,
+		const Sample *sample, RNG &rng, MemoryArena &arena) const override {
+		error("not implemented SimpleRender::transmittance");
 	}
-};
-
-class SamplerRender : public Renderer {
-private:
-	Sampler *sampler;
-	PBRTCamera *camera;
-	//SurfaceIntegrator *surfaceIntegrator;
-	//VolumeIntegrator *volumeIntegrator;
-public:
-
 };

@@ -30,10 +30,32 @@ inline T ToString(const std::wstring& s)
 	return x;
 }
 
+template<typename T>
+class com_ptr {
+private:
+	T* ptr;
+public:
+	com_ptr(T* ptr) : ptr(ptr) {
+	}
+
+	~com_ptr() {
+		SAFE_RELEASE(ptr);
+	}
+};
+
+enum GUIAlignment {
+	align_horiontally_left = 0,
+	align_horiontally_center = 1,
+	align_horiontally_right = 2,
+	align_vertically_top = 4,
+	align_vertically_center = 8,
+	align_vertically_bottom = 16,
+	align_center = align_horiontally_center | align_vertically_center
+};
 
 struct MouseState {
-	int mouse_x = -1;
-	int mouse_y = -1;
+	int pos_x = -1;
+	int pos_y = -1;
 
 	int hot_item = -1;
 	//int active_item;
@@ -59,13 +81,12 @@ public:
 	static void BeginDialog();
 	static bool Button(const WCHAR* label = nullptr);
 	static bool Button(const char* label);
-	static void Label(const WCHAR* text, DWRITE_TEXT_ALIGNMENT text_alignment = DWRITE_TEXT_ALIGNMENT_LEADING);
-	static void Label(const char* text, DWRITE_TEXT_ALIGNMENT text_alignment = DWRITE_TEXT_ALIGNMENT_LEADING);
+	static void Label(const WCHAR* text, GUIAlignment text_alignment = align_horiontally_center);
+	static void Label(const char* text, GUIAlignment text_alignment = align_horiontally_center);
 	static void NumberBox(int* val);
-	
 	static void SideBar(int width = 250);
 
-
+	static void WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	template<typename T>
 	static void Slider(const char* str, T *pVal, T min, T max);
@@ -75,7 +96,7 @@ public:
 private:
 	RenderFishGUI();
 
-	static RECT rc; // Render area
+	//static RECT rc; // Render area
 	static ID2D1Factory*			pD2DFactory;
 	static ID2D1HwndRenderTarget*	pRenderTarget; // Render target
 	static IDWriteFactory*			pDWriteFactory;
@@ -87,14 +108,14 @@ private:
 	static IDWriteTextFormat *		pTexFormat;
 	static IDWriteTextLayout *		pTextLayout;
 
-
-	static void draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* brush, ID2D1SolidColorBrush* fill_brush = nullptr);
+	static void draw_rect(int x, int y, int w, int h);
+	static void draw_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* border_brush);
+	static void fill_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* fill_brush);
+	static void draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* border_brush, ID2D1SolidColorBrush* fill_brush = nullptr);
 
 	inline static bool mouse_in_region(int x, int y, int w, int h) {
-		if (mouse_state.mouse_x < x || mouse_state.mouse_y < y ||
-			mouse_state.mouse_x >= x + w || mouse_state.mouse_y >= y + h)
-			return false;
-		return true;
+		return (x < mouse_state.pos_x && mouse_state.pos_x < x + w) &&
+			(y < mouse_state.pos_y && mouse_state.pos_y < y + h);
 	}
 };
 

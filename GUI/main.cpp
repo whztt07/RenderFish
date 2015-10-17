@@ -74,8 +74,8 @@ VOID Render() {
 	static int number1 = 10;
 	RenderFishGUI::NumberBox(&number1);
 
-	RenderFishGUI::Label(L"test label center", DWRITE_TEXT_ALIGNMENT_CENTER);
-	RenderFishGUI::Label(L"test label right", DWRITE_TEXT_ALIGNMENT_TRAILING);
+	RenderFishGUI::Label(L"test label center", align_horiontally_center);
+	RenderFishGUI::Label(L"test label right", align_horiontally_right);
 
 	if (RenderFishGUI::Button(L"warning")) {
 		MessageBox(g_Hwnd, "warning", "warning", MB_OK);
@@ -114,6 +114,7 @@ VOID Render() {
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	RenderFishGUI::WndProc(hwnd, message, wParam, lParam);
 	switch (message)
 	{
 	case WM_PAINT:
@@ -135,20 +136,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	break;
 
-	case WM_MOUSEMOVE:
-		RenderFishGUI::mouse_state.mouse_x = LOWORD(lParam);
-		RenderFishGUI::mouse_state.mouse_y = HIWORD(lParam);
-		break;
-	case WM_LBUTTONDOWN:
-		RenderFishGUI::mouse_state.mouse_down = true;
-		break;
-	case WM_LBUTTONUP:
-		RenderFishGUI::mouse_state.mouse_down = false;
-		break;
-	case WM_MOUSEWHEEL:
-		RenderFishGUI::mouse_state.mouse_wheel_rotating = true;
-		RenderFishGUI::mouse_state.mouse_wheel_z_delta = (short)HIWORD(wParam);
-		break;
 	case WM_DESTROY:
 		//Cleanup();
 		PostQuitMessage(0);

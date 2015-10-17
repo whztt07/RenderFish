@@ -1,5 +1,13 @@
 #include "RenderFishGUI.hpp"
 
+enum Direction {
+	direction_non = 0,
+	direction_up = -1,
+	direction_down = 1,
+	direction_left = -2,
+	driection_right = 2,
+};
+
 struct SideBarState {
 	D2D1_RECT_F rect;
 	//int left;
@@ -14,15 +22,25 @@ struct SideBarState {
 	int y_filled = 0;
 
 	int cell_numbers_last_draw = 0;
+	int scroll_target_y = 0;
+
+	int scroll_direction = direction_non;
 
 	int avaliable_width() {
 		return int(rect.right - rect.left) - x_margin_left - x_margin_right;
 	}
+
+	void update() {
+		if (y_filled < scroll_target_y)
+			y_start += 5;
+	}
 };
 
-static SideBarState g_side_bar;
+static SideBarState side_bar;
 
 struct GUIState {
+	int width;
+	int height;
 	int next_id = 0;
 
 	void reset() {
@@ -47,7 +65,10 @@ HRESULT RenderFishGUI::CreateD2DResource(ID2D1Factory* pD2DFactory, HWND hWnd, I
 	HRESULT hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&pDWriteFactory));
 	HR(hr);
 
+	RECT rc;
 	GetClientRect(hWnd, &rc);
+	gui_state.width = rc.right - rc.left;
+	gui_state.height = rc.bottom - rc.top;
 
 	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &pBlackBrush));
 	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &pRedBrush));
@@ -86,7 +107,7 @@ void RenderFishGUI::Cleanup()
 
 void RenderFishGUI::BeginFrame()
 {
-	g_side_bar.cell_numbers_last_draw = gui_state.next_id;
+	side_bar.cell_numbers_last_draw = gui_state.next_id;
 	gui_state.reset();
 	mouse_state.hot_item = -1;
 	SideBar();
@@ -94,6 +115,10 @@ void RenderFishGUI::BeginFrame()
 
 void RenderFishGUI::EndFrame()
 {
+	for (int i = 1; i <= gui_state.height / 30; ++i) {
+		pRenderTarget->DrawLine(D2D1::Point2F(gui_state.width - (side_bar.rect.right - side_bar.rect.left), i * 30),
+			D2D1::Point2F(gui_state.width, i * 30), pBlackBrush);
+	}
 }
 
 void RenderFishGUI::BeginDialog()
@@ -103,42 +128,72 @@ void RenderFishGUI::BeginDialog()
 
 void RenderFishGUI::SideBar(int width /*= 250*/)
 {
-	int window_width = rc.right - rc.left;
-	int window_height = rc.bottom - rc.top;
-	g_side_bar.rect = D2D1::RectF((float)window_width - width, rc.top, (float)window_width, rc.bottom);
-	g_side_bar.y_filled = g_side_bar.y_start + g_side_bar.y_margin;
+	int window_width = gui_state.width;
+	int window_height = gui_state.height;
+	side_bar.rect = D2D1::RectF((float)window_width - width, 0.f, (float)window_width, (float)window_height);
+	side_bar.y_filled = side_bar.y_start + side_bar.y_margin;
 
-	pRenderTarget->FillRectangle(D2D1::RectF(float(window_width - width), 0.f, (float)window_width, float(rc.bottom - rc.top)), pGrayBrush);
+	fill_rect(window_width - width, 0, width, window_height, pGrayBrush);
 
 	if (mouse_state.mouse_wheel_rotating) {
-		g_side_bar.y_start += mouse_state.mouse_wheel_z_delta;
+		// scrolling direction changed, stop scrolling immediately
+		if (side_bar.scroll_direction * mouse_state.mouse_wheel_z_delta < 0)
+			side_bar.scroll_target_y = side_bar.y_start;
+		side_bar.scroll_direction = mouse_state.mouse_wheel_z_delta > 0 ? direction_up : direction_down;
+		side_bar.scroll_target_y += mouse_state.mouse_wheel_z_delta;
+		mouse_state.mouse_wheel_rotating = false;
 	}
-	if (g_side_bar.y_start > 0)
-		g_side_bar.y_start = 0;
-	mouse_state.mouse_wheel_rotating = false;
 
+	const int scroll_pixels_per_frame = 30;
+	if (abs(side_bar.scroll_target_y - side_bar.y_start) > scroll_pixels_per_frame)
+		side_bar.y_start += (side_bar.scroll_target_y > side_bar.y_start) ? scroll_pixels_per_frame : -scroll_pixels_per_frame;
+	if (side_bar.y_start > 0)
+		side_bar.y_start = 0;
+	
 	// scroll bar
+	const int scroll_bar_width = 2;
 	pReuseableBrush->SetColor(D2D1::ColorF(0.6f, 0.6f, 0.6f));
-	pRenderTarget->FillRectangle(D2D1::RectF(float(rc.right - 2), rc.top, float(rc.right), rc.bottom), pReuseableBrush);
+	fill_rect(window_width - scroll_bar_width, 0, scroll_bar_width, window_height, pReuseableBrush);
 	pReuseableBrush->SetColor(D2D1::ColorF(0.2f, 0.2f, 0.2f));
-	if (g_side_bar.cell_numbers_last_draw * g_side_bar.y_cell_height > window_height) {
-		int bar_y_start = rc.top - 2;
-		bar_y_start -= 1.0f * g_side_bar.y_start / (g_side_bar.cell_numbers_last_draw * g_side_bar.y_cell_height) * window_height;
-		int bar_length = float(window_height) / (g_side_bar.cell_numbers_last_draw * g_side_bar.y_cell_height) * window_height;
-		pRenderTarget->FillRectangle(D2D1::RectF(float(rc.right - 2), rc.top + bar_y_start, float(rc.right), rc.top + bar_y_start + bar_length), pReuseableBrush);
+	if (side_bar.cell_numbers_last_draw * side_bar.y_cell_height > window_height) {
+		int bar_y_start =  - 2;
+		bar_y_start -= 1.0f * side_bar.y_start / (side_bar.cell_numbers_last_draw * side_bar.y_cell_height) * window_height;
+		int bar_length = float(window_height) / (side_bar.cell_numbers_last_draw * side_bar.y_cell_height) * window_height;
+		fill_rect(window_width - scroll_bar_width, bar_y_start, scroll_bar_width, bar_length, pReuseableBrush);
 	}
 }
 
+
+void RenderFishGUI::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_MOUSEMOVE:
+		mouse_state.pos_x = LOWORD(lParam);
+		mouse_state.pos_y = HIWORD(lParam);
+		break;
+	case WM_LBUTTONDOWN:
+		mouse_state.mouse_down = true;
+		break;
+	case WM_LBUTTONUP:
+		mouse_state.mouse_down = false;
+		break;
+	case WM_MOUSEWHEEL:
+		mouse_state.mouse_wheel_rotating = true;
+		mouse_state.mouse_wheel_z_delta = (short)HIWORD(wParam);
+		break;
+	}
+}
 
 bool RenderFishGUI::Button(const WCHAR* label /*= nullptr*/)
 {
 	bool clicked = false;
 
 	int id = gui_state.next_id ++;
-	int x = (int)g_side_bar.rect.left + g_side_bar.x_margin_left, y = g_side_bar.y_filled + g_side_bar.y_margin;
-	int width = g_side_bar.avaliable_width();
-	int height = g_side_bar.y_cell_height;
-	g_side_bar.y_filled += g_side_bar.y_margin * 2 + height;
+	int x = (int)side_bar.rect.left + side_bar.x_margin_left, y = side_bar.y_filled + side_bar.y_margin;
+	int width = side_bar.avaliable_width();
+	int height = side_bar.y_cell_height;
+	side_bar.y_filled += side_bar.y_margin * 2 + height;
 
 	if (mouse_in_region(x, y, width, height)) {
 		mouse_state.hot_item = id;
@@ -183,14 +238,20 @@ bool RenderFishGUI::Button(const char* label)
 	return Button(ToWString<const char*>(label).c_str());
 }
 
-void RenderFishGUI::Label(const WCHAR* text, DWRITE_TEXT_ALIGNMENT text_alignment /*= DWRITE_TEXT_ALIGNMENT_LEADING*/)
+void RenderFishGUI::Label(const WCHAR* text, GUIAlignment text_alignment /*= align_horiontally_center*/)
 {
 	int id = gui_state.next_id++;
-	float width = 128.f, height = (float)g_side_bar.y_cell_height;
-	float x = g_side_bar.rect.left + g_side_bar.x_margin_left, y = float(g_side_bar.y_filled + g_side_bar.y_margin);
-	width = g_side_bar.avaliable_width();
+	float width = 128.f, height = (float)side_bar.y_cell_height;
+	float x = side_bar.rect.left + side_bar.x_margin_left, y = float(side_bar.y_filled + side_bar.y_margin);
+	width = side_bar.avaliable_width();
 	pTexFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-	pTexFormat->SetTextAlignment(text_alignment);
+
+	DWRITE_TEXT_ALIGNMENT alignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+	if (text_alignment == align_horiontally_left)
+		alignment = DWRITE_TEXT_ALIGNMENT_LEADING;
+	else if (text_alignment == align_horiontally_right)
+		alignment = DWRITE_TEXT_ALIGNMENT_TRAILING;
+	pTexFormat->SetTextAlignment(alignment);
 	SAFE_RELEASE(pTextLayout);
 	HR(pDWriteFactory->CreateTextLayout(text, wcslen(text), pTexFormat, width, height, &pTextLayout));
 	//DWRITE_TEXT_METRICS mertics;
@@ -199,10 +260,10 @@ void RenderFishGUI::Label(const WCHAR* text, DWRITE_TEXT_ALIGNMENT text_alignmen
 	//pTextLayout->SetMaxHeight(height);
 	pRenderTarget->DrawTextLayout(D2D1::Point2F(x, y), pTextLayout, pBlackBrush);
 
-	g_side_bar.y_filled += int(g_side_bar.y_margin * 2 + height);
+	side_bar.y_filled += int(side_bar.y_margin * 2 + height);
 }
 
-void RenderFishGUI::Label(const char* text, DWRITE_TEXT_ALIGNMENT text_alignment /*= DWRITE_TEXT_ALIGNMENT_LEADING*/)
+void RenderFishGUI::Label(const char* text, GUIAlignment text_alignment /*= align_horiontally_center*/)
 {
 	Label(ToWString(text).c_str(), text_alignment);
 }
@@ -210,9 +271,9 @@ void RenderFishGUI::Label(const char* text, DWRITE_TEXT_ALIGNMENT text_alignment
 void RenderFishGUI::NumberBox(int* val)
 {
 	int id = gui_state.next_id++;
-	float width = 128.f, height = (float)g_side_bar.y_cell_height;
-	float x = g_side_bar.rect.left + g_side_bar.x_margin_left, y = float(g_side_bar.y_filled + g_side_bar.y_margin);
-	width = g_side_bar.avaliable_width();
+	float width = 128.f, height = (float)side_bar.y_cell_height;
+	float x = side_bar.rect.left + side_bar.x_margin_left, y = float(side_bar.y_filled + side_bar.y_margin);
+	width = side_bar.avaliable_width();
 	pTexFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 	pTexFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 	SAFE_RELEASE(pTextLayout);
@@ -235,7 +296,7 @@ void RenderFishGUI::NumberBox(int* val)
 	}
 	pRenderTarget->DrawTextLayout(D2D1::Point2F(x+x_margin, y), pTextLayout, pBlackBrush);
 
-	g_side_bar.y_filled += int(g_side_bar.y_margin * 2 + height);
+	side_bar.y_filled += int(side_bar.y_margin * 2 + height);
 }
 
 template<typename T>
@@ -243,12 +304,12 @@ void RenderFishGUI::Slider(const char* str, T *pVal, T min, T max)
 {
 	int id = gui_state.next_id++;
 	Label(str);
-	int width = g_side_bar.avaliable_width();
-	int x = int(g_side_bar.rect.left) + g_side_bar.x_margin_left;
+	int width = side_bar.avaliable_width();
+	int x = int(side_bar.rect.left) + side_bar.x_margin_left;
 	//x = 10;
-	int y = g_side_bar.y_filled;
-	g_side_bar.y_filled += g_side_bar.y_cell_height;
-	int y_cneter = y + g_side_bar.y_cell_height / 2;
+	int y = side_bar.y_filled;
+	side_bar.y_filled += side_bar.y_cell_height;
+	int y_cneter = y + side_bar.y_cell_height / 2;
 
 	auto pBrush = pBlackBrush;
 	float percent = float(*pVal - min) / float(max - min);
@@ -256,17 +317,32 @@ void RenderFishGUI::Slider(const char* str, T *pVal, T min, T max)
 	if (mouse_in_region(x, y_cneter - region_height / 2, width, region_height)) {
 		pBrush = pWhiteBrush;
 		if (mouse_state.mouse_down) {
-			percent = float(T(float(mouse_state.mouse_x - x) / width * (max - min))) / (max - min);
+			percent = float(T(float(mouse_state.pos_x - x) / width * (max - min))) / (max - min);
 			*pVal = min + T((max - min) * percent);
 		}
 	}
 
 	pRenderTarget->DrawRectangle(D2D1::RectF(float(x), float(y_cneter - 2 / 2), float(x + width), float(y_cneter + 2 / 2)), pBrush);
-	D2D1_ELLIPSE circle{ D2D1_POINT_2F{ float(x + int(percent * width)), float(y + g_side_bar.y_cell_height / 2) }, 5.f, 5.f };
+	D2D1_ELLIPSE circle{ D2D1_POINT_2F{ float(x + int(percent * width)), float(y + side_bar.y_cell_height / 2) }, 5.f, 5.f };
 	pRenderTarget->FillEllipse(circle, pBrush);
 }
 
-void RenderFishGUI::draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* brush, ID2D1SolidColorBrush* fill_brush /*= nullptr*/)
+void RenderFishGUI::draw_rect(int x, int y, int w, int h)
+{
+	pRenderTarget->DrawRectangle(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), pBlackBrush);
+}
+
+void RenderFishGUI::draw_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* border_brush)
+{
+	pRenderTarget->DrawRectangle(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), border_brush);	
+}
+
+void RenderFishGUI::fill_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* fill_brush)
+{
+	pRenderTarget->FillRectangle(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), fill_brush);
+}
+
+void RenderFishGUI::draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* border_brush, ID2D1SolidColorBrush* fill_brush /*= nullptr*/)
 {
 	// Draw Rectangle
 	//pRenderTarget->DrawRectangle(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), brush);
@@ -274,10 +350,10 @@ void RenderFishGUI::draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColo
 		pRenderTarget->FillRoundedRectangle(
 			D2D1::RoundedRect(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), 5.f, 5.f), fill_brush);
 	pRenderTarget->DrawRoundedRectangle(
-		D2D1::RoundedRect(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), 5.f, 5.f), brush);
+		D2D1::RoundedRect(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), 5.f, 5.f), border_brush);
 }
 
-RECT RenderFishGUI::rc;
+//RECT RenderFishGUI::rc;
 MouseState RenderFishGUI::mouse_state;
 ID2D1Factory* RenderFishGUI::pD2DFactory(nullptr);
 ID2D1HwndRenderTarget* RenderFishGUI::pRenderTarget(nullptr);

@@ -75,23 +75,19 @@ public:
 
 	static HRESULT CreateD2DResource(ID2D1Factory* pD2DFactory, HWND hWnd, ID2D1HwndRenderTarget* pRenderTarget);
 	static void Cleanup();
+	static void WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	static void BeginFrame();
 	static void EndFrame();
 	static void BeginDialog();
 	static bool Button(const WCHAR* label = nullptr);
 	static bool Button(const char* label);
-	static void Label(const WCHAR* text, GUIAlignment text_alignment = align_horiontally_center);
-	static void Label(const char* text, GUIAlignment text_alignment = align_horiontally_center);
-	static void NumberBox(int* val);
-	static void SideBar(int width = 250);
-
-	static void WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+	static void Label(const WCHAR* text, GUIAlignment text_alignment = align_horiontally_left);
+	static void Label(const char* text, GUIAlignment text_alignment = align_horiontally_left);
+	static void SideBar(int width = 280);
 
 	template<typename T>
-	static void Slider(const char* str, T *pVal, T min, T max);
-
-	//static void Slider(const char* str, float *pVal, float min, float max);
+	static void Slider(const char* label, T *pVal, T min, T max);
 
 private:
 	RenderFishGUI();
@@ -112,6 +108,10 @@ private:
 	static void draw_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* border_brush);
 	static void fill_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* fill_brush);
 	static void draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* border_brush, ID2D1SolidColorBrush* fill_brush = nullptr);
+	static void draw_text(const WCHAR* text, int x, int y, int w, int h, GUIAlignment text_alignment = align_horiontally_left);
+	static void draw_text(const char* text, int x, int y, int w, int h, GUIAlignment text_alignment = align_horiontally_left);
+	template<typename T>
+	static void draw_number_box(const T val, int x, int y, int w, int h);
 
 	inline static bool mouse_in_region(int x, int y, int w, int h) {
 		return (x < mouse_state.pos_x && mouse_state.pos_x < x + w) &&
@@ -122,3 +122,7 @@ private:
 template void RenderFishGUI::Slider<float>(const char* str, float *pVal, float min, float max);
 template void RenderFishGUI::Slider<int>(const char* str, int *pVal, int min, int max);
 template void RenderFishGUI::Slider<double>(const char* str, double *pVal, double min, double max);
+
+template void RenderFishGUI::draw_number_box<int>(const int val, int x, int y, int w, int h);
+template void RenderFishGUI::draw_number_box<float>(const float val, int x, int y, int w, int h);
+//template void RenderFishGUI::draw_number_box<int>(const int val);

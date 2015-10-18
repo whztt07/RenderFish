@@ -71,8 +71,8 @@ VOID Render() {
 	RenderFishGUI::Slider<float>("float slider", &counter1, 0.f, 20.f);
 	RenderFishGUI::Slider<int>("int slider", &counter2, 0, 10);
 
-	static int number1 = 10;
-	RenderFishGUI::NumberBox(&number1);
+	//static int number1 = 10;
+	//RenderFishGUI::draw_number_box(&number1);
 
 	RenderFishGUI::Label(L"test label center", align_horiontally_center);
 	RenderFishGUI::Label(L"test label right", align_horiontally_right);
@@ -266,6 +266,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 		NULL); // creation parameter
 
 	CreateD2DResource(g_Hwnd);
+
+	AllocConsole();
+	AttachConsole(GetCurrentProcessId());
+	FILE* dont_care;
+	freopen_s(&dont_care, "CON", "w", stdout);
 
 	load_bitmap_from_file(&pBitmap, pRenderTarget, 800, 600);
 

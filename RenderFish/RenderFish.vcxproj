@@ -13,6 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{035E69B1-DA33-41B3-B85A-18E947E3851C}</ProjectGuid>
     <RootNamespace>RayTracer</RootNamespace>
+    <ProjectName>RenderFish</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

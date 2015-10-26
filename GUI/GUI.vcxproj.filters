@@ -16,14 +16,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderFishGUI.cpp">
+    <ClCompile Include="..\RenderFish\GUI\RenderFishGUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RenderFishGUI.hpp">
+    <ClInclude Include="..\RenderFish\include\RenderFishGUI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

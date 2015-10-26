@@ -1,85 +1,22 @@
 #include "RenderFish.hpp"
 #include "World.hpp"
 #include <windows.h>
-#include <D2D1.h>// header for Direct2D
+#include <D2D1.h>
 #include <d2d1_1helper.h>
-#include <dwrite.h>
 #include <chrono>
-#include <Wincodec.h>
-#include <sstream>
+#include "RenderFishGUI.hpp"
+
 using namespace std;
 
 const int width = 800;
 const int height = 600;
 World w;
-
-template<typename T>
-inline std::wstring ToWString(const T& s)
-{
-	std::wostringstream oss;
-	oss << s;
-	return oss.str();
-}
-
-template<typename T>
-inline T ToString(const std::wstring& s)
-{
-	T x;
-	std::wistringstream iss(s);
-	iss >> x;
-	return x;
-}
-
-#define SAFE_RELEASE(P) if(P){P->Release() ; P = NULL ;}
-#define HR(hr) \
-	if (FAILED(hr)) { MessageBoxA(g_Hwnd, __FILE__, "Error", MB_OK); exit(1); }
-
 ID2D1Factory* pD2DFactory = NULL; // Direct2D factory
-IDWriteFactory* pDWriteFactory = NULL;
 ID2D1HwndRenderTarget* pRenderTarget = NULL; // Render target
-ID2D1SolidColorBrush* pBlackBrush = NULL; // A black brush, reflect the line color
-ID2D1SolidColorBrush* pGrayBrush = NULL;
-ID2D1SolidColorBrush* pWhiteBrush = NULL;
-ID2D1SolidColorBrush* pRedBrush = NULL;
-IDWriteTextFormat * pTexFormat = NULL;
-IDWriteTextLayout * pTextLayout = NULL;
 ID2D1Bitmap *pBitmap;
 
 RECT rc; // Render area
 HWND g_Hwnd; // Window handle
-
-struct MouseState {
-	int mouse_x;
-	int mouse_y;
-
-	int hot_item;
-	//int active_item;
-	bool mouse_down;
-};
-static MouseState mouse_state = { -1, -1, -1, false };
-
-struct SideBar {
-	D2D1_RECT_F rect;
-	//int left;
-	//int right;
-	//int width = 200;
-	//int height;
-	int x_margin = 10;
-	int y_margin = 5;
-	int y_cell_height = 30;
-	int y_filled = 0;
-};
-static SideBar g_side_bar;
-
-struct GUIButton {
-	int next_id = 0;
-	int button_id_clicked = -1;
-	void reset() {
-		next_id = 0;
-	}
-};
-static GUIButton g_button;
-
 
 static std::chrono::high_resolution_clock::time_point last_render_time;
 
@@ -92,9 +29,6 @@ VOID CreateD2DResource(HWND hWnd)
 	HRESULT hr;
 	HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory));
 
-	hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&pDWriteFactory));
-	HR(hr);
-
 	// Obtain the size of the drawing area
 	GetClientRect(hWnd, &rc);
 
@@ -105,130 +39,15 @@ VOID CreateD2DResource(HWND hWnd)
 		&pRenderTarget);
 	HR(hr);
 
-	// Create a brush
-	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &pBlackBrush));
-	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &pRedBrush));
-	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Gray), &pGrayBrush));
-	HR(pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &pWhiteBrush));
-
-	HR(pDWriteFactory->CreateTextFormat(L"Consolas", nullptr, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
-		DWRITE_FONT_STRETCH_NORMAL, 14.f, L"", &pTexFormat));
-	IDWriteInlineObject * trimming_sign = nullptr;
-	pDWriteFactory->CreateEllipsisTrimmingSign(pTexFormat, &trimming_sign);
-	DWRITE_TRIMMING trim;
-	trim.granularity = DWRITE_TRIMMING_GRANULARITY_CHARACTER;
-	trim.delimiter = 0;
-	trim.delimiterCount = 0;
-	pTexFormat->SetTrimming(&trim, trimming_sign);
-	pTexFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-
-	HR(pDWriteFactory->CreateTextLayout(L"LooooooooooongWorld", 20, pTexFormat, 0, 0, &pTextLayout));
+	RenderFishGUI::CreateD2DResource(pD2DFactory, hWnd, pRenderTarget);
 }
 
-VOID draw_rounded_rect(int x, int y, int w, int h, ID2D1SolidColorBrush* brush, ID2D1SolidColorBrush* fill_brush = nullptr)
-{
-	// Draw Rectangle
-	//pRenderTarget->DrawRectangle(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), brush);
-	if (fill_brush != nullptr)
-		pRenderTarget->FillRoundedRectangle(
-			D2D1::RoundedRect(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), 5.f, 5.f), fill_brush);
-	pRenderTarget->DrawRoundedRectangle(
-		D2D1::RoundedRect(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), 5.f, 5.f), brush);
-}
 
 VOID Cleanup()
 {
+	RenderFishGUI::Cleanup();
 	SAFE_RELEASE(pRenderTarget);
-	SAFE_RELEASE(pBlackBrush);
 	SAFE_RELEASE(pD2DFactory);
-	SAFE_RELEASE(pRedBrush);
-	SAFE_RELEASE(pGrayBrush);
-}
-
-inline bool mouse_in_region(int x, int y, int w, int h) {
-	if (mouse_state.mouse_x < x || mouse_state.mouse_y < y ||
-		mouse_state.mouse_x >= x + w || mouse_state.mouse_y >= y + h)
-		return false;
-	return true;
-}
-
-bool button(const WCHAR* label = nullptr)
-{
-	bool clicked = false;
-
-	int id = g_button.next_id;
-	g_button.next_id++;
-	int width = 128, height = g_side_bar.y_cell_height;
-	int x = (int)g_side_bar.rect.left + g_side_bar.x_margin, y = g_side_bar.y_filled + g_side_bar.y_margin;
-	width = int(g_side_bar.rect.right - g_side_bar.rect.left) - g_side_bar.x_margin * 2;
-	g_side_bar.y_filled += g_side_bar.y_margin * 2 + height;
-
-	if (mouse_in_region(x, y, width, height)) {
-		mouse_state.hot_item = id;
-		if (mouse_state.mouse_down) {
-			//ui_state.active_item = id;
-			draw_rounded_rect(x + 1, y + 1, width - 2, height - 2, pBlackBrush, pGrayBrush);
-			g_button.button_id_clicked = id;
-		}
-		else {
-			draw_rounded_rect(x, y, width, height, pBlackBrush, pWhiteBrush);
-			if (g_button.button_id_clicked == id) {
-				clicked = true;
-				g_button.button_id_clicked = -1;
-			}
-		}
-		//if (ui_state.active_item == -1 && ui_state.mouse_down)
-		//	ui_state.active_item = id;
-	}
-	else {
-		draw_rounded_rect(x, y, width, height, pBlackBrush);
-	}
-	if (label != nullptr) {
-		float margin = 10;
-		//pRenderTarget->DrawTextA(label, wcslen(label), pTexFormat, D2D1::RectF(x + margin, y + (height - 17) / 2.f, width, height), pBlackBrush);
-
-		pTexFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-		pTexFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-		SAFE_RELEASE(pTextLayout);
-		HR(pDWriteFactory->CreateTextLayout(label, wcslen(label), pTexFormat, (float)width - margin*2.f, (float)height, &pTextLayout));
-		DWRITE_TEXT_METRICS mertics;
-		pTextLayout->GetMetrics(&mertics);
-		pRenderTarget->DrawTextLayout(D2D1::Point2F(x + margin, y + (height - height) / 2.f), pTextLayout, pBlackBrush);
-	}
-
-	//if (ui_state.mouse_down == 0 && ui_state.hot_item == id && ui_state.active_item == id)
-	//	clicked = true;
-	return clicked;
-}
-
-bool button(const char* label) {
-	return button(ToWString<const char*>(label).c_str());
-}
-
-bool side_bar(int width = 200) {
-	GetClientRect(g_Hwnd, &rc);
-	int window_width = rc.right - rc.left;
-	g_side_bar.rect = D2D1::RectF((float)window_width - width, 0.f, (float)window_width, float(rc.bottom - rc.top));
-	g_side_bar.y_filled = g_side_bar.y_margin;
-	pRenderTarget->FillRectangle(D2D1::RectF(float(window_width - width), 0.f, (float)window_width, float(rc.bottom - rc.top)), pGrayBrush);
-	return true;
-}
-
-void label(const WCHAR* text, DWRITE_TEXT_ALIGNMENT text_alignment = DWRITE_TEXT_ALIGNMENT_LEADING) {
-	float width = 128.f, height = (float)g_side_bar.y_cell_height;
-	float x = g_side_bar.rect.left + g_side_bar.x_margin, y = float(g_side_bar.y_filled + g_side_bar.y_margin);
-	width = (g_side_bar.rect.right - g_side_bar.rect.left) - g_side_bar.x_margin * 2;
-	pTexFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-	pTexFormat->SetTextAlignment(text_alignment);
-	SAFE_RELEASE(pTextLayout);
-	HR(pDWriteFactory->CreateTextLayout(text, wcslen(text), pTexFormat, width, height, &pTextLayout));
-	//DWRITE_TEXT_METRICS mertics;
-	//pTextLayout->GetMetrics(&mertics);
-	//if (height < mertics.height) height = mertics.height;
-	//pTextLayout->SetMaxHeight(height);
-	pRenderTarget->DrawTextLayout(D2D1::Point2F(x, y), pTextLayout, pBlackBrush);
-
-	g_side_bar.y_filled += int(g_side_bar.y_margin * 2 + height);
 }
 
 void draw_texture() {
@@ -241,15 +60,40 @@ VOID Render() {
 	// Clear background color white
 	pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
-	g_button.reset();
-	//ui_state.active_item = -1;
-	mouse_state.hot_item = -1;
-
 	draw_texture();
+	RenderFishGUI::BeginFrame();
 
-	side_bar();
+	static string buf("");
+	RenderFishGUI::Label(buf.c_str());
+	if (RenderFishGUI::Button(L"Button 1"))
+		buf = "button 1 clicked";
+	if (RenderFishGUI::Button(L"Button 2"))
+		buf = "button 2 clicked";
 
-	if (button(L"Render")) {
+	static float counter1 = 10.f;
+	static int counter2 = 3;
+
+	RenderFishGUI::Slider<float>("float slider", &counter1, 0.f, 20.f);
+	RenderFishGUI::Slider<int>("int slider", &counter2, 0, 10);
+
+	//static int number1 = 10;
+	//RenderFishGUI::draw_number_box(&number1);
+
+	RenderFishGUI::Label(L"test label center", align_horiontally_center);
+	RenderFishGUI::Label(L"test label right", align_horiontally_right);
+
+	if (RenderFishGUI::Button(L"warning")) {
+		MessageBox(g_Hwnd, "warning", "warning", MB_OK);
+	}
+
+	RenderFishGUI::Button(L"This is a a a a a loooooooooooooooooooooooooooooooong word.");
+	if (RenderFishGUI::Button(L"Render")) {
+		// render
+	}
+
+	RenderFishGUI::EndFrame();
+
+	if (RenderFishGUI::Button(L"Render")) {
 		w.render_scene();
 		pBitmap->CopyFromMemory(nullptr, &w.color_buffer[0], 4 * width);
 	}
@@ -260,16 +104,13 @@ VOID Render() {
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	RenderFishGUI::WndProc(hwnd, message, wParam, lParam);
 	switch (message)
 	{
 	case WM_PAINT:
 		Render();
 		ValidateRect(g_Hwnd, NULL);
 		return 0;
-
-	case WM_SIZE:
-		//info("resize");
-		break;
 
 	case WM_KEYDOWN:
 	{
@@ -285,16 +126,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	break;
 
-	case WM_MOUSEMOVE:
-		mouse_state.mouse_x = LOWORD(lParam);
-		mouse_state.mouse_y = HIWORD(lParam);
-		break;
-	case WM_LBUTTONDOWN:
-		mouse_state.mouse_down = true;
-		break;
-	case WM_LBUTTONUP:
-		mouse_state.mouse_down = false;
-		break;
 	case WM_DESTROY:
 		//Cleanup();
 		PostQuitMessage(0);

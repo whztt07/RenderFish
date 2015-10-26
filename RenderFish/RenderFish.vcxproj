@@ -97,6 +97,7 @@
     <ClCompile Include="Core\Texture.cpp" />
     <ClCompile Include="Core\Tracer.cpp" />
     <ClCompile Include="Core\Transform.cpp" />
+    <ClCompile Include="GUI\RenderFishGUI.cpp" />
     <ClCompile Include="IO\ImageIO.cpp" />
     <ClCompile Include="IO\ModelIO.cpp" />
     <ClCompile Include="KdTree.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="Include\Reflection.hpp" />
     <ClInclude Include="Include\Renderer.hpp" />
     <ClInclude Include="Include\RenderFish.hpp" />
+    <ClInclude Include="include\RenderFishGUI.hpp" />
     <ClInclude Include="Include\Sampler.hpp" />
     <ClInclude Include="Include\Scene.hpp" />
     <ClInclude Include="Include\Shape.hpp" />

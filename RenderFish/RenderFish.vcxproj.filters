@@ -55,6 +55,12 @@
     <Filter Include="Header Files\Light">
       <UniqueIdentifier>{e596b462-9108-4452-80df-068e331bf582}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{fe51dbf7-d557-4f86-b9df-709e5a7a980c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{44d926e6-e0a7-4771-a768-1cd263181049}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RayTracer.rc">
@@ -202,6 +208,9 @@
     </ClCompile>
     <ClCompile Include="Parallel.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\RenderFishGUI.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -351,6 +360,9 @@
     </ClInclude>
     <ClInclude Include="Parallel.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RenderFishGUI.hpp">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

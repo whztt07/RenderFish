@@ -5,6 +5,7 @@
 #include "MemoryArena.hpp"
 #include "Spectrum.hpp"
 #include "Camera.hpp"
+#include "Parallel.hpp"
 
 class SurfaceIntegrator;
 
@@ -52,3 +53,26 @@ public:
 		error("not implemented SimpleRender::transmittance");
 	}
 };
+
+class SamplerRenderTask: public Task
+{
+private:
+	const Scene		*scene;
+	const Renderer	*renderer;
+	Camera			*camera;
+	Sampler			*main_sampler;
+	Sample			*orignal_sample;
+	int				task_number, task_count;
+
+public:
+	SamplerRenderTask(const Scene *scene, Renderer *renderer, Camera *camera, Sampler *main_sampler,
+		Sample *orignal_sample, int task_number, int task_count)
+		: scene(scene), renderer(renderer), camera(camera), main_sampler(main_sampler),
+		orignal_sample(orignal_sample), task_number(task_number), task_count(task_count) {
+	}
+
+	virtual void run() override {
+
+	}
+
+}

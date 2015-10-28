@@ -86,6 +86,7 @@
     <ClCompile Include="Core\Light.cpp" />
     <ClCompile Include="Core\Material.cpp" />
     <ClCompile Include="Core\MemoryArena.cpp" />
+    <ClCompile Include="Core\Parallel.cpp" />
     <ClCompile Include="Core\Primitive.cpp" />
     <ClCompile Include="Core\Ray.cpp" />
     <ClCompile Include="Core\ReferenceCounted.cpp" />
@@ -110,7 +111,6 @@
     <ClCompile Include="Math\random.cpp" />
     <ClCompile Include="Math\Vector.cpp" />
     <ClCompile Include="ModelProcessing.cpp" />
-    <ClCompile Include="Parallel.cpp" />
     <ClCompile Include="Shape\Box.cpp" />
     <ClCompile Include="Shape\Sphere.cpp" />
     <ClCompile Include="Shape\TriangleMesh.cpp" />
@@ -146,6 +146,7 @@
     <ClInclude Include="Include\MemoryArena.hpp" />
     <ClInclude Include="Include\ModelIO.hpp" />
     <ClInclude Include="Include\ModelProcessing.hpp" />
+    <ClInclude Include="include\Parallel.hpp" />
     <ClInclude Include="Include\Primitive.hpp" />
     <ClInclude Include="Include\Probes.hpp" />
     <ClInclude Include="Include\Quaternion.hpp" />
@@ -171,7 +172,6 @@
     <ClInclude Include="Include\WhittedIntegrator.hpp" />
     <ClInclude Include="Include\Window.hpp" />
     <ClInclude Include="Include\World.hpp" />
-    <ClInclude Include="Parallel.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

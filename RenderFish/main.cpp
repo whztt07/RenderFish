@@ -87,9 +87,6 @@ VOID Render() {
 	}
 
 	RenderFishGUI::Button(L"This is a a a a a loooooooooooooooooooooooooooooooong word.");
-	if (RenderFishGUI::Button(L"Render")) {
-		// render
-	}
 
 	RenderFishGUI::EndFrame();
 

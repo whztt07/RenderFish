@@ -49,6 +49,10 @@ void SamplerRender::render(const Scene * scene) const
 		for (uint32_t i = 0; i < render_tasks.size(); ++i)
 			delete render_tasks[i];
 	}
+	for (int x = 0; x < camera->film->x_resolution; ++x) {
+		for (int y = 0; y < camera->film->y_resolution; ++y) {
+		}
+	}
 
 	// clean up after rendering and store final image
 	delete sample;

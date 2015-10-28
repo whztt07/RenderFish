@@ -47,6 +47,9 @@ private:
 
 	int x_pixel_start, y_pixel_start, x_pixel_count, y_pixel_count;
 
+	// TODO -> blocked_array
+	vector<RGBPixel> pixels;
+
 public:
 	ImageFilm(int x_res, int y_res, Filter *filter, const float crop[4], const string &fn, bool open_window)
 		: Film(x_res, y_res) {
@@ -60,5 +63,7 @@ public:
 		y_pixel_count = x_resolution;
 		y_pixel_start = 0;
 		y_pixel_count = y_resolution;
+
+
 	}
 };

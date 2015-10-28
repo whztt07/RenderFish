@@ -1,14 +1,17 @@
 #pragma once
 #include "RenderFish.hpp"
 #include "Math.hpp"
+#include "Spectrum.hpp"
 
-class Spectrum;
+//class Spectrum;
 class RayDifferential;
 class Ray;
-class Intersection;
+struct Intersection;
 class SurfaceIntegrator;
 class VolumeIntegrator;
 class Scene;
+
+struct Sample;
 
 class Sampler
 {
@@ -49,13 +52,21 @@ struct CameraSample {
 };
 
 // Samplers are used by Samplers to strore a single sample
-struct Sample : public CameraSample {
+struct Sample : public CameraSample 
+{
 public:
 	vector<uint32_t> n1D, n2D;
-	float **oneD, **twoD;
+	float **oneD = nullptr;
+	float **twoD = nullptr;
+
 public:
 	Sample(Sampler *sampler, SurfaceIntegrator *surf, VolumeIntegrator *vol, const Scene *scene);
-	virtual int round_size(int size) const = 0;
+
+	~Sample();
+
+	Sample * duplicate(int count) const;
+
+	//virtual int round_size(int size) const = 0;
 	
 	uint32_t add_1D(uint32_t num) {
 		n1D.push_back(num);
@@ -65,5 +76,9 @@ public:
 		n2D.push_back(num);
 		return n2D.size() - 1;
 	}
+
+private:
+	Sample() {}
+	void allocate_sample_memory();
 };
 

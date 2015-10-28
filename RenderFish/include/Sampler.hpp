@@ -51,11 +51,19 @@ struct CameraSample {
 // Samplers are used by Samplers to strore a single sample
 struct Sample : public CameraSample {
 public:
-	vector<uint32_t>
+	vector<uint32_t> n1D, n2D;
+	float **oneD, **twoD;
 public:
 	Sample(Sampler *sampler, SurfaceIntegrator *surf, VolumeIntegrator *vol, const Scene *scene);
+	virtual int round_size(int size) const = 0;
+	
 	uint32_t add_1D(uint32_t num) {
 		n1D.push_back(num);
+		return n1D.size() - 1;
+	}
+	uint32_t add_2D(uint32_t num) {
+		n2D.push_back(num);
+		return n2D.size() - 1;
 	}
 };
 

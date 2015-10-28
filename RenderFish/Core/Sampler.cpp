@@ -1,4 +1,16 @@
 #include "Sampler.hpp"
+#include "Ray.hpp"
+#include "Spectrum.hpp"
+#include "Intersection.hpp"
+#include "Integrator.hpp"
+
+
+Sample::Sample(Sampler *sampler, SurfaceIntegrator *surf, VolumeIntegrator *vol, const Scene *scene)
+{
+	if (surf) surf->request_samples(sampler, this, scene);
+	if (vol) vol->request_samples(sampler, this, scene);
+	allocate_sample_memory();
+}
 
 inline void Sampler::compute_sub_window(int num, int count, int * new_x_start, int * new_x_end, int * nex_y_start, int * new_y_end) const {
 

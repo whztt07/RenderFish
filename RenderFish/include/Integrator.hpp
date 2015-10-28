@@ -20,3 +20,6 @@ public:
 		const Intersection &isect, const Sample *sample, RNG &rng, MemoryArena &arena) const = 0;
 };
 
+class VolumeIntegrator : public Integrator {
+
+};

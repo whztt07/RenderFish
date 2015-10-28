@@ -1,21 +1,14 @@
 #pragma once
+#include "RenderFish.hpp"
 #include "Math.hpp"
-#include "Ray.hpp"
-#include "Spectrum.hpp"
-#include "Intersection.hpp"
 
-struct CameraSample {
-	float image_x, image_y;
-	float lens_u, lens_v;
-	float time;
-};
-
-struct Sample : public CameraSample {
-private:
-
-public:
-
-};
+class Spectrum;
+class RayDifferential;
+class Ray;
+class Intersection;
+class SurfaceIntegrator;
+class VolumeIntegrator;
+class Scene;
 
 class Sampler
 {
@@ -44,5 +37,25 @@ public:
 	virtual Sampler * get_sub_sampler(int num, int count) = 0;
 	void compute_sub_window(int num, int count, int *new_x_start,
 		int *new_x_end, int * nex_y_start, int *new_y_end) const;
+
+	virtual int round_size(int size) const = 0;
+};
+
+// represents just the sample values that are needed for generating camera rays
+struct CameraSample {
+	float image_x, image_y;
+	float lens_u, lens_v;
+	float time;
+};
+
+// Samplers are used by Samplers to strore a single sample
+struct Sample : public CameraSample {
+public:
+	vector<uint32_t>
+public:
+	Sample(Sampler *sampler, SurfaceIntegrator *surf, VolumeIntegrator *vol, const Scene *scene);
+	uint32_t add_1D(uint32_t num) {
+		n1D.push_back(num);
+	}
 };
 

@@ -3,8 +3,8 @@
 #include "Math.hpp"
 #include "Ray.hpp"
 #include "Transform.hpp"
-#include "Film.hpp"
 #include "Sampler.hpp"
+#include "Film.hpp"
 
 class Camera
 {

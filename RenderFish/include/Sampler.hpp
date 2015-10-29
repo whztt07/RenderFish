@@ -32,7 +32,7 @@ public:
 
 	virtual int maximum_sample_count() = 0;
 
-	bool report_results(Sample *samples, const RayDifferential &rays,
+	bool report_results(Sample *samples, const RayDifferential *rays,
 		const Spectrum *Ls, const Intersection *isects, int count) {
 		return true;
 	}

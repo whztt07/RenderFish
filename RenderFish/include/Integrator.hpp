@@ -21,5 +21,6 @@ public:
 };
 
 class VolumeIntegrator : public Integrator {
-
+	virtual Spectrum Li(const Scene *scene, const Renderer *renderer, const RayDifferential &ray,
+		const Intersection &isect, const Sample *sample, RNG &rng, MemoryArena &arena) const = 0;
 };

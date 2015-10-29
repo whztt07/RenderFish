@@ -5,6 +5,7 @@
 #include <d2d1_1helper.h>
 #include <chrono>
 #include "RenderFishGUI.hpp"
+#include "Renderer.hpp"
 
 using namespace std;
 
@@ -189,10 +190,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	log_system_init();
 	
 	//World w;
-	w.build(width, height);
+	//w.build(width, height);
+	Transform camera_trans = inverse(look_at(Point(0, 10, -10), Point(0, 0, 0)));
+	float fov = 60.f;
+	auto proj = perspective(fov, 1e-2f, 1000.f);
+	ImageFilm film(800, 600, make_shared<BoxFilter>(), {0, 0, 1, 1}, "D:\\image_film.bmp", true);
+	PerspectiveCamera camera(camera_trans, proj, {0, 0, 1, 1}, 1, 1, fov, &film)
+
+
+	SamplerRender render();
 	
-	w.render_scene();
-	pBitmap->CopyFromMemory(nullptr, &w.color_buffer[0], 4 * width);
+	//w.render_scene();
+	//pBitmap->CopyFromMemory(nullptr, &w.color_buffer[0], 4 * width);
 
 	ShowWindow(g_Hwnd, iCmdShow);
 	UpdateWindow(g_Hwnd);

@@ -1,5 +1,5 @@
 #include "Camera.hpp"
-
+#include "Film.hpp"
 
 Camera::Camera(const Point& eye, const Vec3& front, float aspect_ratio /*= 1.0f */, float fov /*= 45.0f*/) : eye(eye), front(front), aspect_ratio(aspect_ratio), fov(fov)
 {

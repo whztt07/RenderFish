@@ -59,5 +59,9 @@ public:
 		float time, Vec3 *wi, float *pdf, VisibilityTester *vis) const = 0;
 
 	virtual Spectrum power(const Scene *) const = 0;
+
+	virtual Spectrum Le(const RayDifferential & ray) const {
+		return Spectrum(0.f);
+	}
 };
 

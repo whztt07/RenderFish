@@ -2,6 +2,7 @@
 #include "Sampler.hpp"
 #include "Spectrum.hpp"
 #include "Filter.hpp"
+#include "MemoryArena.hpp"
 
 class Film
 {
@@ -26,17 +27,11 @@ public:
 	virtual void write_image(float spalt_scale = 1.0f) = 0;
 };
 
-
 struct Pixel {
-	float Lxyz[3];
-	float weight_sum;
-	float splat_xyz[3];
-	float pad;
-};
-
-#include "Color.hpp"
-struct RGBPixel {
-	Color rgb;
+	float Lxyz[3]{0, 0, 0};
+	float weight_sum{0};
+	float splat_xyz[3]{0, 0, 0};
+	float pad;	// to 16 * 4 bytes
 };
 
 class ImageFilm : public Film {
@@ -47,8 +42,7 @@ private:
 
 	int x_pixel_start, y_pixel_start, x_pixel_count, y_pixel_count;
 
-	// TODO -> blocked_array
-	vector<RGBPixel> pixels;
+	BlockedArray<Pixel> *pixels;
 
 public:
 	ImageFilm(int x_res, int y_res, Filter *filter, const float crop[4], const string &fn, bool open_window)
@@ -87,6 +81,9 @@ public:
 		L.to_XYZ(xyz);
 		int x = floor2int(sample.image_x), y = floor2int(sample.image_y);
 		if (x < x_pixel_start || x >= x_pixel_start + x_pixel_count ||
-			y < y_pixel_start || )
+			y < y_pixel_start || y >= y_pixel_start + y_pixel_count) {
+			int idx = x - x_pixel_start + (y - y_pixel_start) * x_pixel_count;
+			pixels[idx].rgb += xyz;
+		}
 	}
 };

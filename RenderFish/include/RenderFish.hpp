@@ -26,6 +26,7 @@ using std::vector;
 using std::shared_ptr;
 using std::unique_ptr;
 using std::weak_ptr;
+#include <algorithm>
 
 #include "Error.hpp"
 

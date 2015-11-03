@@ -106,3 +106,5 @@ public:
 				*a++ = (*this)(u, v);
 	}
 };
+
+//template <typename T, int 2> class BlockedArray;

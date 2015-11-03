@@ -1,8 +1,10 @@
 #pragma once
+#include "Renderer.hpp"
 #include "Sampler.hpp"
 #include "Spectrum.hpp"
 #include "Filter.hpp"
 #include "MemoryArena.hpp"
+#include "Parallel.hpp"
 
 class Film
 {
@@ -42,7 +44,7 @@ private:
 
 	int x_pixel_start, y_pixel_start, x_pixel_count, y_pixel_count;
 
-	BlockedArray<Pixel> *pixels;
+	BlockedArray<Pixel, 2> *_pixels;
 
 public:
 	ImageFilm(int x_res, int y_res, Filter *filter, const float crop[4], const string &fn, bool open_window)
@@ -81,9 +83,9 @@ public:
 		L.to_XYZ(xyz);
 		int x = floor2int(sample.image_x), y = floor2int(sample.image_y);
 		if (x < x_pixel_start || x >= x_pixel_start + x_pixel_count ||
-			y < y_pixel_start || y >= y_pixel_start + y_pixel_count) {
-			int idx = x - x_pixel_start + (y - y_pixel_start) * x_pixel_count;
-			pixels[idx].rgb += xyz;
-		}
+			y < y_pixel_start || y >= y_pixel_start + y_pixel_count)
+			return;
+		auto& pixel = (*_pixels)(x - x_pixel_start, y - y_pixel_start);
+		atomic_add(&pixel.splat_xyz[0], xyz[0]);
 	}
 };

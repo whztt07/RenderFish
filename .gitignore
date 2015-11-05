@@ -1,12 +1,14 @@
-/Debug
-/Release
-/Release
+/Debug/
+/Release/
+/x64/
 /RenderFish/Debug/
 /RenderFish/Release/
+/RenderFish/x64/
 /Test/Debug/
-/Test/Release
-/GUI/Debug
-/GUI/Release
+/Test/Release/
+/GUI/Debug/
+/GUI/Release/
+/GUI/x64/
 
 *.sdf
 *.suo

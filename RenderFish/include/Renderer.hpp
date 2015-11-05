@@ -5,9 +5,10 @@
 #include "MemoryArena.hpp"
 #include "Spectrum.hpp"
 #include "Parallel.hpp"
-#include "Camera.hpp"
+//#include "Camera.hpp"
 
 class SurfaceIntegrator;
+class PBRTCamera;
 
 class Renderer
 {

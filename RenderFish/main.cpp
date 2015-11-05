@@ -6,6 +6,8 @@
 #include <chrono>
 #include "RenderFishGUI.hpp"
 #include "Renderer.hpp"
+#include "Film.hpp"
+#include "Camera.hpp"
 
 using namespace std;
 
@@ -194,7 +196,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	Transform camera_trans = inverse(look_at(Point(0, 10, -10), Point(0, 0, 0)));
 	float fov = 60.f;
 	auto proj = perspective(fov, 1e-2f, 1000.f);
-	ImageFilm film(800, 600, make_shared<BoxFilter>(), {0, 0, 1, 1}, "D:\\image_film.bmp", true);
+	float crop[] = { 0, 0, 1, 1 };
+	ImageFilm film(800, 600, new BoxFilter(0.5f, 0.5f), crop, "D:\\image_film.bmp", true);
 	PerspectiveCamera camera(camera_trans, proj, {0, 0, 1, 1}, 1, 1, fov, &film)
 
 

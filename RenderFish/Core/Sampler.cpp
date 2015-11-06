@@ -22,7 +22,7 @@ Sample::~Sample()
 
 void Sample::allocate_sample_memory()
 {
-	int n_parts = n1D.size() + n2D.size();
+	uint32_t n_parts = n1D.size() + n2D.size();
 	if (n_parts == 0) {
 		oneD = twoD = nullptr;
 		return;

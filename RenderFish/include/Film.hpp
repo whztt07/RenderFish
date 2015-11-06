@@ -31,10 +31,14 @@ public:
 };
 
 struct Pixel {
-	float Lxyz[3] = {0, 0, 0};
-	float weight_sum{0};
-	float splat_xyz[3] = {0, 0, 0};
+	float Lxyz[3];// = { 0, 0, 0 };
+	float weight_sum;// {0};
+	float splat_xyz[3];// = { 0, 0, 0 };
 	float pad;	// to 16 * 4 bytes
+
+	Pixel() {
+		memset(this, 0, sizeof(*this));
+	}
 };
 
 class ImageFilm : public Film {

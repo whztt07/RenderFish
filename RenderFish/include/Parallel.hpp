@@ -42,6 +42,7 @@ inline float atomic_add(volatile float *val, float delta) {
 		old_val.f = *val;
 		new_val.f = old_val.f + delta;
 	} while (atomic_compare_and_swap((AtomicInt32 *)val, new_val.i, old_val.i) != old_val.i);
+	return new_val.f;
 }
 
 class Mutex {

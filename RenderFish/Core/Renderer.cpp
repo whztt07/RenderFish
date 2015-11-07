@@ -86,6 +86,7 @@ void SamplerRenderTask::run()
 			// find camera ray for sample[i]
 			float ray_weight = m_camera->gererate_ray_differential(samples[i], &rays[i]);
 			rays[i].scale_differentials(1.f / sqrtf((float)sampler->samples_per_pixel));
+			Ray& r = rays[i];
 			// evaluate radiance along camera ray
 			if (ray_weight > 0.f) {
 				Ls[i] = ray_weight * m_renderer->Li(m_scene, rays[i], &samples[i], rng, arena, &isects[i], &Ts[i]);

@@ -2,7 +2,7 @@
 #include "MathHelper.hpp"
 #include "Timer.hpp"
 
-#if 1
+#if 0
 struct KdTreeNode {
 public:
 	union {

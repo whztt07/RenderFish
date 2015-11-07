@@ -4,7 +4,7 @@
 
 //#define USE_PBRT_KDTREE
 
-#if 1
+#if 0
 struct BoundEdge;
 struct KdTreeNode;
 

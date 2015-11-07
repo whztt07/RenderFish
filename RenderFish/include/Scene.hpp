@@ -14,10 +14,12 @@ public:
 	BBox bound;
 
 public:
-	Scene(Aggregate* aggregate) : aggregate(aggregate) {
-		bound = aggregate->world_bound();
+	Scene(Aggregate* aggregate, const vector<Light *> & lights) 
+		: aggregate(aggregate), lights(lights), bound(aggregate->world_bound()) {
 		//if (volumeRegion) bound = Union(bound, volumeRegion->WorldBound());
 	};
+
+	~Scene();
 
 	bool intersect(const Ray &ray, Intersection *isect) const {
 		return aggregate->intersect(ray, isect);

@@ -19,6 +19,7 @@ Ray Camera::ray_to(float x, float y)
 float PBRTCamera::gererate_ray_differential(const CameraSample &sample, RayDifferential *rd) const
 {
 	float wt = generate_ray(sample, rd);
+	// shift one pixel in x direction
 	CameraSample sshift = sample;
 	++(sshift.image_x);
 	Ray rx;
@@ -26,6 +27,7 @@ float PBRTCamera::gererate_ray_differential(const CameraSample &sample, RayDiffe
 	rd->rx_origin = rx.o;
 	rd->rx_direction = rx.d;
 
+	// shift one pixel in y direction
 	--(sshift.image_x);
 	++(sshift.image_y);
 	Ray ry;
@@ -86,6 +88,7 @@ float PerspectiveCamera::generate_ray(const CameraSample &sample, Ray *ray) cons
 	raster_to_camera(p_ras, &p_camera);
 	*ray = Ray(Point(0, 0, 0), Vec3(p_camera), 0.f, INFINITY);
 	// modify ray for depth of field
+	// TODO
 
 	//ray->time = lerp(sample)
 	camera_to_world(*ray, ray);

@@ -4,10 +4,14 @@
 #include <D2D1.h>
 #include <d2d1_1helper.h>
 #include <chrono>
+#include "Scene.hpp"
+#include "Light.hpp"
 #include "RenderFishGUI.hpp"
 #include "Renderer.hpp"
 #include "Film.hpp"
 #include "Camera.hpp"
+#include "Integrator.hpp"
+#include "WhittedIntegrator.hpp"
 
 using namespace std;
 
@@ -191,8 +195,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 
 	log_system_init();
 	
-	//World w;
-	//w.build(width, height);
+	World w;
+	w.build(width, height);
+
+	KdTree * kdtree = w.kdTree;
+	
+	Transform light_trans = translate(10, 10, 10);
+	vector<Light*> lights;
+	lights.push_back(new PointLight(light_trans, Spectrum(0.8f)));
+
+	Scene scene(kdtree, lights);
+
 	Transform camera_trans = inverse(look_at(Point(0, 10, -10), Point(0, 0, 0)));
 	float fov = 60.f;
 	auto proj = perspective(fov, 1e-2f, 1000.f);
@@ -201,8 +214,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	PerspectiveCamera camera(camera_trans, proj, crop, 1, 1, fov, &film);
 
 	SimpleSampler sampler(0, 800, 0, 600);
+	WhittedIntegrator si;
 
-	SamplerRender render();
+	SamplerRender renderer(&sampler, &camera, &si, nullptr);
+	renderer.render(&scene);
 	
 	//w.render_scene();
 	//pBitmap->CopyFromMemory(nullptr, &w.color_buffer[0], 4 * width);

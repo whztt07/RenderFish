@@ -30,8 +30,7 @@ Spectrum WhittedIntegrator::Li(const Scene * scene, const Renderer * renderer, c
 		Vec3 wi;
 		float pdf;
 		VisibilityTester visibility;
-		Spectrum Li = scene->lights[i]->sample_L(p, isect.ray_epsilon, LightSample(rng),
-			ray.time, &wi, &pdf, &visibility);
+		Spectrum Li = scene->lights[i]->sample_L(p, isect.ray_epsilon, LightSample(rng), &wi, &pdf, &visibility);
 		if (Li.is_black() || pdf == 0.f) continue;
 		Spectrum f = bsdf->f(wo, wi);
 		if (!f.is_black() && visibility.unoccluded(scene)) {

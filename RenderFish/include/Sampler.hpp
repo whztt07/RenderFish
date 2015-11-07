@@ -40,13 +40,13 @@ public:
 	virtual int round_size(int size) const = 0;
 };
 
-class SimpleSampler : Sampler
+class SimpleSampler : public Sampler
 {
 private:
-	int m_current_sample_pos;
+	int m_current_sample_pos = 0;
 
 public:
-	SimpleSampler(int x_start, int x_end, int y_start, int y_end, int samples_per_pixel = 0)
+	SimpleSampler(int x_start, int x_end, int y_start, int y_end, int samples_per_pixel = 1)
 		: Sampler(x_start, x_end, y_start, y_end, samples_per_pixel) {
 	}
 
@@ -54,19 +54,10 @@ public:
 	virtual int maximum_sample_count() override {
 		return samples_per_pixel;
 	}
-	virtual int get_more_samples(Sample *sample, RNG &rng) override {
-		int total_sample_count = (x_pixel_end - x_pixel_start + 1) * (y_pixel_end - y_pixel_start + 1) * samples_per_pixel;
-		if (m_current_sample_pos > total_sample_count) {
-			return 0;
-		}
-		sample = new Sample
-	}
-	virtual Sampler * get_sub_sampler(int num, int count) override {
-		int x0, x1, y0, y1;
-		compute_sub_window(num, count, &x0, &x1, &y0, &y1);
-		if (x0 == x1 || y0 == y1) return nullptr;
-		return new SimpleSampler(x0, x1, y0, y1, samples_per_pixel);
-	}
+
+	virtual int get_more_samples(Sample *sample, RNG &rng) override;
+
+	virtual Sampler * get_sub_sampler(int num, int count) override;
 	virtual int round_size(int size) const override {
 		return size;
 	}
@@ -98,11 +89,11 @@ public:
 	
 	uint32_t add_1D(uint32_t num) {
 		n1D.push_back(num);
-		return n1D.size() - 1;
+		return uint32_t(n1D.size() - 1);
 	}
 	uint32_t add_2D(uint32_t num) {
 		n2D.push_back(num);
-		return n2D.size() - 1;
+		return uint32_t(n2D.size() - 1);
 	}
 
 private:

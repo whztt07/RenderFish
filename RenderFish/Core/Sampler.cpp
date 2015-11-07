@@ -22,7 +22,7 @@ Sample::~Sample()
 
 void Sample::allocate_sample_memory()
 {
-	uint32_t n_parts = n1D.size() + n2D.size();
+	uint32_t n_parts = uint32_t(n1D.size() + n2D.size());
 	if (n_parts == 0) {
 		oneD = twoD = nullptr;
 		return;
@@ -54,7 +54,7 @@ Sample * Sample::duplicate(int count) const
 	return samples;
 }
 
-inline void Sampler::compute_sub_window(int num, int count, int * new_x_start, int * new_x_end, int * nex_y_start, int * new_y_end) const {
+void Sampler::compute_sub_window(int num, int count, int * new_x_start, int * new_x_end, int * nex_y_start, int * new_y_end) const {
 
 	// determine how many tiles to use in each dimension, nx ans ny
 	int dx = x_pixel_end - x_pixel_start, dy = y_pixel_end - y_pixel_start;
@@ -73,4 +73,32 @@ inline void Sampler::compute_sub_window(int num, int count, int * new_x_start, i
 	*new_x_end   = floor2int(lerp(tx1, float(x_pixel_start), float(x_pixel_end)));
 	*nex_y_start = floor2int(lerp(ty0, float(y_pixel_start), float(y_pixel_end)));
 	*new_y_end   = floor2int(lerp(ty1, float(y_pixel_start), float(y_pixel_end)));
+}
+
+int SimpleSampler::get_more_samples(Sample *sample, RNG &rng)
+{
+	const int w = x_pixel_end - x_pixel_start + 1;
+	const int h = y_pixel_end - y_pixel_start + 1;
+	int total_sample_count = w * h * samples_per_pixel;
+	if (m_current_sample_pos > total_sample_count) {
+		return 0;
+	}
+	sample->image_x = float(m_current_sample_pos % w);
+	sample->image_y = float(m_current_sample_pos / w);
+	//for (uint32_t i = 0; i < sample->n1D.size(); ++i)
+	//	for (uint32_t j = 0; j < sample->n1D[i]; ++j)
+	//		sample->oneD[i][j] = rng.random_float();
+	//for (uint32_t i = 0; i < sample->n2D.size(); ++i)
+	//	for (uint32_t j = 0; j < 2 * sample->n2D[i]; ++j)
+	//		sample->twoD[i][j] = rng.random_float();
+	++m_current_sample_pos;
+	return 1;
+}
+
+Sampler * SimpleSampler::get_sub_sampler(int num, int count)
+{
+	int x0, x1, y0, y1;
+	compute_sub_window(num, count, &x0, &x1, &y0, &y1);
+	if (x0 == x1 || y0 == y1) return nullptr;
+	return new SimpleSampler(x0, x1, y0, y1, samples_per_pixel);
 }

@@ -93,6 +93,24 @@ public:
 		(*this)(r.o, &transformed_r->o);
 		(*this)(r.d, &transformed_r->d);
 	}
+	inline void Transform::operator()(const RayDifferential &r, RayDifferential *rt) const {
+		(*this)(Ray(r), (Ray*)rt);
+		rt->has_differentials = r.has_differentials;
+		(*this)(r.rx_origin, &rt->rx_origin);
+		(*this)(r.ry_origin, &rt->ry_origin);
+		(*this)(r.rx_direction, &rt->rx_direction);
+		(*this)(r.ry_direction, &rt->ry_direction);
+	}
+	inline RayDifferential Transform::operator()(const RayDifferential &r) const {
+		RayDifferential ret;
+		(*this)(Ray(r), (Ray*)&ret);
+		ret.has_differentials = r.has_differentials;
+		(*this)(r.rx_origin, &ret.rx_origin);
+		(*this)(r.ry_origin, &ret.ry_origin);
+		(*this)(r.rx_direction, &ret.rx_direction);
+		(*this)(r.ry_direction, &ret.ry_direction);
+		return ret;
+	}
 	inline Ray operator()(const Ray &r) const {
 		Ray ret = r;
 		this->operator()(r.o, &ret.o);

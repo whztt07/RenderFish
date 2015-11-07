@@ -22,12 +22,13 @@
     <ProjectGuid>{035E69B1-DA33-41B3-B85A-18E947E3851C}</ProjectGuid>
     <RootNamespace>RayTracer</RootNamespace>
     <ProjectName>RenderFish</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -39,7 +40,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -151,7 +152,6 @@
     <ClCompile Include="Core\Scene.cpp" />
     <ClCompile Include="Core\Shape.cpp" />
     <ClCompile Include="Core\Texture.cpp" />
-    <ClCompile Include="Core\Tracer.cpp" />
     <ClCompile Include="Core\Transform.cpp" />
     <ClCompile Include="GUI\RenderFishGUI.cpp" />
     <ClCompile Include="IO\ImageIO.cpp" />
@@ -219,7 +219,6 @@
     <ClInclude Include="Include\Sphere.hpp" />
     <ClInclude Include="Include\Texture.hpp" />
     <ClInclude Include="Include\Timer.hpp" />
-    <ClInclude Include="Include\Tracer.hpp" />
     <ClInclude Include="Include\Transform.hpp" />
     <ClInclude Include="Include\TriangleMesh.hpp" />
     <ClInclude Include="Include\Vector.hpp" />

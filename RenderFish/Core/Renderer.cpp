@@ -5,10 +5,11 @@
 #include "Camera.hpp"
 #include "Light.hpp"
 
-void SamplerRender::render(const Scene * scene)
+void SamplerRenderer::render(const Scene * scene)
 {
 	m_suface_integrator->preprocess(scene, m_camera, this);
-	Sample *sample = new Sample(m_sampler, m_suface_integrator, nullptr, scene);
+	if (m_volume_integrator != nullptr) m_volume_integrator->preprocess(scene, m_camera, this);
+	Sample *sample = new Sample(m_sampler, m_suface_integrator, m_volume_integrator, scene);
 
 	// create and launch SamplerRenderTasks for rendering images
 	//    compute number of SamplerRenderTasks to create for rendering
@@ -18,25 +19,20 @@ void SamplerRender::render(const Scene * scene)
 
 	vector<Task *> render_tasks;
 	for (int i = 0; i < n_tasks; ++i) {
-		render_tasks.push_back(new SamplerRenderTask(scene, this, m_camera,
-			m_sampler, sample, n_tasks - 1 - i, n_tasks));
-
-		enqueue_tasks(render_tasks);
-		wait_for_all_tasks();
-		for (uint32_t i = 0; i < render_tasks.size(); ++i)
-			delete render_tasks[i];
+		render_tasks.push_back(new SamplerRendererTask( scene, this, m_camera,
+														m_sampler, sample, n_tasks - 1 - i, n_tasks));
 	}
-	for (int x = 0; x < m_camera->film->x_resolution; ++x) {
-		for (int y = 0; y < m_camera->film->y_resolution; ++y) {
-		}
-	}
-
+	enqueue_tasks(render_tasks);
+	wait_for_all_tasks();
+	
 	// clean up after rendering and store final image
+	for (auto rt : render_tasks)
+		delete rt;
 	delete sample;
 	m_camera->film->write_image();
 }
 
-Spectrum SamplerRender::Li(const Scene *scene, const RayDifferential &ray, const Sample *sample, RNG &rng, MemoryArena &arena, Intersection *isect /*= nullptr*/, Spectrum *T /*= nullptr*/) const
+Spectrum SamplerRenderer::Li(const Scene *scene, const RayDifferential &ray, const Sample *sample, RNG &rng, MemoryArena &arena, Intersection *isect /*= nullptr*/, Spectrum *T /*= nullptr*/) const
 {
 	// allocate local var
 	Spectrum local_T;
@@ -59,7 +55,7 @@ Spectrum SamplerRender::Li(const Scene *scene, const RayDifferential &ray, const
 	return *T * Li + Lvi;
 }
 
-void SamplerRenderTask::run()
+void SamplerRendererTask::run()
 {
 	// get sub-sampler
 	Sampler * sampler = m_main_sampler->get_sub_sampler(m_task_number, m_task_count);
@@ -86,7 +82,7 @@ void SamplerRenderTask::run()
 			// find camera ray for sample[i]
 			float ray_weight = m_camera->gererate_ray_differential(samples[i], &rays[i]);
 			rays[i].scale_differentials(1.f / sqrtf((float)sampler->samples_per_pixel));
-			Ray& r = rays[i];
+			//Ray& r = rays[i];
 			// evaluate radiance along camera ray
 			if (ray_weight > 0.f) {
 				Ls[i] = ray_weight * m_renderer->Li(m_scene, rays[i], &samples[i], rng, arena, &isects[i], &Ts[i]);
@@ -94,6 +90,22 @@ void SamplerRenderTask::run()
 			else {
 				Ls[i] = 0.f;
 				Ts[i] = 1.f;
+			}
+			// Issue warning if unexpected radiance value returned
+			if (Ls[i].has_NaNs()) {
+				error("Not-a-number radiance value returned "
+					"for image sample.  Setting to black.");
+				Ls[i] = Spectrum(0.f);
+			}
+			else if (Ls[i].y() < -1e-5) {
+				error("Negative luminance value, %f, returned "
+					"for image sample.  Setting to black.", Ls[i].y());
+				Ls[i] = Spectrum(0.f);
+			}
+			else if (isinf(Ls[i].y())) {
+				error("Infinite luminance value returned "
+					"for image sample.  Setting to black.");
+				Ls[i] = Spectrum(0.f);
 			}
 		}
 		// report sample results to Sampler, add contributions to image
@@ -105,9 +117,10 @@ void SamplerRenderTask::run()
 		// free MemoryArena memory from computing image sample values
 		arena.free_all();
 	}
+
 	// clean up
-	m_camera->film->update_display(sampler->x_pixel_start, sampler->y_pixel_start,
-		sampler->x_pixel_end + 1, sampler->y_pixel_end + 1);
+	m_camera->film->update_display( sampler->x_pixel_start, sampler->y_pixel_start,
+									sampler->x_pixel_end + 1, sampler->y_pixel_end + 1);
 	delete sampler;
 	delete[] samples;
 	delete[] rays;

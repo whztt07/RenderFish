@@ -98,8 +98,8 @@ VOID Render() {
 	RenderFishGUI::EndFrame();
 
 	if (RenderFishGUI::Button(L"Render")) {
-		w.render_scene();
-		pBitmap->CopyFromMemory(nullptr, &w.color_buffer[0], 4 * width);
+		//w.render_scene();
+		//pBitmap->CopyFromMemory(nullptr, &w.color_buffer[0], 4 * width);
 	}
 	last_render_time = std::chrono::high_resolution_clock::now();
 
@@ -211,12 +211,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	auto proj = perspective(fov, 1e-2f, 1000.f);
 	float crop[] = { 0, 0, 1, 1 };
 	ImageFilm film(800, 600, new BoxFilter(0.5f, 0.5f), crop, "D:\\image_film.bmp", true);
-	PerspectiveCamera camera(camera_trans, proj, crop, 1, 1, fov, &film);
+	PerspectiveCamera camera(camera_trans, proj, crop, fov, &film);
 
 	SimpleSampler sampler(0, 800, 0, 600);
 	WhittedIntegrator si;
 
-	SamplerRender renderer(&sampler, &camera, &si, nullptr);
+	SamplerRenderer renderer(&sampler, &camera, &si, nullptr);
 	renderer.render(&scene);
 	
 	//w.render_scene();

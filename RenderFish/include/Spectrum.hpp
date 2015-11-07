@@ -185,10 +185,11 @@ public:
 		s.c[0] = rgb[0];
 		s.c[1] = rgb[1];
 		s.c[2] = rgb[2];
+		Assert(!s.has_NaNs());
 		return s;
 	}
 
-	void to_rgb(float *rgb) const {
+	void to_rgb(float rgb[3]) const {
 		rgb[0] = c[0];
 		rgb[1] = c[1];
 		rgb[2] = c[2];
@@ -202,7 +203,18 @@ public:
 		RGBToXYZ(c, xyz);
 	}
 
-	static RGBSpectrum from_sampled(const float *lambda, const float *v, int n);
+	static RGBSpectrum from_xyz(const float xyz[3]) {
+		RGBSpectrum s;
+		XYZToRGB(xyz, s.c);
+		return s;
+	}
+
+	float y() const {
+		const float y_weights[3] = { 0.212671f, 0.715160f, 0.072169f };
+		return y_weights[0] * c[0] + y_weights[1] * c[1] * y_weights[2] * c[2];
+	}
+
+	//static RGBSpectrum from_sampled(const float *lambda, const float *v, int n);
 };
 
 typedef RGBSpectrum Spectrum;

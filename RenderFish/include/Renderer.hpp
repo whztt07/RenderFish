@@ -8,7 +8,7 @@
 
 class SurfaceIntegrator;
 class VolumeIntegrator;
-class PBRTCamera;
+class Camera;
 
 class Renderer
 {
@@ -30,18 +30,18 @@ private:
 	Renderer& operator=(const Renderer&);
 };
 
-class SamplerRender : public Renderer 
+class SamplerRenderer : public Renderer 
 {
 private:
 	Sampler				*m_sampler;
-	PBRTCamera			*m_camera;
+	Camera				*m_camera;
 	SurfaceIntegrator	*m_suface_integrator;
 	VolumeIntegrator	*m_volume_integrator;
 
 public:
 	virtual void render(const Scene * scene) override;
 
-	SamplerRender(Sampler *sampler, PBRTCamera* camera, SurfaceIntegrator* suface_integrator, VolumeIntegrator* volume_integrator)
+	SamplerRenderer(Sampler *sampler, Camera* camera, SurfaceIntegrator* suface_integrator, VolumeIntegrator* volume_integrator)
 		: m_sampler(sampler), m_camera(camera), m_suface_integrator(suface_integrator), m_volume_integrator(volume_integrator) {
 	}
 
@@ -57,18 +57,18 @@ public:
 	}
 };
 
-class SamplerRenderTask: public Task
+class SamplerRendererTask: public Task
 {
 private:
 	const Scene		*m_scene;
 	const Renderer	*m_renderer;
-	PBRTCamera		*m_camera;
+	Camera		*m_camera;
 	Sampler			*m_main_sampler;
 	Sample			*m_orignal_sample;
 	int				m_task_number, m_task_count;
 
 public:
-	SamplerRenderTask(const Scene *scene, Renderer *renderer, PBRTCamera *camera, Sampler *main_sampler,
+	SamplerRendererTask(const Scene *scene, Renderer *renderer, Camera *camera, Sampler *main_sampler,
 		Sample *orignal_sample, int task_number, int task_count)
 		: m_scene(scene), m_renderer(renderer), m_camera(camera), m_main_sampler(main_sampler),
 		m_orignal_sample(orignal_sample), m_task_number(task_number), m_task_count(task_count) {

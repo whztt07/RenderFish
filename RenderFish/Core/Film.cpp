@@ -68,3 +68,24 @@ void ImageFilm::splat(const CameraSample &sample, const Spectrum &L)
 	atomic_add(&pixel.splat_xyz[1], xyz[1]);
 	atomic_add(&pixel.splat_xyz[2], xyz[2]);
 }
+
+void ImageFilm::write_image(float spalt_scale /*= 1.0f*/)
+{
+	if (color_buffer.size() != x_resolution * y_resolution * 4) {
+		color_buffer.resize(x_resolution * y_resolution * 4);
+	}
+	for (int y = 0; y < y_resolution; ++y) {
+		for (int x = 0; x < x_resolution; ++x) {
+			auto& p = (*_pixels)(x, y);
+			Spectrum s = Spectrum::from_xyz(p.Lxyz);
+			float rgb[3];
+			s.to_rgb(rgb);
+			int idx = (x + y * x_resolution) * 4;
+			//info("%d\n", idx);
+			color_buffer[idx++] = unsigned char(rgb[2] * 255);
+			color_buffer[idx++] = unsigned char(rgb[1] * 255);
+			color_buffer[idx++] = unsigned char(rgb[0] * 255);
+		}
+
+	}
+}

@@ -62,7 +62,7 @@ class SamplerRendererTask: public Task
 private:
 	const Scene		*m_scene;
 	const Renderer	*m_renderer;
-	Camera		*m_camera;
+	Camera			*m_camera;
 	Sampler			*m_main_sampler;
 	Sample			*m_orignal_sample;
 	int				m_task_number, m_task_count;

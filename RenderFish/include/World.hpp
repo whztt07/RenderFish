@@ -1,8 +1,6 @@
 #pragma once
 
 #include <vector>
-
-#include "ViewPlane.hpp"
 #include "Color.hpp"
 #include "Window.hpp"
 #include "DifferentialGeometry.hpp"
@@ -18,7 +16,6 @@ public:
 	KdTree* kdTree;
 
 	MatteMaterial material;
-
 
 	void build(int width, int height);
 };

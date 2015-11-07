@@ -5,7 +5,7 @@
 
 string get_file_type(const string & name)
 {
-	int i;
+	size_t i;
 	for (i = name.length() - 1; i >= 0; --i)
 	{
 		if (name[i] == '.') break;
@@ -168,7 +168,7 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 		}
 	//}
 
-	info("Model loading finished. n_triangles = %d, n_vertives = %d.\n", n_triangles, n_vertices);
+	info("Model loading finished. n_triangles = %d, n_vertices = %d.\n", n_triangles, n_vertices);
 	
 	vector<Point> new_points;
 	vector<Vec2> new_uvs;
@@ -188,7 +188,7 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 				new_normals[id_at_p_array] = normals[n_index[v]];
 			}
 			else if (uv_id_at_p[id_at_p_array] != uv_index[v]) {	// this vertex has other uv already
-				int new_id = positions.size();
+				int new_id = (int)positions.size();
 				positions.push_back(positions[p_index[v]]);				// add a new vertex
 				new_uvs.push_back(uvs[uv_index[v]]);
 				new_normals.push_back(normals[n_index[v]]);
@@ -199,7 +199,7 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 	}
 
 	info("Model processing finished. Add %d new vertives. %d vertives in all\n", positions.size() - n_vertices, positions.size());
-	n_vertices = positions.size();
+	n_vertices = (int)positions.size();
 	return new TriangleMesh(&Transform::identity, &Transform::identity, false, n_triangles, n_vertices,
 		&p_index[0], &positions[0], &new_normals[0], nullptr, &new_uvs[0], nullptr);
 }

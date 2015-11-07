@@ -54,6 +54,9 @@ private:
 	float filter_table[FILTER_TABLE_SIZE * FILTER_TABLE_SIZE];
 
 public:
+	vector<unsigned char> color_buffer;
+
+public:
 	ImageFilm(int x_res, int y_res, Filter *filter, const float crop[4], const string &fn, bool open_window);
 
 	void add_sample(const CameraSample &sample, const Spectrum &L) override;
@@ -66,5 +69,5 @@ public:
 	virtual void get_pixel_extent(int *x_start, int *x_end,
 		int *y_start, int *y_end) const override {}
 
-	virtual void write_image(float spalt_scale = 1.0f) override {}
+	virtual void write_image(float spalt_scale = 1.0f) override;
 };

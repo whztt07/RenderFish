@@ -210,7 +210,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	float fov = 60.f;
 	auto proj = perspective(fov, 1e-2f, 1000.f);
 	float crop[] = { 0, 0, 1, 1 };
-	ImageFilm film(800, 600, new BoxFilter(0.5f, 0.5f), crop, "D:\\image_film.bmp", true);
+	ImageFilm film(800, 600, new BoxFilter(1.f, 1.f), crop, "D:\\image_film.bmp", true);
 	PerspectiveCamera camera(camera_trans, proj, crop, fov, &film);
 
 	SimpleSampler sampler(0, 800, 0, 600);
@@ -220,7 +220,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	renderer.render(&scene);
 	
 	//w.render_scene();
-	//pBitmap->CopyFromMemory(nullptr, &w.color_buffer[0], 4 * width);
+	pBitmap->CopyFromMemory(nullptr, &film.color_buffer[0], 4 * width);
 
 	ShowWindow(g_Hwnd, iCmdShow);
 	UpdateWindow(g_Hwnd);

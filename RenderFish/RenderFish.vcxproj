@@ -34,7 +34,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -47,7 +47,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -171,7 +171,6 @@
     <ClCompile Include="Shape\TriangleMesh.cpp" />
     <ClCompile Include="Spectrum.cpp" />
     <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="ViewPlane.cpp" />
     <ClCompile Include="WhittedIntegrator.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
@@ -222,7 +221,6 @@
     <ClInclude Include="Include\Transform.hpp" />
     <ClInclude Include="Include\TriangleMesh.hpp" />
     <ClInclude Include="Include\Vector.hpp" />
-    <ClInclude Include="Include\ViewPlane.hpp" />
     <ClInclude Include="Include\WhittedIntegrator.hpp" />
     <ClInclude Include="Include\Window.hpp" />
     <ClInclude Include="Include\World.hpp" />

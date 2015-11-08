@@ -11,7 +11,8 @@ ImageFilm::ImageFilm(int x_res, int y_res, Filter *filter, const float crop[4], 
 	y_pixel_count = max(1, ceil2int(y_resolution * crop_window[3]) - y_pixel_start);
 
 	// allocate film image storage
-	_pixels = std::make_unique<BlockedArray<Pixel, 2>>(x_pixel_count, y_pixel_count);
+	//_pixels = std::make_unique<BlockedArray<Pixel, 2>>(x_pixel_count, y_pixel_count);
+	_pixels.resize(x_pixel_count * y_pixel_count);
 	// precompute filter weight table
 	float *ftp = filter_table;
 	for (int y = 0; y < FILTER_TABLE_SIZE; ++y) {
@@ -63,7 +64,9 @@ void ImageFilm::splat(const CameraSample &sample, const Spectrum &L)
 	if (x < x_pixel_start || x >= x_pixel_start + x_pixel_count ||
 		y < y_pixel_start || y >= y_pixel_start + y_pixel_count)
 		return;
-	auto& pixel = (*_pixels)(x - x_pixel_start, y - y_pixel_start);
+	//auto& pixel = (*_pixels)(x - x_pixel_start, y - y_pixel_start);
+	int idx = (x - x_pixel_start) + (y - y_pixel_start) * x_pixel_count;
+	auto& pixel = _pixels[idx];
 	atomic_add(&pixel.splat_xyz[0], xyz[0]);
 	atomic_add(&pixel.splat_xyz[1], xyz[1]);
 	atomic_add(&pixel.splat_xyz[2], xyz[2]);
@@ -76,7 +79,9 @@ void ImageFilm::write_image(float spalt_scale /*= 1.0f*/)
 	}
 	for (int y = 0; y < y_resolution; ++y) {
 		for (int x = 0; x < x_resolution; ++x) {
-			auto& p = (*_pixels)(x, y);
+			//auto& p = (*_pixels)(x, y);
+			int index = x + y * x_resolution;
+			auto& p = _pixels[index];
 			Spectrum s = Spectrum::from_xyz(p.Lxyz);
 			float rgb[3];
 			s.to_rgb(rgb);

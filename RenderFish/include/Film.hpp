@@ -49,7 +49,8 @@ private:
 
 	int x_pixel_start, y_pixel_start, x_pixel_count, y_pixel_count;
 
-	unique_ptr< BlockedArray<Pixel, 2> > _pixels;
+	//unique_ptr< BlockedArray<Pixel, 2> > _pixels;
+	vector<Pixel> _pixels;
 	static const int FILTER_TABLE_SIZE = 16;
 	float filter_table[FILTER_TABLE_SIZE * FILTER_TABLE_SIZE];
 

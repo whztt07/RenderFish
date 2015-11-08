@@ -30,9 +30,10 @@ float Camera::gererate_ray_differential(const CameraSample &sample, RayDifferent
 ProjectiveCamera::ProjectiveCamera(const Transform & cam2world, const Transform & proj, const float screen_window[4], Film * film)
 	: Camera(cam2world, film), camera_to_screen(proj) {
 
-	screen_to_raster = scale(float(film->x_resolution), float(film->y_resolution), 1.f) *
-		scale(1.f / (screen_window[1] - screen_window[0]), 1.f / (screen_window[2] - screen_window[3]), 1.f) *
-		translate(Vec3(-screen_window[0], -screen_window[3], 0.f));
+	screen_to_raster =  scale(float(film->x_resolution), float(film->y_resolution), 1.f) *
+						scale(  1.f / (screen_window[1] - screen_window[0]), 
+								1.f / (screen_window[2] - screen_window[3]), 1.f) *
+						translate(Vec3(-screen_window[0], -screen_window[3], 0.f));
 	raster_to_screen = inverse(screen_to_raster);
 	raster_to_camera = inverse(camera_to_screen) * raster_to_screen;
 }
@@ -58,7 +59,7 @@ float OrthoCamera::gererate_ray_differential(const CameraSample & sample, RayDif
 	return 1.f;
 }
 
-PerspectiveCamera::PerspectiveCamera(const Transform & cam2world, const Transform & proj, const float screen_window[4], float fov, Film * film)
+PerspectiveCamera::PerspectiveCamera(const Transform & cam2world, const float screen_window[4], float fov, Film * film)
 	: ProjectiveCamera(cam2world, perspective(fov, 1e-2f, 1000.f), screen_window, film) {
 	dx_camera = raster_to_camera(Point(1, 0, 0)) - raster_to_camera(Point(0, 0, 0));
 	dy_camera = raster_to_camera(Point(0, 1, 0)) - raster_to_camera(Point(0, 0, 0));

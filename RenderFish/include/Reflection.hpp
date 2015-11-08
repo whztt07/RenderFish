@@ -165,7 +165,12 @@ public:
 
 	Spectrum sample_f(const Vec3 &wo, Vec3 *wi, const BSDFSample &bsdf_sample,
 		float *pdf, BxDFType flags = BSDF_ALL, BxDFType *sampled_type = nullptr) const {
-		info("not implemented\n");
+		// choose which BxDF to sample
+		// sample chosen BxDF
+		// compute overall PDF with all matching BxDFs
+		// compute value of BSDF for sampled direction
+		info("BSDF::sample_f not implemented\n");
+
 		return Spectrum(0.f);
 	}
 

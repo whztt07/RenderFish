@@ -60,8 +60,7 @@ private:
 	Vec3 dx_camera, dy_camera;
 
 public:
-	PerspectiveCamera(const Transform &cam2world, const Transform &proj,
-		const float screen_window[4], float fov, Film *film);
+	PerspectiveCamera(const Transform &cam2world, const float screen_window[4], float fov, Film *film);
 
 	virtual float generate_ray(const CameraSample &sample, Ray *ray) const override;
 

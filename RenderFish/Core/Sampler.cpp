@@ -77,14 +77,14 @@ void Sampler::compute_sub_window(int num, int count, int * new_x_start, int * ne
 
 int SimpleSampler::get_more_samples(Sample *sample, RNG &rng)
 {
-	const int w = x_pixel_end - x_pixel_start + 1;
-	const int h = y_pixel_end - y_pixel_start + 1;
-	int total_sample_count = w * h * samples_per_pixel;
+	const int w = x_pixel_end - x_pixel_start;
+	const int h = y_pixel_end - y_pixel_start;
+	int total_sample_count = w * h;
 	if (m_current_sample_pos > total_sample_count) {
 		return 0;
 	}
-	sample->image_x = float(m_current_sample_pos % w);
-	sample->image_y = float(m_current_sample_pos / w);
+	sample->image_x = float(m_current_sample_pos % w) + x_pixel_start;
+	sample->image_y = float(m_current_sample_pos / w) + y_pixel_start;
 	//for (uint32_t i = 0; i < sample->n1D.size(); ++i)
 	//	for (uint32_t j = 0; j < sample->n1D[i]; ++j)
 	//		sample->oneD[i][j] = rng.random_float();

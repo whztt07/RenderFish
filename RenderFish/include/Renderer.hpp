@@ -51,7 +51,7 @@ public:
 	
 	virtual Spectrum transmittance(const Scene *scene, const RayDifferential &ray,
 		const Sample *sample, RNG &rng, MemoryArena &arena) const override {
-		error("not implemented SimpleRender::transmittance");
+		//error("not implemented SimpleRender::transmittance");
 		return Spectrum(0.f);
 		//return volume_integrator->transmittance(scene, this, ray, sample, rng, arena);
 	}

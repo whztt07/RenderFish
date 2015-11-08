@@ -12,7 +12,6 @@ private:
 	Reference<Texture<float>> sigma, bump_map;
 
 public:
-	MatteMaterial() {}
 
 	MatteMaterial(Reference<Texture<Spectrum>> kd,
 		Reference<Texture<float>> sigma, Reference<Texture<float>> bump_map)

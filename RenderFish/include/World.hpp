@@ -15,7 +15,5 @@ public:
 	vector<Reference<Primitive>> primitives;
 	KdTree* kdTree;
 
-	MatteMaterial material;
-
 	void build(int width, int height);
 };

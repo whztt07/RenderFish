@@ -180,6 +180,15 @@ public:
 	RGBSpectrum(const CoefficientSpectrum<3> &v)
 		: CoefficientSpectrum<3>(v) { }
 
+	static RGBSpectrum from_rgb(float r, float g, float b) {
+		RGBSpectrum s;
+		s.c[0] = r;
+		s.c[1] = g;
+		s.c[2] = b;
+		Assert(!s.has_NaNs());
+		return s;
+	}
+
 	static RGBSpectrum from_rgb(const float rgb[3]) {
 		RGBSpectrum s;
 		s.c[0] = rgb[0];

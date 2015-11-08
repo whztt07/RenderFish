@@ -208,10 +208,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 
 	Transform camera_trans = inverse(look_at(Point(0, 10, -10), Point(0, 0, 0)));
 	float fov = 60.f;
-	auto proj = perspective(fov, 1e-2f, 1000.f);
-	float crop[] = { 0, 0, 1, 1 };
+	//auto proj = perspective(fov, 1e-2f, 1000.f);
+	float crop[] = { 0, 1, 0, 1 };
 	ImageFilm film(800, 600, new BoxFilter(1.f, 1.f), crop, "D:\\image_film.bmp", true);
-	PerspectiveCamera camera(camera_trans, proj, crop, fov, &film);
+	PerspectiveCamera camera(camera_trans, crop, fov, &film);
 
 	SimpleSampler sampler(0, 800, 0, 600);
 	WhittedIntegrator si;

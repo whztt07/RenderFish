@@ -14,11 +14,11 @@ BSDF * MatteMaterial::get_BSDF(const DifferentialGeometry & dg_geom, const Diffe
 
 	// evaluate textures for MatteMaterial and allocate BRDF
 	Spectrum r = Kd->evaluate(dgs).clamp();
-	float sig = clamp(sigma->evaluate(dgs), 0.f, 90.f);
-	if (sig == 0.f)
+	//float sig = clamp(sigma->evaluate(dgs), 0.f, 90.f);
+	//if (sig == 0.f)
 		bsdf->add(BSDF_ALLOC(arena, Lambertian)(r));
 	//else
 	//	bsdf->add(BSDF_ALLOC(arena, OrenNayar)(r, sig))
 
-	return nullptr;
+	return bsdf;
 }

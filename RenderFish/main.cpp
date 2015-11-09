@@ -200,7 +200,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 
 	KdTree * kdtree = w.kdTree;
 	
-	Transform light_trans = translate(10, 10, 10);
+	Transform light_trans = translate(10, 10, -10);
 	vector<Light*> lights;
 	lights.push_back(new PointLight(light_trans, Spectrum(0.8f)));
 

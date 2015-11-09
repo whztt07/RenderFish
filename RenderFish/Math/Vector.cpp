@@ -8,8 +8,10 @@ const Vec3 Vec3::axis_z(0, 0, 1);
 
 Vec3::Vec3(const Normal & n) : x(n.x), y(n.y), z(n.z)
 {
+	Assert(!has_NaNs());
 }
 
 Vec3::Vec3(const Point & p) : x(p.x), y(p.y), z(p.z)
 {
+	Assert(!has_NaNs());
 }

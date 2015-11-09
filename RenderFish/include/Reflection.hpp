@@ -51,15 +51,15 @@ inline bool same_hemisphere(const Vec3 &w, const Vec3 &wp) {
 #define MAX_BxDFS 8
 
 enum BxDFType {
-	BSDF_REFLECTION = 1 << 0,
-	BSDF_TRANSMISSION = 1 << 1,
-	BSDF_DIFFUSE = 1 << 2,
-	BSDF_GLOSSY = 1 << 3,
-	BSDF_SPECULAR = 1 << 4,
-	BSDF_ALL_TYPES = BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR,
-	BSDF_ALL_REFLECTION = BSDF_REFLECTION | BSDF_ALL_TYPES,
-	BSDF_ALL_TRANSMISSION = BSDF_TRANSMISSION | BSDF_ALL_TYPES,
-	BSDF_ALL = BSDF_ALL_REFLECTION | BSDF_ALL_TRANSMISSION
+	BSDF_REFLECTION		= 1 << 0,
+	BSDF_TRANSMISSION	= 1 << 1,
+	BSDF_DIFFUSE		= 1 << 2,
+	BSDF_GLOSSY			= 1 << 3,
+	BSDF_SPECULAR		= 1 << 4,
+	BSDF_ALL_TYPES			= BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR,
+	BSDF_ALL_REFLECTION		= BSDF_REFLECTION | BSDF_ALL_TYPES,
+	BSDF_ALL_TRANSMISSION	= BSDF_TRANSMISSION | BSDF_ALL_TYPES,
+	BSDF_ALL				= BSDF_ALL_REFLECTION | BSDF_ALL_TRANSMISSION
 };
 
 class BxDF {
@@ -75,9 +75,9 @@ public:
 	// wo: normalized outgoing direction
 	// wi: normalized incident light direction
 	virtual Spectrum f(const Vec3 &wo, const Vec3 &wi) const = 0;
-	virtual Spectrum sample_f(const Vec3 &wo, Vec3 *wi, float u1, float u2, float *pdf) const { return Spectrum(0.f); }
-	virtual Spectrum rho(const Vec3 &wo, int n_samples, const float *samples) const { return Spectrum(0.f); }
-	virtual Spectrum rho(int nSamples, const float *samples1, const float *samples2) const { return Spectrum(0.f); }
+	virtual Spectrum sample_f(const Vec3 &wo, Vec3 *wi, float u1, float u2, float *pdf) const;
+	virtual Spectrum rho(const Vec3 &wo, int n_samples, const float *samples) const;
+	virtual Spectrum rho(int nSamples, const float *samples1, const float *samples2) const;
 	virtual float pdf(const Vec3 &wi, const Vec3 &wo) const {
 		return same_hemisphere(wo, wi) ? abs_cos_theta(wi) * INV_PI : 0.f;
 	}
@@ -228,6 +228,8 @@ public:
 				break;
 			}
 		}
+		Assert(bxdf);
+
 		// sample chosen BxDF
 		Vec3 wo = world_to_local(wo_w);
 		Vec3 wi;
@@ -277,7 +279,7 @@ public:
 	int num_components(BxDFType flags) const {
 		int count = 0;
 		for (int i = 0; i < _n_BxDFs; i++) {
-			if (_bxdfs[i]->type == flags)
+			if (_bxdfs[i]->matches_flags(flags))
 				++count;
 		}
 		return count;

@@ -166,6 +166,7 @@
     <ClCompile Include="Math\random.cpp" />
     <ClCompile Include="Math\Vector.cpp" />
     <ClCompile Include="ModelProcessing.cpp" />
+    <ClCompile Include="MonteCarlo.cpp" />
     <ClCompile Include="Shape\Box.cpp" />
     <ClCompile Include="Shape\Sphere.cpp" />
     <ClCompile Include="Shape\TriangleMesh.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Include\MemoryArena.hpp" />
     <ClInclude Include="Include\ModelIO.hpp" />
     <ClInclude Include="Include\ModelProcessing.hpp" />
+    <ClInclude Include="include\MonteCarlo.hpp" />
     <ClInclude Include="include\Parallel.hpp" />
     <ClInclude Include="Include\Primitive.hpp" />
     <ClInclude Include="Include\Probes.hpp" />

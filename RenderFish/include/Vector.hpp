@@ -32,7 +32,13 @@ inline float dot(const T& lhs, const U& rhs)
 }
 
 template < class T, class U >
-static T cross(const T& u, const U& v)
+inline float abs_dot(const T& lhs, const U& rhs)
+{
+	return fabsf(dot<T, U>(lhs, rhs));
+}
+
+template < class T, class U >
+inline T cross(const T& u, const U& v)
 {
 	return T(u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x);
 }
@@ -70,20 +76,20 @@ public:
 
 	float&		operator[](const int index) { return m[index]; }
 	float		operator[](const int index) const { return m[index]; }
-	Vec3&		operator=(const Vec3& v) { x = v.x; y = v.y; z = v.z; return *this; }
+	Vec3&		operator=(const Vec3& v) { Assert(!v.has_NaNs()); x = v.x; y = v.y; z = v.z; return *this; }
 	Vec3		operator-() const { return Vec3(-x, -y, -z); }
-	Vec3		operator*(const float f) const { return Vec3(x * f, y * f, z * f); }
-	Vec3		operator/(const float f) const { return Vec3(x / f, y / f, z / f); }
-	friend Vec3 operator*(const float f, const Vec3& v) { return Vec3(v.x * f, v.y * f, v.z * f); }
-	friend Vec3 operator/(const float f, const Vec3& v) { return Vec3(v.x / f, v.y / f, v.z / f); }
-	Vec3		operator+(const Vec3& v) const { return Vec3(x + v.x, y + v.y, z + v.z); }
-	Vec3		operator-(const Vec3& v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
-	void		operator+=(const Vec3& v) { x += v.x; y += v.y; z += v.z; }
-	void		operator-=(const Vec3& v) { x -= v.x; y -= v.y; z -= v.z; }
-	void		operator*=(const float f) { x *= f; y *= f; z *= f; }
-	void		operator/=(const float f) { x /= f; y /= f; z /= f; }
-	bool		operator==(const Vec3& v) const { return (equal(x, v.x) && equal(y, v.y) && equal(z, v.z)); }
-	bool		operator!=(const Vec3& v) const { return !operator==(v); }
+	Vec3		operator*(const float f) const { Assert(!isnan(f)); return Vec3(x * f, y * f, z * f); }
+	Vec3		operator/(const float f) const { Assert(!isnan(f)); return Vec3(x / f, y / f, z / f); }
+	friend Vec3 operator*(const float f, const Vec3& v) { Assert(!isnan(f) && !v.has_NaNs()); return Vec3(v.x * f, v.y * f, v.z * f); }
+	friend Vec3 operator/(const float f, const Vec3& v) { Assert(!isnan(f) && !v.has_NaNs()); return Vec3(v.x / f, v.y / f, v.z / f); }
+	Vec3		operator+(const Vec3& v) const { Assert(!v.has_NaNs()); return Vec3(x + v.x, y + v.y, z + v.z); }
+	Vec3		operator-(const Vec3& v) const { Assert(!v.has_NaNs()); return Vec3(x - v.x, y - v.y, z - v.z); }
+	void		operator+=(const Vec3& v) { Assert(!v.has_NaNs()); x += v.x; y += v.y; z += v.z; }
+	void		operator-=(const Vec3& v) { Assert(!v.has_NaNs()); x -= v.x; y -= v.y; z -= v.z; }
+	void		operator*=(const float f) { Assert(!isnan(f)); x *= f; y *= f; z *= f; }
+	void		operator/=(const float f) { Assert(!isnan(f)); x /= f; y /= f; z /= f; }
+	bool		operator==(const Vec3& v) const { Assert(!v.has_NaNs()); return (equal(x, v.x) && equal(y, v.y) && equal(z, v.z)); }
+	bool		operator!=(const Vec3& v) const { Assert(!v.has_NaNs()); return !operator==(v); }
 
 	friend std::ostream& operator << (std::ostream& os, const Vec3& v) { os << v.x << ", " << v.y << ", " << v.z; return os; }
 };
@@ -190,5 +196,13 @@ inline float spherical_phi(const Vec3 &v) {
 	float p = atan2f(v.y, v.x);
 	return (p < 0.f) ? p + 2.f*M_PI : p;
 }
+//
+//template <> inline float dot(const Vec3& lhs, const Vec3& rhs);
+//template <> inline float dot(const Vec3& lhs, const Normal& rhs);
+////template <> inline float dot(const Normal& lhs, const Vec3& rhs);
+//template <> inline float abs_dot(const Vec3& lhs, const Vec3& rhs);
+//template <> inline float abs_dot(const Vec3& lhs, const Normal& rhs);
+////template <> inline float abs_dot(const Normal& lhs, const Vec3& rhs);
+//template <> inline Vec3 cross(const Vec3& u, const Vec3& v);
 
 #endif // VECTOR_H

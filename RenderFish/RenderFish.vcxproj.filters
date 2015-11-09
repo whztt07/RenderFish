@@ -206,6 +206,9 @@
     <ClCompile Include="Core\Parallel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MonteCarlo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\KdTree.hpp">
@@ -350,6 +353,9 @@
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="include\Parallel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MonteCarlo.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

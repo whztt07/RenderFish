@@ -42,6 +42,8 @@ public:
 		: Ray(ray) {}
 	RayDifferential(const Point & org, const Vec3 & dir, float start, float end = INFINITY, float t = 0.0f, int d = 0)
 		: Ray(org, dir, start, end, t, d) {}
+	RayDifferential(const Point &org, const Vec3 &dir, const Ray &parent, float start, float end = INFINITY) 
+		: Ray(org, dir, start, end, parent.time, parent.depth + 1) {}
 
 	void scale_differentials(float s)
 	{

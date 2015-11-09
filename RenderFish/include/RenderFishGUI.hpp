@@ -56,13 +56,20 @@ enum GUIAlignment {
 struct MouseState {
 	int pos_x = -1;
 	int pos_y = -1;
-
 	int hot_item = -1;
 	//int active_item;
 	bool mouse_down = false;
-
+	bool dragging = false;
 	bool mouse_wheel_rotating = false;
 	short mouse_wheel_z_delta = 0;
+};
+
+struct DrawROIStae {
+	int x_start = -1;
+	int y_start = -1;
+	int x_end = -1;
+	int y_end = -1;
+	bool to_be_drawn = false;
 };
 
 class RenderFishGUI
@@ -70,6 +77,7 @@ class RenderFishGUI
 public:
 
 	static MouseState mouse_state;
+	static DrawROIStae roi_state;
 
 	~RenderFishGUI() {};
 
@@ -85,6 +93,8 @@ public:
 	static void Label(const WCHAR* text, GUIAlignment text_alignment = align_horiontally_left);
 	static void Label(const char* text, GUIAlignment text_alignment = align_horiontally_left);
 	static void SideBar(int width = 280);
+
+	static void RoI();
 
 	template<typename T>
 	static void Slider(const char* label, T *pVal, T min, T max);

@@ -32,7 +32,9 @@ void SamplerRenderer::render(const Scene * scene)
 	m_camera->film->write_image();
 }
 
-Spectrum SamplerRenderer::Li(const Scene *scene, const RayDifferential &ray, const Sample *sample, RNG &rng, MemoryArena &arena, Intersection *isect /*= nullptr*/, Spectrum *T /*= nullptr*/) const
+Spectrum SamplerRenderer::Li(const Scene *scene, const RayDifferential &ray, 
+	const Sample *sample, RNG &rng, MemoryArena &arena, 
+	Intersection *isect /*= nullptr*/, Spectrum *T /*= nullptr*/) const
 {
 	// allocate local var
 	Spectrum local_T;

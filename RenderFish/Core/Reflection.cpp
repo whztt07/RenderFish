@@ -66,7 +66,8 @@ Spectrum fresnel_conductor(float cosi, const Spectrum &eta, const Spectrum &k)
 
 Spectrum specular_reflect(const RayDifferential &ray, BSDF *bsdf,
 	RNG &rng, const Intersection &isect, const Renderer *renderer,
-	const Scene *scene, const Sample *sample, MemoryArena &arena) {
+	const Scene *scene, const Sample *sample, MemoryArena &arena) 
+{
 	Vec3 wo = -ray.d, wi;
 	float pdf;
 	const Point &p = bsdf->shading_diff_geom.p;
@@ -96,8 +97,8 @@ Spectrum specular_reflect(const RayDifferential &ray, BSDF *bsdf,
 		}
 		
 		Spectrum Li = renderer->Li(scene, rd, sample, rng, arena);
-		L = f * Li * abs_dot(wi, n) / pdf;
-		
+		//L = f * Li * abs_dot(wi, n) / pdf;
+		L = f * abs_dot(wi, n) / pdf;
 	}
 	return L;
 }
@@ -153,4 +154,91 @@ Spectrum BxDF::rho(int nSamples, const float *samples1, const float *samples2) c
 			r += f * abs_cos_theta(wi) * abs_cos_theta(wo) / (pdf_o * pdf_i);
 	}
 	return r / (M_PI*nSamples);
+}
+
+Spectrum BSDF::f(const Vec3 &wo_world, const Vec3 &wi_world, BxDFType flags /*= BSDF_ALL*/) const
+{
+
+	Vec3 wi = world_to_local(wi_world), wo = world_to_local(wo_world);
+	if (dot(wi_world, _normal_geom) * dot(wo_world, _normal_geom) > 0) // ignore BTDFs
+		flags = BxDFType(flags & ~BSDF_ALL_TRANSMISSION);
+	else // ignore BRDFs
+		flags = BxDFType(flags & ~BSDF_REFLECTION);
+	Spectrum f = 0.f;
+	for (int i = 0; i < _n_BxDFs; ++i) {
+		if (_bxdfs[i]->matches_flags(flags))
+			f += _bxdfs[i]->f(wo, wi);
+	}
+	return f;
+}
+
+Spectrum BSDF::sample_f(const Vec3 &wo_w, Vec3 *wi_w, const BSDFSample &bsdf_sample, float *pdf, BxDFType flags /*= BSDF_ALL*/, BxDFType *sampled_type /*= nullptr*/) const
+{
+	// choose which BxDF to sample
+	int matching_comps = num_components(flags);
+	if (matching_comps == 0) {
+		*pdf = 0.f;
+		return Spectrum(0.f);
+	}
+	int which = min(floor2int(bsdf_sample.u_component * matching_comps), matching_comps - 1);
+
+	BxDF *bxdf = nullptr;
+	int count = which;
+	for (int i = 0; i < _n_BxDFs; ++i) {
+		if (_bxdfs[i]->matches_flags(flags) && count-- == 0) {
+			bxdf = _bxdfs[i];
+			break;
+		}
+	}
+	Assert(bxdf);
+
+	// sample chosen BxDF
+	Vec3 wo = world_to_local(wo_w);
+	Vec3 wi;
+	*pdf = 0.f;
+	Spectrum f = bxdf->sample_f(wo, &wi, bsdf_sample.u_dir[0], bsdf_sample.u_dir[1], pdf);
+	if (*pdf == 0.f)
+		return 0.f;
+	if (sampled_type) *sampled_type = bxdf->type;
+	*wi_w = local_to_world(wi);
+	// compute overall PDF with all matching BxDFs
+	if (!(bxdf->type & BSDF_SPECULAR) && matching_comps > 1)
+		for (int i = 0; i < _n_BxDFs; ++i)
+			if (_bxdfs[i] != bxdf && _bxdfs[i]->matches_flags(flags))
+				*pdf += _bxdfs[i]->pdf(wo, wi);
+	if (matching_comps > 1)
+		*pdf /= matching_comps;
+
+	// compute value of BSDF for sampled direction
+	if (!(bxdf->type & BSDF_SPECULAR)) {
+		f = 0.f;
+		if (dot(*wi_w, _normal_geom) * dot(wo_w, _normal_geom) > 0) // ignore BTDFs
+			flags = BxDFType(flags & ~BSDF_TRANSMISSION);
+		else // ignore BRDFs
+			flags = BxDFType(flags & ~BSDF_REFLECTION);
+		for (int i = 0; i < _n_BxDFs; ++i) {
+			if (_bxdfs[i]->matches_flags(flags))
+				f += _bxdfs[i]->f(wo, wi);
+		}
+	}
+	return f;
+	//info("BSDF::sample_f not implemented\n");
+	//return Spectrum(0.f);
+}
+
+float BSDF::pdf(const Vec3 &wo_w, const Vec3 &wi_w, BxDFType flags /*= BSDF_ALL*/) const
+{
+	if (_n_BxDFs == 0)
+		return 0;
+	Vec3 wo = world_to_local(wo_w), wi = world_to_local(wi_w);
+	float pdf = 0.f;
+	int matching_comps = 0;
+	for (int i = 0; i < _n_BxDFs; ++i) {
+		if (_bxdfs[i]->matches_flags(flags)) {
+			++matching_comps;
+			pdf += _bxdfs[i]->pdf(wo, wi);
+		}
+	}
+	float v = matching_comps > 0 ? pdf / matching_comps : 0.f;
+	return v;
 }

@@ -1,7 +1,7 @@
 #include "Film.hpp"
 
 ImageFilm::ImageFilm(int x_res, int y_res, Filter *filter, const float crop[4], const string &fn, bool open_window) 
-	: Film(x_res, y_res), _filter(filter), filename(fn)
+	: Film(x_res, y_res), _filter(filter), filename(fn), color_buffer(x_res * y_res * 4, 0)
 {
 	memcpy(crop_window, crop, 4 * sizeof(float));
 	// compute film image extent
@@ -116,9 +116,6 @@ void ImageFilm::splat(const CameraSample &sample, const Spectrum &L)
 
 void ImageFilm::write_image(float spalt_scale /*= 1.0f*/)
 {
-	if (color_buffer.size() != x_resolution * y_resolution * 4) {
-		color_buffer.resize(x_resolution * y_resolution * 4);
-	}
 	for (int y = 0; y < y_resolution; ++y) {
 		for (int x = 0; x < x_resolution; ++x) {
 			//auto& p = (*_pixels)(x, y);

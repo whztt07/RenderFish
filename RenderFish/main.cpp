@@ -12,12 +12,16 @@
 #include "Camera.hpp"
 #include "Integrator.hpp"
 #include "WhittedIntegrator.hpp"
+#include "SimpleSampler.hpp"
 
 using namespace std;
 
 const int width = 800;
 const int height = 600;
 World w;
+Renderer* p_renderer;
+Scene* p_scene;
+ImageFilm* p_film;
 ID2D1Factory* pD2DFactory = NULL; // Direct2D factory
 ID2D1HwndRenderTarget* pRenderTarget = NULL; // Render target
 ID2D1Bitmap *pBitmap;
@@ -100,6 +104,8 @@ VOID Render() {
 	if (RenderFishGUI::Button(L"Render")) {
 		//w.render_scene();
 		//pBitmap->CopyFromMemory(nullptr, &w.color_buffer[0], 4 * width);
+		p_renderer->render(p_scene);
+		pBitmap->CopyFromMemory(nullptr, &p_film->color_buffer[0], 4 * width);
 	}
 	last_render_time = std::chrono::high_resolution_clock::now();
 
@@ -205,12 +211,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	lights.push_back(new PointLight(light_trans, Spectrum(0.8f)));
 
 	Scene scene(kdtree, lights);
+	p_scene = &scene;
 
 	Transform camera_trans = inverse(look_at(Point(0, 0, -4.5), Point(0, 0, 0)));
 	float fov = 60.f;
 	//auto proj = perspective(fov, 1e-2f, 1000.f);
 	float crop[] = { 0, 1, 0, 1 };
 	ImageFilm film(800, 600, new BoxFilter(1.f, 1.f), crop, "D:\\image_film.bmp", true);
+	p_film = &film;
 	float aspectratio = float(film.x_resolution) / float(film.y_resolution);
 	float screen[] = { -aspectratio, aspectratio, -1.f, 1.f };
 	if (aspectratio < 1.f) {
@@ -228,7 +236,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	WhittedIntegrator si;
 
 	SamplerRenderer renderer(&sampler, &camera, &si, nullptr);
-	renderer.render(&scene);
+	p_renderer = &renderer;
+	//renderer.render(&scene);
 	
 	//w.render_scene();
 	pBitmap->CopyFromMemory(nullptr, &film.color_buffer[0], 4 * width);

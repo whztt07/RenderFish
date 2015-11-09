@@ -28,26 +28,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -167,6 +167,7 @@
     <ClCompile Include="Math\Vector.cpp" />
     <ClCompile Include="ModelProcessing.cpp" />
     <ClCompile Include="MonteCarlo.cpp" />
+    <ClCompile Include="Sampler\SimpleSampler.cpp" />
     <ClCompile Include="Shape\Box.cpp" />
     <ClCompile Include="Shape\Sphere.cpp" />
     <ClCompile Include="Shape\TriangleMesh.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="Include\Sampler.hpp" />
     <ClInclude Include="Include\Scene.hpp" />
     <ClInclude Include="Include\Shape.hpp" />
+    <ClInclude Include="include\SimpleSampler.hpp" />
     <ClInclude Include="Include\Spectrum.hpp" />
     <ClInclude Include="Include\Sphere.hpp" />
     <ClInclude Include="Include\Texture.hpp" />

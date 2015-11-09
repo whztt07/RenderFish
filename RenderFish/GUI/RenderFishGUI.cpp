@@ -117,6 +117,9 @@ void RenderFishGUI::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 	case WM_MOUSEMOVE:
 		mouse_state.pos_x = LOWORD(lParam);
 		mouse_state.pos_y = HIWORD(lParam);
+		mouse_state.dragging = false;
+		if (mouse_state.mouse_down)
+			mouse_state.dragging = true;
 		//if (mouse_state.pos_x <= 0 || mouse_state.pos_x >= gui_state.width ||
 		//	mouse_state.pos_y <= 0 || mouse_state.pos_y >= gui_state.height)
 		//	gui_state.active_id = -1;
@@ -126,6 +129,7 @@ void RenderFishGUI::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 		break;
 	case WM_LBUTTONUP:
 		mouse_state.mouse_down = false;
+		mouse_state.dragging = false;
 		gui_state.active_id = -1;
 		break;
 	case WM_MOUSEWHEEL:
@@ -145,6 +149,7 @@ void RenderFishGUI::BeginFrame()
 
 void RenderFishGUI::EndFrame()
 {
+	RoI();
 #if 0
 	for (int i = 1; i <= gui_state.height / (side_bar.y_cell_height + side_bar.y_margin); ++i) {
 		pRenderTarget->DrawLine(D2D1::Point2F(gui_state.width - (side_bar.rect.right - side_bar.rect.left), i * (side_bar.y_cell_height + side_bar.y_margin)),
@@ -192,6 +197,30 @@ void RenderFishGUI::SideBar(int width /*= 280*/)
 		bar_y_start -= 1.0f * side_bar.y_start / (side_bar.cell_numbers_last_draw * side_bar.y_cell_height) * window_height;
 		int bar_length = float(window_height) / (side_bar.cell_numbers_last_draw * side_bar.y_cell_height) * window_height;
 		fill_rect(window_width - scroll_bar_width, bar_y_start, scroll_bar_width, bar_length, pReuseableBrush);
+	}
+}
+
+void RenderFishGUI::RoI()
+{
+	if (mouse_state.mouse_down && mouse_in_region(0, 0, gui_state.width - 280, gui_state.height)) {
+		//draw_rect(mouse_state.pos_x, mouse_state.pos_y, 100, 100, pReuseableBrush);
+		//info("in region\n");
+		if (mouse_state.dragging) {
+			roi_state.x_end = mouse_state.pos_x;
+			roi_state.y_end = mouse_state.pos_y;
+			roi_state.to_be_drawn = true;
+			//info("1");
+		}
+		else {
+			roi_state.x_start = mouse_state.pos_x;
+			roi_state.y_start = mouse_state.pos_y;
+			roi_state.to_be_drawn = false;
+			info("2\n");
+		}
+	}
+	if (roi_state.to_be_drawn) {
+		pReuseableBrush->SetColor(D2D1::ColorF(1, 1, 0));
+		draw_rect(roi_state.x_start, roi_state.y_start, roi_state.x_end - roi_state.x_start, roi_state.y_end - roi_state.y_start, pReuseableBrush);
 	}
 }
 
@@ -379,6 +408,8 @@ void RenderFishGUI::draw_number_box(const T val, int x, int y, int w, int h)
 
 //RECT RenderFishGUI::rc;
 MouseState RenderFishGUI::mouse_state;
+DrawROIStae RenderFishGUI::roi_state;
+
 ID2D1Factory* RenderFishGUI::pD2DFactory(nullptr);
 ID2D1HwndRenderTarget* RenderFishGUI::pRenderTarget(nullptr);
 IDWriteFactory* RenderFishGUI::pDWriteFactory(nullptr);

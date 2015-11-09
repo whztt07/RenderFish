@@ -36,6 +36,8 @@ struct Pixel {
 	float splat_xyz[3];// = { 0, 0, 0 };
 	float pad;	// to 16 * 4 bytes
 
+	Normal normal;
+
 	Pixel() {
 		memset(this, 0, sizeof(*this));
 	}

@@ -61,6 +61,12 @@
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{44d926e6-e0a7-4771-a768-1cd263181049}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Sampler">
+      <UniqueIdentifier>{19a7d021-f042-4589-ba3f-234e855d97c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sampler">
+      <UniqueIdentifier>{b1b319ac-0a1a-41f3-9efb-a94fab522a35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RayTracer.rc">
@@ -208,6 +214,9 @@
     </ClCompile>
     <ClCompile Include="MonteCarlo.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler\SimpleSampler.cpp">
+      <Filter>Source Files\Sampler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -357,6 +366,9 @@
     </ClInclude>
     <ClInclude Include="include\MonteCarlo.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SimpleSampler.hpp">
+      <Filter>Header Files\Sampler</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

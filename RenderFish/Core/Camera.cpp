@@ -59,6 +59,11 @@ float OrthoCamera::gererate_ray_differential(const CameraSample & sample, RayDif
 	return 1.f;
 }
 
+OrthoCamera::OrthoCamera(const Transform &cam2world, const Transform &proj, const float screen_window[4], Film *film) : ProjectiveCamera(cam2world, orthographic(0.f, 1.f), screen_window, film)
+{
+	dx_camera = raster_to_camera(Vec3(1, 0, 0));
+	dy_camera = raster_to_camera(Vec3(0, 1, 0));
+}
 PerspectiveCamera::PerspectiveCamera(const Transform & cam2world, const float screen_window[4], float fov, Film * film)
 	: ProjectiveCamera(cam2world, perspective(fov, 1e-2f, 1000.f), screen_window, film) {
 	dx_camera = raster_to_camera(Point(1, 0, 0)) - raster_to_camera(Point(0, 0, 0));
@@ -81,6 +86,10 @@ float PerspectiveCamera::generate_ray(const CameraSample &sample, Ray *ray) cons
 
 float PerspectiveCamera::gererate_ray_differential(const CameraSample &sample, RayDifferential *rd) const
 {
+	if (sample.image_x == 400 && sample.image_y == 300)
+	{
+		info("here\n");
+	}
 	Point p_ras(sample.image_x, sample.image_y, 0);
 	Point p_camera;
 	raster_to_camera(p_ras, &p_camera);

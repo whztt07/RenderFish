@@ -206,12 +206,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 
 	Scene scene(kdtree, lights);
 
-	Transform camera_trans = inverse(look_at(Point(0, 10, -10), Point(0, 0, 0)));
+	Transform camera_trans = inverse(look_at(Point(0, 0, -4.5), Point(0, 0, 0)));
 	float fov = 60.f;
 	//auto proj = perspective(fov, 1e-2f, 1000.f);
 	float crop[] = { 0, 1, 0, 1 };
 	ImageFilm film(800, 600, new BoxFilter(1.f, 1.f), crop, "D:\\image_film.bmp", true);
-	PerspectiveCamera camera(camera_trans, crop, fov, &film);
+	float aspectratio = float(film.x_resolution) / float(film.y_resolution);
+	float screen[] = { -aspectratio, aspectratio, -1.f, 1.f };
+	if (aspectratio < 1.f) {
+		screen[0] = -1.f;
+		screen[1] =  1.f;
+		screen[2] = -1.f / aspectratio;
+		screen[3] = 1.f / aspectratio;
+	}
+	PerspectiveCamera camera(camera_trans, screen, fov, &film);
+
+	//Transform ortho_proj = orthographic(1e-2f, 1000.f);
+	//OrthoCamera camera2(camera_trans, ortho_proj, crop, &film);
 
 	SimpleSampler sampler(0, 800, 0, 600);
 	WhittedIntegrator si;

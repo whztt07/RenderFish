@@ -42,8 +42,11 @@ Spectrum SamplerRenderer::Li(const Scene *scene, const RayDifferential &ray, con
 	
 	if (!isect) isect = &local_isect;
 
-	if (scene->intersect(ray, isect))
-		Li = m_suface_integrator->Li(scene, this, ray, *isect, sample, rng, arena);
+	if (scene->intersect(ray, isect)) {
+		//Li = m_suface_integrator->Li(scene, this, ray, *isect, sample, rng, arena);
+		Normal n = isect->dg.normal;
+		Li = (Spectrum::from_rgb(n.x, n.y, n.z) * 0.5f + 0.5f);
+	}
 	else {
 		// handle ray that doesn't intersect any geometry
 		for (uint32_t i = 0; i < scene->lights.size(); ++i)
@@ -51,8 +54,9 @@ Spectrum SamplerRenderer::Li(const Scene *scene, const RayDifferential &ray, con
 	}
 	// TODO
 	//Spectrum Lvi = volume_integrator->Li(scene, this, ray, sample, rng, T, arena);
-	Spectrum Lvi(0.f);
-	return *T * Li + Lvi;
+	//Spectrum Lvi(0.f);
+	//return *T * Li + Lvi;
+	return Li;
 }
 
 void SamplerRendererTask::run()

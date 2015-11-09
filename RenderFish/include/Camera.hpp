@@ -41,12 +41,7 @@ private:
 	Vec3 dx_camera, dy_camera;
 public:
 	OrthoCamera(const Transform &cam2world, const Transform &proj,
-		const float screen_window[4], Film *film)
-		: ProjectiveCamera(cam2world, orthographic(0.f, 1.f), screen_window, film) {
-
-		dx_camera = raster_to_camera(Vec3(1, 0, 0));
-		dy_camera = raster_to_camera(Vec3(0, 1, 0));
-	}
+		const float screen_window[4], Film *film);
 
 	virtual float generate_ray(const CameraSample &sample, Ray *ray) const override;
 

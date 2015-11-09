@@ -80,7 +80,7 @@ int SimpleSampler::get_more_samples(Sample *sample, RNG &rng)
 	const int w = x_pixel_end - x_pixel_start;
 	const int h = y_pixel_end - y_pixel_start;
 	int total_sample_count = w * h;
-	if (m_current_sample_pos > total_sample_count) {
+	if (m_current_sample_pos >= total_sample_count) {
 		return 0;
 	}
 	sample->image_x = float(m_current_sample_pos % w) + x_pixel_start;

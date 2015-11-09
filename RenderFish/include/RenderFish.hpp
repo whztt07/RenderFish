@@ -11,6 +11,8 @@
 #define RENDERFISH_PLATFORM_IS_APPLE
 #endif
 
+#define ALLOCA(TYPE, COUNT) (TYPE*)alloca((COUNT) * sizeof(TYPE))
+
 #include <cmath>
 #include <cstdlib>
 #include <cstdio>

@@ -13,6 +13,8 @@
 #include "Integrator.hpp"
 #include "WhittedIntegrator.hpp"
 #include "SimpleSampler.hpp"
+#include "RandomSampler.hpp"
+#include "StratifiedSampler.hpp"
 
 using namespace std;
 
@@ -232,12 +234,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	//Transform ortho_proj = orthographic(1e-2f, 1000.f);
 	//OrthoCamera camera2(camera_trans, ortho_proj, crop, &film);
 
-	SimpleSampler sampler(0, 800, 0, 600);
+	//SimpleSampler sampler(0, 800, 0, 600);
+	//RandomSampler sampler(0, 800, 0, 600, 8);
+	StratifiedSampler sampler(0, 800, 0, 600, 2, 2, true);
 	WhittedIntegrator si;
 
 	SamplerRenderer renderer(&sampler, &camera, &si, nullptr);
 	p_renderer = &renderer;
-	//renderer.render(&scene);
+	renderer.render(&scene);
 	
 	//w.render_scene();
 	pBitmap->CopyFromMemory(nullptr, &film.color_buffer[0], 4 * width);

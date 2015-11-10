@@ -59,7 +59,7 @@ struct MouseState {
 	int hot_item = -1;
 	//int active_item;
 	bool mouse_down = false;
-	bool dragging = false;
+	//bool dragging = false;
 	bool mouse_wheel_rotating = false;
 	short mouse_wheel_z_delta = 0;
 };
@@ -69,6 +69,7 @@ struct DrawROIStae {
 	int y_start = -1;
 	int x_end = -1;
 	int y_end = -1;
+	bool started = false;
 	bool to_be_drawn = false;
 };
 

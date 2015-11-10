@@ -117,9 +117,9 @@ void RenderFishGUI::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 	case WM_MOUSEMOVE:
 		mouse_state.pos_x = LOWORD(lParam);
 		mouse_state.pos_y = HIWORD(lParam);
-		mouse_state.dragging = false;
-		if (mouse_state.mouse_down)
-			mouse_state.dragging = true;
+		//mouse_state.dragging = false;
+		//if (mouse_state.mouse_down)
+		//	mouse_state.dragging = true;
 		//if (mouse_state.pos_x <= 0 || mouse_state.pos_x >= gui_state.width ||
 		//	mouse_state.pos_y <= 0 || mouse_state.pos_y >= gui_state.height)
 		//	gui_state.active_id = -1;
@@ -129,7 +129,7 @@ void RenderFishGUI::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 		break;
 	case WM_LBUTTONUP:
 		mouse_state.mouse_down = false;
-		mouse_state.dragging = false;
+		//mouse_state.dragging = false;
 		gui_state.active_id = -1;
 		break;
 	case WM_MOUSEWHEEL:
@@ -202,21 +202,28 @@ void RenderFishGUI::SideBar(int width /*= 280*/)
 
 void RenderFishGUI::RoI()
 {
-	if (mouse_state.mouse_down && mouse_in_region(0, 0, gui_state.width - 280, gui_state.height)) {
-		//draw_rect(mouse_state.pos_x, mouse_state.pos_y, 100, 100, pReuseableBrush);
-		//info("in region\n");
-		if (mouse_state.dragging) {
-			roi_state.x_end = mouse_state.pos_x;
-			roi_state.y_end = mouse_state.pos_y;
-			roi_state.to_be_drawn = true;
-			//info("1");
+	if (mouse_state.mouse_down) {
+		if (mouse_in_region(0, 0, gui_state.width - 280, gui_state.height)) {
+			//info("in region\n");
+			if (roi_state.started) {
+				roi_state.x_end = mouse_state.pos_x;
+				roi_state.y_end = mouse_state.pos_y;
+				roi_state.to_be_drawn = true;
+				//roi_state.to_be_drawn = false;
+				//info("1");
+			}
+			else {
+				roi_state.x_start = mouse_state.pos_x;
+				roi_state.y_start = mouse_state.pos_y;
+				roi_state.to_be_drawn = false;
+				roi_state.started = true;
+				//info("[RenderFishGUI::RoI] roi dragging\n");
+			}
 		}
-		else {
-			roi_state.x_start = mouse_state.pos_x;
-			roi_state.y_start = mouse_state.pos_y;
-			roi_state.to_be_drawn = false;
-			info("2\n");
-		}
+	}
+	else
+	{
+		roi_state.started = false;
 	}
 	if (roi_state.to_be_drawn) {
 		pReuseableBrush->SetColor(D2D1::ColorF(1, 1, 0));

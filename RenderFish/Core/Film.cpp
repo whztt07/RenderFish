@@ -126,9 +126,13 @@ void ImageFilm::write_image(float spalt_scale /*= 1.0f*/)
 			s.to_rgb(rgb);
 			int idx = (x + y * x_resolution) * 4;
 			//info("%d\n", idx);
-			color_buffer[idx++] = unsigned char(rgb[2] * 255);
-			color_buffer[idx++] = unsigned char(rgb[1] * 255);
-			color_buffer[idx++] = unsigned char(rgb[0] * 255);
+			if (p.weight_sum == 0) {
+				idx += 3;
+				continue;
+			}
+			color_buffer[idx++] = unsigned char(rgb[2] * 255 / p.weight_sum);
+			color_buffer[idx++] = unsigned char(rgb[1] * 255 / p.weight_sum);
+			color_buffer[idx++] = unsigned char(rgb[0] * 255 / p.weight_sum);
 		}
 
 	}

@@ -86,10 +86,6 @@ float PerspectiveCamera::generate_ray(const CameraSample &sample, Ray *ray) cons
 
 float PerspectiveCamera::gererate_ray_differential(const CameraSample &sample, RayDifferential *rd) const
 {
-	if (sample.image_x == 400 && sample.image_y == 300)
-	{
-		info("here\n");
-	}
 	Point p_ras(sample.image_x, sample.image_y, 0);
 	Point p_camera;
 	raster_to_camera(p_ras, &p_camera);

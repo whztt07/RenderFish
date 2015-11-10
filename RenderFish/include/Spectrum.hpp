@@ -126,7 +126,12 @@ public:
 		return ret;
 	}
 	CoefficientSpectrum operator/(float f) const {
+
 		Assert(!zero(f));
+		if (zero(f)) {
+			//info("CoefficientSpectrum::operator/()\n");
+			return 0;
+		}
 		CoefficientSpectrum ret = *this;
 		for (int i = 0; i < n_samples; ++i)
 			ret.c[i] /= f;

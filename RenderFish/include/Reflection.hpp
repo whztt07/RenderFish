@@ -79,6 +79,11 @@ public:
 	virtual Spectrum rho(const Vec3 &wo, int n_samples, const float *samples) const;
 	virtual Spectrum rho(int nSamples, const float *samples1, const float *samples2) const;
 	virtual float pdf(const Vec3 &wi, const Vec3 &wo) const {
+		//TODO
+		//float ret = abs_cos_theta(wi);
+		//if (zero(ret)) {
+		//	info("ret is zero\n");
+		//}
 		return same_hemisphere(wo, wi) ? abs_cos_theta(wi) * INV_PI : 0.f;
 	}
 };

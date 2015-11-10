@@ -370,5 +370,11 @@
     <ClInclude Include="include\SimpleSampler.hpp">
       <Filter>Header Files\Sampler</Filter>
     </ClInclude>
+    <ClInclude Include="include\RandomSampler.hpp">
+      <Filter>Header Files\Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\StratifiedSampler.hpp">
+      <Filter>Header Files\Sampler</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

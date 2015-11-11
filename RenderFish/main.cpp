@@ -96,10 +96,13 @@ VOID Render() {
 	RenderFishGUI::Label(L"test label right", align_horiontally_right);
 
 	if (RenderFishGUI::Button(L"warning")) {
-		MessageBox(g_Hwnd, "warning", "warning", MB_OK);
+		MessageBox(0, "warning", "warning", MB_OK);
 	}
 
 	RenderFishGUI::Button(L"This is a a a a a loooooooooooooooooooooooooooooooong word.");
+
+	RenderFishGUI::Button(L"Region");
+	RenderFishGUI::Button(L"Cast a ray");
 
 	RenderFishGUI::EndFrame();
 
@@ -215,7 +218,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	Scene scene(kdtree, lights);
 	p_scene = &scene;
 
-	Transform camera_trans = inverse(look_at(Point(0, 0, -4.5), Point(0, 0, 0)));
+	Transform camera_trans = inverse(look_at(Point(0, 3, 3), Point(0, 0.5, 0)));
+	//Transform camera_trans = (translate(0, 3.5, 5) * rotate(-30, Vec3::axis_x));
 	float fov = 60.f;
 	//auto proj = perspective(fov, 1e-2f, 1000.f);
 	float crop[] = { 0, 1, 0, 1 };

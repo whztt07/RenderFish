@@ -11,7 +11,7 @@ using namespace std;
 
 #define SAFE_RELEASE(P) if(P){P->Release() ; P = NULL ;}
 #define HR(hr) \
-	if (FAILED(hr)) { MessageBoxA(NULL, __FILE__, "Error", MB_OK); exit(1); }
+	if (FAILED(hr)) { error("Assertion hr failed in %s, line %d\n", __FILE__, __LINE__); MessageBoxA(NULL, __FILE__, "Error", MB_OK); exit(1); }
 
 template<typename T>
 inline std::wstring ToWString(const T& s)
@@ -93,12 +93,14 @@ public:
 	static bool Button(const char* label);
 	static void Label(const WCHAR* text, GUIAlignment text_alignment = align_horiontally_left);
 	static void Label(const char* text, GUIAlignment text_alignment = align_horiontally_left);
-	static void SideBar(int width = 280);
-
-	static void RoI();
-
 	template<typename T>
 	static void Slider(const char* label, T *pVal, T min, T max);
+	static void CheckBox(const char* label, bool* val);
+
+	static void SideBar(int width = 280);
+	static void RoI();
+
+
 
 private:
 	RenderFishGUI();

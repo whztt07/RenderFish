@@ -345,6 +345,12 @@ void RenderFishGUI::Slider(const char* label, T *pVal, T min, T max)
 	draw_number_box(*pVal, x, y, number_box_width, side_bar.y_cell_height);
 }
 
+void RenderFishGUI::CheckBox(const char* label, bool* val)
+{
+	int id = gui_state.next_id++;
+
+}
+
 void RenderFishGUI::draw_rect(int x, int y, int w, int h)
 {
 	pRenderTarget->DrawRectangle(D2D1::RectF(float(x), float(y), float(x + w), float(y + h)), pBlackBrush);
@@ -411,7 +417,6 @@ void RenderFishGUI::draw_number_box(const T val, int x, int y, int w, int h)
 	
 	draw_text(ToWString(val).c_str(), x, y, w, h, align_horiontally_left);
 }
-
 
 //RECT RenderFishGUI::rc;
 MouseState RenderFishGUI::mouse_state;

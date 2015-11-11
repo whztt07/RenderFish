@@ -30,11 +30,11 @@ void split_string(const string & str, int *vertex_id, int *uv_id, int *normal_id
 	else
 		error("vertex not in wanted format in load_obj: not triangle\n");
 	
-	//http://en.cppreference.com/w/cpp/language/operator_precedence
-	// the precedence of -- is prior than *
-	--(*vertex_id);
-	--(*uv_id);
-	--(*normal_id);
+	////http://en.cppreference.com/w/cpp/language/operator_precedence
+	//// the precedence of -- is prior than *
+	//--(*vertex_id);
+	//--(*uv_id);
+	//--(*normal_id);
 }
 
 TriangleMesh* ModelIO::load(const string & path)
@@ -120,13 +120,17 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 				for (int i = 0; i < 3; i++)
 				{
 					split_string(face[i], &v, &u, &n);
-					if (v < 0) {
-						error("    load_obj at line: %d\n", line_number);
+					--v, --u, --n;
+					if (v < 0) v = positions.size() + v + 1;
+					if (u < 0) u = uvs.size() + u + 1;
+					if (n < 0) n = normals.size() + n + 1;
+					if (v < 0 || u < 0 || n < 0) {
+						error("    face index error [load_obj] at line: %d\n", line_number);
 						return nullptr;
 					}
 					p_index.push_back(v);
-					if (u >= 0) uv_index.push_back(u);
-					if (n >= 0) n_index.push_back(n);
+					uv_index.push_back(u);
+					n_index.push_back(n);
 				}
 				n_triangles++;
 			}

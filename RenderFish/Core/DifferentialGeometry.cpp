@@ -3,12 +3,13 @@
 void DifferentialGeometry::compute_differentials(const RayDifferential & ray) const {
 	if (ray.has_differentials) {
 		// estimate screen space change in p and (u, v)
+		//   compute auxiliary intersection points with plane
 		float d = dot(normal, p);
 		float tx = (d - dot(normal, ray.rx_origin)) / dot(normal, ray.rx_direction);
+		Point px = ray.rx_origin + tx * ray.rx_direction;
 		float ty = (d - dot(normal, ray.ry_origin)) / dot(normal, ray.ry_direction);
-		Point px = ray(tx);
-		Point py = ray(ty);
-		//   compute auxiliary intersection points with plane
+		Point py = ray.ry_origin + tx * ray.ry_direction;
+
 		dpdx = px - p;
 		dpdy = py - p;
 

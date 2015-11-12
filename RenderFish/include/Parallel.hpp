@@ -2,6 +2,10 @@
 #include "RenderFish.hpp"
 #include <windows.h>
 
+#ifndef DWORD_MAX
+#define DWORD_MAX       0xffffffffUL
+#endif
+
 typedef volatile LONG AtomicInt32;
 typedef volatile LONGLONG AtomicInt64;
 //#ifdef HAS_64_BIT_ATOMICS
@@ -46,48 +50,107 @@ inline float atomic_add(volatile float *val, float delta) {
 }
 
 class Mutex {
-private:
-
 public:
 	static Mutex* create();
 	static void destroy(Mutex *m);
 
 private:
+	Mutex();
+	~Mutex();
+	friend struct MutexLock;
+	Mutex(Mutex &m);					// disabled
+	Mutex & operator=(const Mutex &);	// disabled
+
+	CRITICAL_SECTION m_critical_section;
 };
 
 struct MutexLock {
-private:
-	Mutex &_mutex;
 public:
 	MutexLock(Mutex &m);
 	~MutexLock();
-};
-
-
-//reader-writer
-class RWMutex {
-
-public:
-	static RWMutex *create();
-	static void destroy();
 
 private:
+	Mutex &m_mutex;
+	MutexLock(const MutexLock &);				// disabled
+	MutexLock & operator=(const MutexLock &);	// disabled
 
 };
 
 
-enum RWMutexLockType { READ, WRITE };
 
-struct RWMutexLock {
-private:
-	RWMutexLockType _type;
-	RWMutex &_mutex;
-
+class ReadWriteMutex {
 public:
-	RWMutexLock(RWMutex &m, RWMutexLockType t);
-	~RWMutexLock();
+	static ReadWriteMutex *create();
+	static void destroy(ReadWriteMutex *m);
+
+private:
+	ReadWriteMutex();
+	~ReadWriteMutex();
+	friend struct ReadWriteMutexLock;
+	ReadWriteMutexLock & operator=(const ReadWriteMutex &);	// disabled
+
+	void acquire_read();
+
+	void release_read();
+	void acquire_write();
+	void release_write();
+
+	LONG m_num_writers_waiting = 0;
+	LONG m_num_readers_waiting = 0;
+	DWORD m_active_writer_readers = 0;
+
+	HANDLE m_h_ready_to_read;
+	HANDLE m_h_ready_to_write;
+	CRITICAL_SECTION m_critical_section;
+};
+
+
+enum RWMutexLockType { eREAD, eWRITE };
+
+struct ReadWriteMutexLock {
+public:
+	ReadWriteMutexLock(ReadWriteMutex &m, RWMutexLockType t);
+	~ReadWriteMutexLock();
 	void upgrade_to_write();
 	void downgrade_to_read();
+
+private:
+	RWMutexLockType m_type;
+	ReadWriteMutex &m_mutex;
+	ReadWriteMutexLock(const ReadWriteMutexLock &);				// disabled
+	ReadWriteMutexLock &operator=(const ReadWriteMutexLock &);	// disabled
+
+};
+
+class Semaphore {
+public:
+	Semaphore();
+	~Semaphore();
+	void post(size_t count = 1);
+	void wait();
+	bool try_wait();
+
+private:
+	HANDLE m_handle;
+};
+
+class ConditionVariable {
+public:
+	ConditionVariable();
+	~ConditionVariable();
+	void lock();
+	void unlock();
+	void wait();
+	void signal();
+
+private:
+	uint32_t m_waiters_count = 0;
+	CRITICAL_SECTION m_waiters_count_mutex;
+	CRITICAL_SECTION m_condition_mutex;
+	enum { eSIGNAL = 0, eBROADCAST = 1, eNUM_EVENTS = 2 };
+	// a event is used to send a signal to a thread indicating 
+	// that a particular event has occurred.
+	HANDLE m_events[eNUM_EVENTS];
 };
 
 void tasks_init();

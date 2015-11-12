@@ -60,7 +60,7 @@ void info(const char *fmt, ...)
 
 	printf("\e[0;37m");    // white
 #endif
-	std::cout << "[info]";
+	std::cout << "[info] ";
 	va_list args;
 	va_start(args, fmt);
 	int n = vsprintf(sprint_buf, fmt, args);
@@ -78,7 +78,7 @@ void warning(const char *fmt, ...)
 #elif RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
     printf("\e[0;33m");    // yellow
 #endif
-	std::cout << "[warning]";
+	std::cout << "[warning] ";
 	va_list args;
 	va_start(args, fmt);
 	int n = vsprintf(sprint_buf, fmt, args);
@@ -96,7 +96,7 @@ void error(const char *fmt, ...)
 #elif RENDERFISH_LOG_IS_APPLE || RENDERFISH_LOG_IS_LINUX
     printf("\e[0;31m");    // red
 #endif
-	std::cout << "[error]";
+	std::cout << "[error] ";
 	va_list args;
 	va_start(args, fmt);
 	int n = vsprintf(sprint_buf, fmt, args);

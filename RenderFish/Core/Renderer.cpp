@@ -4,9 +4,14 @@
 #include "Scene.hpp"
 #include "Camera.hpp"
 #include "Light.hpp"
+#include "Timer.hpp"
 
 void SamplerRenderer::render(const Scene * scene)
 {
+	log_group("SamplerRender::render");
+	Timer timer("render");
+	timer.begin();
+
 	m_suface_integrator->preprocess(scene, m_camera, this);
 	if (m_volume_integrator != nullptr) m_volume_integrator->preprocess(scene, m_camera, this);
 	Sample *sample = new Sample(m_sampler, m_suface_integrator, m_volume_integrator, scene);
@@ -25,6 +30,9 @@ void SamplerRenderer::render(const Scene * scene)
 	enqueue_tasks(render_tasks);
 	wait_for_all_tasks();
 	
+	timer.end();
+	timer.print();
+
 	// clean up after rendering and store final image
 	for (auto rt : render_tasks)
 		delete rt;

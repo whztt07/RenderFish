@@ -235,7 +235,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	}
 	PerspectiveCamera camera(camera_trans, screen, fov, &film);
 
-	//Transform ortho_proj = orthographic(1e-2f, 1000.f);
+	//Transform ortho_proj = orthographic(1e-2f, 1000.f);baidu
 	//OrthoCamera camera2(camera_trans, ortho_proj, crop, &film);
 
 	//SimpleSampler sampler(0, 800, 0, 600);

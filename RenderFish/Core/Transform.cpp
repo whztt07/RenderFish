@@ -2,15 +2,6 @@
 
 Transform Transform::identity = Transform(Matrix4x4(), Matrix4x4());
 
-bool Transform::operator==(const Transform& t) const {
-	for (int i = 0; i < 4; i++)
-		for (int j = 0; j < 4; j++) {
-			if (!equal(m[i][j], t.m[i][j]))
-				return false;
-		}
-	return true;
-}
-
 BBox Transform::operator()(const BBox& b) const {
 #if 1
 	const Transform &M = *this;
@@ -50,9 +41,9 @@ BBox Transform::operator()(const BBox& b) const {
 }
 
 bool Transform::has_scale() const {
-	float lx2 = (*this)(Vec3(1, 0, 0)).length_squared();
-	float ly2 = (*this)(Vec3(0, 1, 0)).length_squared();
-	float lz2 = (*this)(Vec3(0, 0, 1)).length_squared();
+	float lx2 = (*this)(Vec3::axis_x).length_squared();
+	float ly2 = (*this)(Vec3::axis_y).length_squared();
+	float lz2 = (*this)(Vec3::axis_z).length_squared();
 #define NOT_ONE(x) ((x) < .999f || (x) > 1.001f)
 	return (NOT_ONE(lx2) || NOT_ONE(ly2) || NOT_ONE(lz2));
 #undef NOT_ONE
@@ -176,6 +167,13 @@ Transform look_at(const Point& pos, const Point& look, const Vec3& up)
 	m[3][3] = 1;
 
 	auto dir = normalize(look - pos);
+	if (cross(normalize(up), dir).length() == 0) {
+		error("\"up\" vector (%f, %f, %f) and viewing direction (%f, %f, %f) "
+			"passed to LookAt are pointing in the same direction.  Using "
+			"the identity transformation.", up.x, up.y, up.z, dir.x, dir.y,
+			dir.z);
+		return Transform();
+	}
 	auto left = normalize(cross(normalize(up), dir));
 	auto new_up = cross(dir, left);
 	m[0][0] = left.x;

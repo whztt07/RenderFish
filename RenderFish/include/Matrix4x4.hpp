@@ -18,14 +18,12 @@ struct Matrix4x4
 	
 	Matrix4x4() { 
 		//ZeroMemory(this, sizeof(*this));
-		memset(this, 0, sizeof(*this));
+		memset(this, 0, 16*sizeof(float));
 		m[0][0] = m[1][1] = m[2][2] = m[3][3] = 1;
 	}
 	Matrix4x4(float mat[4][4])
 	{
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
-				m[i][j] = mat[i][j];
+		memcpy(m, mat, 16 * sizeof(float));
 	}
 	Matrix4x4(float m11, float m12, float m13, float m14,
 		float m21, float m22, float m23, float m24,
@@ -90,13 +88,10 @@ struct Matrix4x4
 	//	return ret;
 	//}
 
-	friend const Matrix4x4 operator*(const Matrix4x4& lhs, const Matrix4x4& rhs)
-	{
+	friend const Matrix4x4 operator*(const Matrix4x4& lhs, const Matrix4x4& rhs) {
 		Matrix4x4 result;
-		for (int i = 0; i < 4; i++)
-		{
-			for (int j = 0; j < 4; j++)
-			{
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
 				//result[i][j] = 0;
 				//for (int k = 0; k < 4; k++)
 				//{
@@ -111,11 +106,9 @@ struct Matrix4x4
 		return result;
 	}
 
-	friend const Vec4 operator*(const Matrix4x4& lhs, const Vec4& rhs)
-	{
+	friend const Vec4 operator*(const Matrix4x4& lhs, const Vec4& rhs) {
 		Vec4 result;
-		for (int i = 0; i < 4; i++)
-		{
+		for (int i = 0; i < 4; i++) {
 			result[i] = rhs.x * lhs[i][0] + rhs.y * lhs[i][1] + rhs.z * lhs[i][2] + rhs.w * lhs[i][3];
 		}
 		//result[0] = rhs.x * lhs[0][0] + rhs.y * lhs[0][1] + rhs.z * lhs[0][2] + rhs.w * lhs[0][3];
@@ -126,11 +119,9 @@ struct Matrix4x4
 		return result;
 	}
 
-	friend const Vec3 operator*(const Matrix4x4& lhs, const Vec3& rhs)
-	{
+	friend const Vec3 operator*(const Matrix4x4& lhs, const Vec3& rhs) {
 		Vec3 result;
-		for (int i = 0; i < 3; i++)
-		{
+		for (int i = 0; i < 3; i++) {
 			result[i] = rhs.x * lhs.m[i][0] + rhs.y * lhs.m[i][1] + rhs.z * lhs.m[i][2];
 		}
 		return result;
@@ -147,6 +138,21 @@ struct Matrix4x4
 				m[i][j] = f[j];
 			}
 		}
+	}
+
+	bool operator==(const Matrix4x4 &m2) const {
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j){
+				//if (!equal(m[i][j], m2.m[i][j]))
+				if (m2.m[i][j] != m[i][j])
+					return false;
+			}
+		}
+		return true;
+	}
+
+	bool operator!=(const Matrix4x4 &m2) const {
+		return !(this->operator==(m2));
 	}
 };
 

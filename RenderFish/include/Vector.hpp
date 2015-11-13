@@ -175,7 +175,7 @@ public:
 
 	// REFINE
 	Vec3 xyz() const { return Vec3(x, y, z); }
-	Point as_point() const{ return Point(x / w, y / w, z / w); }
+	Point as_point() const{ Assert(w != 0); return Point(x / w, y / w, z / w); }
 };
 
 inline Vec3 spherical_direction(float sin_theta, float cos_theta, float phi) {

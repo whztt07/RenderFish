@@ -120,9 +120,12 @@ public:
 	Point operator*(float f) const { return Point(x * f, y * f, z * f); }
 	friend Point operator*(float f, const Point& p) { return Point(p.x * f, p.y * f, p.z * f); }
 
-
 	bool operator==(const Vec3& p) const { return equal(x, p.x) && equal(y, p.y) && equal(z, p.z); }
 	bool operator!=(const Vec3& p) const { return !operator==(p); }
+
+	bool has_NaNs() const {
+		return isnan(x) || isnan(y) || isnan(z);
+	}
 };
 
 class Normal
@@ -149,6 +152,10 @@ public:
 	void operator/=(const float f) { x /= f; y /= f; z /= f; }
 
 	static Normal face_forward(const Normal& n, const Vec3& v) { return (dot(n, v) < 0.f) ? -n : n; }
+
+	bool has_NaNs() const {
+		return isnan(x) || isnan(y) || isnan(z);
+	}
 };
 
 //__declspec(align(16))
@@ -176,6 +183,10 @@ public:
 	// REFINE
 	Vec3 xyz() const { return Vec3(x, y, z); }
 	Point as_point() const{ Assert(w != 0); return Point(x / w, y / w, z / w); }
+
+	bool has_NaNs() const {
+		return isnan(x) || isnan(y) || isnan(z) || isnan(w);
+	}
 };
 
 inline Vec3 spherical_direction(float sin_theta, float cos_theta, float phi) {

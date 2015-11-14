@@ -13,12 +13,13 @@ private:
 
 public:
 
-	MatteMaterial(Reference<Texture<Spectrum>> kd,
-		Reference<Texture<float>> sigma, Reference<Texture<float>> bump_map)
+	MatteMaterial(Reference<Texture<Spectrum>> kd, Reference<Texture<float>> sigma, 
+		Reference<Texture<float>> bump_map)
 		: Kd(kd), sigma(sigma), bump_map(bump_map) {
 	}
 
-	BSDF* get_BSDF(const DifferentialGeometry &dg_geom, 
-		const DifferentialGeometry &dg_shading, MemoryArena &arena) const;
+	BSDF* get_BSDF( const DifferentialGeometry &dg_geom, 
+					const DifferentialGeometry &dg_shading, 
+					MemoryArena &arena) const;
 };
 

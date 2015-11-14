@@ -84,19 +84,17 @@ Spectrum specular_reflect(const RayDifferential &ray, BSDF *bsdf,
 			rd.ry_origin = p + isect.dg.dpdy;
 			// Compute differential reflected directions
 			Normal dndx = bsdf->shading_diff_geom.dndu * bsdf->shading_diff_geom.dudx +
-				bsdf->shading_diff_geom.dndv * bsdf->shading_diff_geom.dvdx;
+						  bsdf->shading_diff_geom.dndv * bsdf->shading_diff_geom.dvdx;
 			Normal dndy = bsdf->shading_diff_geom.dndu * bsdf->shading_diff_geom.dudy +
-				bsdf->shading_diff_geom.dndv * bsdf->shading_diff_geom.dvdy;
+						  bsdf->shading_diff_geom.dndv * bsdf->shading_diff_geom.dvdy;
 			Vec3 dwodx = -ray.rx_direction - wo, dwody = -ray.ry_direction - wo;
 			float dDNdx = dot(dwodx, n) + dot(wo, dndx);
 			float dDNdy = dot(dwody, n) + dot(wo, dndy);
-			rd.rx_direction = wi - dwodx + 2 * Vec3(dot(wo, n) * dndx +
-				dDNdx * n);
-			rd.ry_direction = wi - dwody + 2 * Vec3(dot(wo, n) * dndy +
-				dDNdy * n);
+			rd.rx_direction = wi - dwodx + 2 * Vec3(dot(wo, n) * dndx + dDNdx * n);
+			rd.ry_direction = wi - dwody + 2 * Vec3(dot(wo, n) * dndy + dDNdy * n);
 		}
 		
-		Spectrum Li = renderer->Li(scene, rd, sample, rng, arena);
+		//Spectrum Li = renderer->Li(scene, rd, sample, rng, arena);
 		//L = f * Li * abs_dot(wi, n) / pdf;
 		L = f * abs_dot(wi, n) / pdf;
 	}

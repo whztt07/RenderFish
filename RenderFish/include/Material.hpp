@@ -11,6 +11,14 @@ public:
 	Material();
 	virtual ~Material();
 
-	virtual BSDF *get_BSDF(const DifferentialGeometry &dg_geom, const DifferentialGeometry &dg_shading,
-		MemoryArena &arena) const = 0;
+	virtual BSDF *get_BSDF( const DifferentialGeometry &dg_geom, 
+							const DifferentialGeometry &dg_shading,
+							MemoryArena &arena) const = 0;
 };
+
+//class PlasticMaterial : public Material {
+//public:
+//
+//private:
+//
+//};

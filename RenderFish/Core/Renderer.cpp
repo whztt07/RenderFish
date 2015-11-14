@@ -44,6 +44,7 @@ Spectrum SamplerRenderer::Li(const Scene *scene, const RayDifferential &ray,
 	const Sample *sample, RNG &rng, MemoryArena &arena, 
 	Intersection *isect /*= nullptr*/, Spectrum *T /*= nullptr*/) const
 {
+	Assert(!ray.has_NaNs());
 	// allocate local var
 	Spectrum local_T;
 	if (!T) T = &local_T;

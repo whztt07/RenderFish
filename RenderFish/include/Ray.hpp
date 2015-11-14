@@ -28,6 +28,10 @@ public:
 	Point operator()(float t) const { return o + d * t; }
 
     //Ray& operator=(const Ray& rhs) { o = rhs.o; d = rhs.d; return *this;}
+
+	virtual bool has_NaNs() const {
+		return (o.has_NaNs() || d.has_NaNs() || isnan(mint) || isnan(maxt));
+	}
 };
 
 class RayDifferential : public Ray
@@ -51,6 +55,12 @@ public:
 		ry_origin = o + (ry_origin - o) * s;
 		rx_direction = d + (rx_direction - d) * s;
 		ry_direction = d + (ry_direction - d) * s;
+	}
+
+	virtual bool has_NaNs() const override {
+		return Ray::has_NaNs() || (has_differentials &&
+			rx_origin.has_NaNs() || ry_origin.has_NaNs() ||
+			rx_direction.has_NaNs() || ry_direction.has_NaNs());
 	}
 };
 

@@ -4,14 +4,14 @@
 #include "Material.hpp"
 
 
-WhittedIntegrator::WhittedIntegrator()
-{
-}
-
-
-WhittedIntegrator::~WhittedIntegrator()
-{
-}
+//WhittedIntegrator::WhittedIntegrator()
+//{
+//}
+//
+//
+//WhittedIntegrator::~WhittedIntegrator()
+//{
+//}
 
 Spectrum WhittedIntegrator::Li(const Scene * scene, const Renderer * renderer, const RayDifferential & ray, const Intersection & isect, const Sample * sample, RNG & rng, MemoryArena & arena) const {
 
@@ -32,14 +32,14 @@ Spectrum WhittedIntegrator::Li(const Scene * scene, const Renderer * renderer, c
 		VisibilityTester visibility;
 		Spectrum Li = scene->lights[i]->sample_L(p, isect.ray_epsilon, LightSample(rng), &wi, &pdf, &visibility);
 		if (Li.is_black() || pdf == 0.f) continue;
-		Spectrum f = bsdf->f(wo, wi);
+		Spectrum f = bsdf ->f(wo, wi);
 		if (!f.is_black() && visibility.unoccluded(scene)) {
 			L += f * Li * fabsf(dot(wi, n)) *
 				visibility.transmittance(scene, renderer, sample, rng, arena) / pdf;
 		}
 	}
 
-	if (ray.depth + 1 < _max_depth) {
+	if (ray.depth + 1 < m_max_depth) {
 		// trace rays for specular reflection and refraction
 		L += specular_reflect(ray, bsdf, rng, isect, renderer, scene, sample, arena);
 		//L += SpecularTransmit(ray, bsdf, rng, isect, renderer, scene, sample, arena);

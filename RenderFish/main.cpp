@@ -218,7 +218,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	Scene scene(kdtree, lights);
 	p_scene = &scene;
 
-	Transform camera_trans = inverse(look_at(Point(0, 3, 3), Point(0, 0.5, 0)));
+	Transform camera_trans = inverse(look_at(Point(0, 1, 1), Point(0, 0, 0)));
 	//Transform camera_trans = (translate(0, 3.5, 5) * rotate(-30, Vec3::axis_x));
 	float fov = 60.f;
 	//auto proj = perspective(fov, 1e-2f, 1000.f);
@@ -238,9 +238,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	//Transform ortho_proj = orthographic(1e-2f, 1000.f);baidu
 	//OrthoCamera camera2(camera_trans, ortho_proj, crop, &film);
 
-	//SimpleSampler sampler(0, 800, 0, 600);
+	SimpleSampler sampler(0, 800, 0, 600);
 	//RandomSampler sampler(0, 800, 0, 600, 8);
-	StratifiedSampler sampler(0, 800, 0, 600, 2, 2, true);
+	//StratifiedSampler sampler(0, 800, 0, 600, 1, 1, true);
 	WhittedIntegrator si;
 
 	SamplerRenderer renderer(&sampler, &camera, &si, nullptr);

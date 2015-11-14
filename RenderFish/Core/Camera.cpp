@@ -64,6 +64,7 @@ OrthoCamera::OrthoCamera(const Transform &cam2world, const Transform &proj, cons
 	dx_camera = raster_to_camera(Vec3(1, 0, 0));
 	dy_camera = raster_to_camera(Vec3(0, 1, 0));
 }
+
 PerspectiveCamera::PerspectiveCamera(const Transform & cam2world, const float screen_window[4], float fov, Film * film)
 	: ProjectiveCamera(cam2world, perspective(fov, 1e-2f, 1000.f), screen_window, film) {
 	dx_camera = raster_to_camera(Point(1, 0, 0)) - raster_to_camera(Point(0, 0, 0));

@@ -218,8 +218,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	Scene scene(kdtree, lights);
 	p_scene = &scene;
 
-	Transform camera_trans = inverse(look_at(Point(0, 1, 1), Point(0, 0, 0)));
-	//Transform camera_trans = (translate(0, 3.5, 5) * rotate(-30, Vec3::axis_x));
+	Transform camera_trans = inverse(look_at(Point(0, 2.5, 2.5), Point(0, 0, -1)));
+	//Transform camera_trans = inverse(look_at(Point(0, 1, 1), Point(0, 0, 0)));
+	//Transform camera_trans = inverse(translate(0, 3.5, 5) * rotate(-30, Vec3::axis_x));
 	float fov = 60.f;
 	//auto proj = perspective(fov, 1e-2f, 1000.f);
 	float crop[] = { 0, 1, 0, 1 };
@@ -241,7 +242,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	SimpleSampler sampler(0, 800, 0, 600);
 	//RandomSampler sampler(0, 800, 0, 600, 8);
 	//StratifiedSampler sampler(0, 800, 0, 600, 1, 1, true);
-	WhittedIntegrator si;
+	//WhittedIntegrator si;
+	DepthIntegrator si;
 
 	SamplerRenderer renderer(&sampler, &camera, &si, nullptr);
 	p_renderer = &renderer;

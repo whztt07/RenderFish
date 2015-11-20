@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test\Test.vcxproj", "{BC5FC37E-CCF2-4FB9-A1BC-933C96947026}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GUI", "GUI\GUI.vcxproj", "{45E16514-B07B-4931-B79C-7805466239BE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderFish", "RenderFish\RenderFish.vcxproj", "{035E69B1-DA33-41B3-B85A-18E947E3851C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python", "Test\python\python.vcxproj", "{0A66E3E3-5F67-4612-9272-16ACF0CC5344}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,14 @@ Global
 		{035E69B1-DA33-41B3-B85A-18E947E3851C}.Release|Win32.Build.0 = Release|Win32
 		{035E69B1-DA33-41B3-B85A-18E947E3851C}.Release|x64.ActiveCfg = Release|x64
 		{035E69B1-DA33-41B3-B85A-18E947E3851C}.Release|x64.Build.0 = Release|x64
+		{0A66E3E3-5F67-4612-9272-16ACF0CC5344}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0A66E3E3-5F67-4612-9272-16ACF0CC5344}.Debug|Win32.Build.0 = Debug|Win32
+		{0A66E3E3-5F67-4612-9272-16ACF0CC5344}.Debug|x64.ActiveCfg = Debug|x64
+		{0A66E3E3-5F67-4612-9272-16ACF0CC5344}.Debug|x64.Build.0 = Debug|x64
+		{0A66E3E3-5F67-4612-9272-16ACF0CC5344}.Release|Win32.ActiveCfg = Release|Win32
+		{0A66E3E3-5F67-4612-9272-16ACF0CC5344}.Release|Win32.Build.0 = Release|Win32
+		{0A66E3E3-5F67-4612-9272-16ACF0CC5344}.Release|x64.ActiveCfg = Release|x64
+		{0A66E3E3-5F67-4612-9272-16ACF0CC5344}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -31,6 +31,8 @@ ID2D1Bitmap *pBitmap;
 RECT rc; // Render area
 HWND g_Hwnd; // Window handle
 
+float image_scale = 1.0f;
+
 static std::chrono::high_resolution_clock::time_point last_render_time;
 
 VOID CreateD2DResource(HWND hWnd)
@@ -64,6 +66,15 @@ VOID Cleanup()
 }
 
 void draw_texture() {
+	static float local_image_scale = 1.0f;
+	static vector<unsigned char> pixels;
+	if (local_image_scale != image_scale) {
+		pixels = p_film->color_buffer;
+		for (int i = 0; i < pixels.size(); ++i)
+			pixels[i] *= image_scale;
+		pBitmap->CopyFromMemory(nullptr, &pixels[0], 4 * width);
+		local_image_scale = image_scale;
+	}
 	pRenderTarget->DrawBitmap(pBitmap, D2D1::RectF(0, 0, 800, 600));
 }
 
@@ -112,6 +123,9 @@ VOID Render() {
 		p_renderer->render(p_scene);
 		pBitmap->CopyFromMemory(nullptr, &p_film->color_buffer[0], 4 * width);
 	}
+	
+	RenderFishGUI::Slider<float>("image scale", &image_scale, 0.f, 10.f);
+	
 	last_render_time = std::chrono::high_resolution_clock::now();
 
 	HR(pRenderTarget->EndDraw());
@@ -211,9 +225,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 
 	KdTree * kdtree = w.kdTree;
 	
-	Transform light_trans = translate(10, 10, -10);
+	Transform light_trans = translate(0, 4, 0);
 	vector<Light*> lights;
-	lights.push_back(new PointLight(light_trans, Spectrum(0.8f)));
+	lights.push_back(new PointLight(light_trans, Spectrum(1.0f)));
 
 	Scene scene(kdtree, lights);
 	p_scene = &scene;
@@ -243,7 +257,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	//RandomSampler sampler(0, 800, 0, 600, 8);
 	//StratifiedSampler sampler(0, 800, 0, 600, 1, 1, true);
 	//WhittedIntegrator si;
-	DepthIntegrator si;
+	//DepthIntegrator si;
+	//NormalIntegrator si;
+	NDotLIntegrator si;
 
 	SamplerRenderer renderer(&sampler, &camera, &si, nullptr);
 	p_renderer = &renderer;

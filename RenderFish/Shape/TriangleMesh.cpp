@@ -1,4 +1,5 @@
 #include "TriangleMesh.hpp"
+#include "ModelIO.hpp"
 
 Triangle::Triangle(const Transform *o2w, const Transform *w2o, bool reverse_orientation, TriangleMesh *m, int n) : Shape(o2w, w2o, reverse_orientation)
 {
@@ -104,9 +105,9 @@ bool Triangle::intersect(const Ray &ray, float *t_hit, float *ray_epsilon, Diffe
 	float tu = b0*uvs[0].x + b1*uvs[1].x + b2*uvs[2].x;
 	float tv = b0*uvs[0].y + b1*uvs[1].y + b2*uvs[2].y;
 
-	if (mesh->alpha_texture) {
+	if (mesh->m_alpha_texture) {
 		DifferentialGeometry dg_local(ray(t), dpdu, dpdv, Normal(0, 0, 0), Normal(0, 0, 0), tu, tv, this);
-		if (mesh->alpha_texture->evaluate(dg_local) == 0.f)
+		if (mesh->m_alpha_texture->evaluate(dg_local) == 0.f)
 			return false; 
 	}
 
@@ -233,10 +234,27 @@ void Triangle::get_shading_geometry(const Transform & obj2world, const Different
 		dg.u, dg.v, dg.shape);
 }
 
-TriangleMesh::TriangleMesh(const Transform * o2w, const Transform * w2o, bool reverse_orientation, int nt, int nv, const int * vi, const Point * P, const Normal * normal, const Vec3 * tangent, const Vec2 * uv, const Reference<Texture<float>>& alpha_texture)
-	: Shape(o2w, w2o, reverse_orientation), alpha_texture(alpha_texture),
-	n_triangles(nt), n_vertices(nv)
+TriangleMesh::TriangleMesh(const Transform * o2w, const Transform * w2o, bool reverse_orientation, 
+	int nt, int nv, const int * vi, const Point * P, const Normal * normal, const Vec3 * tangent, 
+	const Vec2 * uv, const Reference<Texture<float>>& alpha_texture)
+	: Shape(o2w, w2o, reverse_orientation), m_alpha_texture(alpha_texture)
 {
+	_set_data(nt, nv, vi, P, normal, tangent, uv);
+}
+
+TriangleMesh::TriangleMesh(const Transform *o2w, const Transform * w2o, bool reverse_orientation, 
+	const string& mesh_file_path, const Reference<Texture<float> > &alpha_texture) 
+	: Shape(o2w, w2o, reverse_orientation), m_alpha_texture(alpha_texture)
+{
+	ModelIO::load(mesh_file_path, this);
+}
+
+void TriangleMesh::_set_data(int nt, int nv, const int* vi, const Point *P, const Normal *normal, 
+	const Vec3 *tangent, const Vec2 *uv)
+{
+	//warning("TriangleMesh::_set_data\n");
+	n_triangles = nt;
+	n_vertices = nv;
 	vertex_index = new int[3 * nt];
 	memcpy(vertex_index, (void *)vi, 3 * nt * sizeof(int));
 	if (normal != nullptr) {

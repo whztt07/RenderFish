@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scene version="0.5.0">
+	<integrator type="depth">
+	</integrator>
+	<shape type="obj">
+		<string name="filename" value="D:\yyk\workspace\github\RenderFish\Models\obj\mitsuba\mitsuba-sphere.obj"/>
+	</shape>
+</scene>

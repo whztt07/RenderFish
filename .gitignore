@@ -10,7 +10,9 @@
 /GUI/Release/
 /GUI/x64/
 
+*.pyc
 *.sdf
 *.suo
 *.user
 *.opensdf
+/Test/python/x64

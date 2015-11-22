@@ -37,25 +37,28 @@ void split_string(const string & str, int *vertex_id, int *uv_id, int *normal_id
 	//--(*normal_id);
 }
 
-TriangleMesh* ModelIO::load(const string & path)
+
+bool ModelIO::load(const string& path, TriangleMesh * p_triangle_mesh)
 {
 	std::ifstream in(path.c_str());
 
 	if (!in.good())
 	{
 		error("file not exists: %s", path.c_str());
-		return nullptr;
+		return false;
 	}
+	
+	Assert(p_triangle_mesh != nullptr);
 
 	string ext = get_file_type(path);
 	if (ext == "obj")
-		return load_obj(path, in);
+		return load_obj(path, in, p_triangle_mesh);
 	else
 		error("Unsupported model file type: %s\n", ext.c_str());
-	return nullptr;
+	return false;
 }
 
-TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
+bool ModelIO::load_obj(const string& path, std::ifstream& fin, TriangleMesh * p_triangle_mesh)
 {
 	char buffer[256];
 	char str[256];
@@ -92,7 +95,7 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 			}
 			else {
 				error("vertex not in wanted format in load_obj at line: %d\n", line_number);
-				return nullptr;
+				return false;
 			}
 		}
 		else if(buffer[0] == 'v' && (buffer[1] == 't')) {
@@ -101,7 +104,7 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 			}
 			else {
 				error("vertex not in wanted format in load_obj at line: %d\n", line_number);
-				return nullptr;
+				return false;
 			}
 		}
 		else if (buffer[0] == 'v' && (buffer[1] == 'n')) {
@@ -110,7 +113,7 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 			}
 			else {
 				error("vertex not in wanted format in load_obj at line: %d\n", line_number);
-				return nullptr;
+				return false;
 			}
 		}
 		else if(buffer[0] == 'f' && buffer[1] == ' ') {
@@ -126,7 +129,7 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 					if (n < 0) n = normals.size() + n + 1;
 					if (v < 0 || u < 0 || n < 0) {
 						error("    face index error [load_obj] at line: %d\n", line_number);
-						return nullptr;
+						return false;
 					}
 					p_index.push_back(v);
 					uv_index.push_back(u);
@@ -136,7 +139,7 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 			}
 			else {
 				error("vertex not in wanted format in load_obj at line: %d\n", line_number);
-				return nullptr;
+				return false;
 			}
 		}
 	}
@@ -161,14 +164,14 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 		//Assert(n_index.size() == n_triangles * 3);
 		if (n_index.size() != n_triangles * 3) {
 			error("some vertices do not have normal!\n");
-			return nullptr;
+			return false;
 		}
 	//}
 	//if (!uvs.empty()) {
 		//Assert(uv_index.size() == n_triangles * 3);
 		if (uv_index.size() != n_triangles * 3) {
 			error("some vertices do not have uv!\n");
-			return nullptr;
+			return false;
 		}
 	//}
 
@@ -202,9 +205,11 @@ TriangleMesh* ModelIO::load_obj(const string & path, std::ifstream & fin)
 		}
 	}
 
-	info("Model processing finished. Add %d new vertives. %d vertives in all\n", positions.size() - n_vertices, positions.size());
+	info("Model processing finished. Add %d new vertices. %d vertices in all\n", positions.size() - n_vertices, positions.size());
 	n_vertices = (int)positions.size();
-	return new TriangleMesh(&Transform::identity, &Transform::identity, false, n_triangles, n_vertices,
-		&p_index[0], &positions[0], &new_normals[0], nullptr, &new_uvs[0], nullptr);
+	//return new TriangleMesh(&Transform::identity, &Transform::identity, false, n_triangles, n_vertices,
+	//	&p_index[0], &positions[0], &new_normals[0], nullptr, &new_uvs[0], nullptr);
+	p_triangle_mesh->_set_data(n_triangles, n_vertices, &p_index[0], &positions[0], &new_normals[0], nullptr, &new_uvs[0]);
+	
+	return true;
 }
-

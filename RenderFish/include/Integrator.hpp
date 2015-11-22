@@ -25,6 +25,19 @@ class VolumeIntegrator : public Integrator {
 		const Intersection &isect, const Sample *sample, RNG &rng, MemoryArena &arena) const = 0;
 };
 
+enum LightStrategy {
+	SAMPLE_ALL_UNIFORM,
+	SAMPLE_ONE_UNIFROM
+};
+
+class DirectLightingIntegrator : public SurfaceIntegrator {
+public:
+
+private:
+	LightStrategy m_strategy;
+	int m_lightNumOffset;
+};
+
 class DepthIntegrator : public SurfaceIntegrator {
 private:
 	Spectrum m_color;
@@ -61,4 +74,17 @@ public:
 		float distance = ray.maxt;
 		return Spectrum(1.0f - distance / m_max_dist) * m_color;
 	}
+};
+
+class NormalIntegrator : public SurfaceIntegrator {
+	virtual Spectrum Li(const Scene *scene, const Renderer *renderer, const RayDifferential &ray,
+		const Intersection &isect, const Sample *sample, RNG &rng, MemoryArena &arena) const override {
+		const Normal& n = isect.dg.normal;
+		return Spectrum::from_rgb(n.x, n.y, n.z) * 0.5f + 0.5f;
+	}
+};
+
+class NDotLIntegrator : public SurfaceIntegrator {
+	virtual Spectrum Li(const Scene *scene, const Renderer *renderer, const RayDifferential &ray,
+		const Intersection &isect, const Sample *sample, RNG &rng, MemoryArena &arena) const override;
 };

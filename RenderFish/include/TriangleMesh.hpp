@@ -50,7 +50,7 @@ public:
 	Normal* normal;
 	Vec3*	tangent;	// tangent
 	Vec2*	uv;
-	Reference<Texture<float> > alpha_texture;	// [optional] alpha mask
+	Reference<Texture<float> > m_alpha_texture;	// [optional] alpha mask
 
 	//TriangleMesh() : Shape(), n_triangles(0), n_vertices(0), alpha_texture(nullptr) { }
 
@@ -64,6 +64,9 @@ public:
 		bool reverse_orientation, int nt, int nv, const int* vi, const Point *P,
 		const Normal *normal, const Vec3 *tangent, const Vec2 *uv,
 		const Reference<Texture<float> > &alpha_texture);
+
+	TriangleMesh(const Transform *o2w, const Transform * w2o, bool reverse_orientation,
+		const string& mesh_file_path, const Reference<Texture<float> > &alpha_texture);
 
 	virtual BBox object_bound() const override {
 		BBox obj_bounds;
@@ -85,8 +88,14 @@ public:
 
 	virtual void refine(vector<Reference<Shape>> &refined) const override {
 		for (int i = 0; i < n_triangles; ++i)
-			refined.push_back(new Triangle(object_to_world, world_to_object, 
-							reverse_orientation, (TriangleMesh *)this, i));
+			refined.push_back(new Triangle(object_to_world, world_to_object,
+				reverse_orientation, (TriangleMesh *)this, i));
 	}
+
+	friend class ModelIO;
+
+private:
+	void _set_data(int nt, int nv, const int* vi, const Point *P,
+		const Normal *normal, const Vec3 *tangent, const Vec2 *uv);
 };
 

@@ -53,8 +53,6 @@ Spectrum SamplerRenderer::Li(const Scene *scene, const RayDifferential &ray,
 	Spectrum Li = 0.f;
 	if (scene->intersect(ray, isect)) {
 		Li = m_suface_integrator->Li(scene, this, ray, *isect, sample, rng, arena);
-		//Normal n = isect->dg.normal;
-		//Li = (Spectrum::from_rgb(n.x, n.y, n.z) * 0.5f + 0.5f);
 	}
 	else {
 		// handle ray that doesn't intersect any geometry

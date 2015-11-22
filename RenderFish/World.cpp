@@ -3,7 +3,6 @@
 #include "Sphere.hpp"
 #include "Camera.hpp"
 #include "TriangleMesh.hpp"
-#include "ModelIO.hpp"
 #include "Box.hpp"
 #include "Timer.hpp"
 
@@ -11,7 +10,7 @@ void World::build( int width, int height)
 {
 	log_group("Build world");
 
-	ConstantTexture<Spectrum> * diffuse = new ConstantTexture<Spectrum>(Spectrum::from_rgb(0.6f, 0.2f, 0.2f));
+	ConstantTexture<Spectrum> * diffuse = new ConstantTexture<Spectrum>(Spectrum::from_rgb(1.f, 1.f, 1.f));
 	MatteMaterial * material = new MatteMaterial(diffuse, nullptr, nullptr);
 
 //	// TODO: Transform pool
@@ -53,12 +52,25 @@ void World::build( int width, int height)
 //		primitives.push_back(gp5);
 //	}
 //
-	auto mesh3 = ModelIO::load("../Models/obj/mitsuba/mitsuba-sphere.obj");
-	//Transform *t6 = new Transform(scale(0.001f, 0.001f, 0.001f));
-	Transform *t6 = new Transform();
+	//auto mesh3 = ModelIO::load("../Models/obj/mitsuba/mitsuba-sphere.obj");
+	Transform *t6 = new Transform(scale(1.f, 1.f, 1.f));
+	Transform *it6 = new Transform(inverse(*t6));
+	auto mesh3 = new TriangleMesh(t6, it6, false, R"(../Models/obj/mitsuba/mitsuba-sphere.obj)", nullptr);
 	if (mesh3 != nullptr) {
 		auto gp6 = new GeometryPrimitive(mesh3, material, nullptr);
 		primitives.push_back(gp6);
+	}
+
+	//auto box = new Box(10, 10, 10);
+	//auto gp7 = new GeometryPrimitive(box, material, nullptr);
+	//primitives.push_back(gp7);
+	//auto ground = ModelIO::load("../Models/plane.obj");
+	Transform *t7 = new Transform(scale(10, 10, 10));
+	Transform *it7 = new Transform(inverse(*t7));
+	auto ground = new TriangleMesh(t7, it7, false, R"(../Models/plane.obj)", nullptr);
+	if (ground != nullptr) {
+		auto gp7 = new GeometryPrimitive(ground, material, nullptr);
+		primitives.push_back(gp7);
 	}
 
 	kdTree = new KdTree(primitives, 80, 1, 0.5f, 1, -1);

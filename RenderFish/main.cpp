@@ -15,6 +15,7 @@
 #include "SimpleSampler.hpp"
 #include "RandomSampler.hpp"
 #include "StratifiedSampler.hpp"
+#include "ConfigParameter.hpp"
 
 using namespace std;
 
@@ -220,6 +221,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 
 	log_system_init();
 	
+	load_config_xml_file(R"(..\Scene\scene02.xml)");
+
 	World w;
 	w.build(width, height);
 

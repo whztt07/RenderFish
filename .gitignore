@@ -16,3 +16,4 @@
 *.user
 *.opensdf
 /Test/python/x64
+/3rdParty/tinyxml2-3.0.0

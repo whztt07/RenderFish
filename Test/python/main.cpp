@@ -3,7 +3,16 @@
 #include <Python.h>
 #include <iostream>
 #include <string>
+#include <map>
+#include <vector>
 using namespace std;
+
+struct ConfigParmeter {
+	vector<ConfigParmeter*> children;
+	map<string, string> attribute;
+};
+
+map<string, ConfigParmeter>;
 
 void parse_xml(string xml_file_name) {
 	PyObject *pModule, *pFunc, *pArgs, *pValue;

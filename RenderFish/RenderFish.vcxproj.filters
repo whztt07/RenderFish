@@ -67,6 +67,12 @@
     <Filter Include="Source Files\Sampler">
       <UniqueIdentifier>{b1b319ac-0a1a-41f3-9efb-a94fab522a35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="3rdParty">
+      <UniqueIdentifier>{78b7c52e-693a-4e49-80d5-01cfcbaf987e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rdParty\TinyXml2">
+      <UniqueIdentifier>{b15c4ebb-3b21-4804-bdaf-d2152c3318b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RayTracer.rc">
@@ -217,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="Sampler\SimpleSampler.cpp">
       <Filter>Source Files\Sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml2.cpp">
+      <Filter>3rdParty\TinyXml2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -375,6 +384,12 @@
     </ClInclude>
     <ClInclude Include="include\StratifiedSampler.hpp">
       <Filter>Header Files\Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tinyxml2.h">
+      <Filter>3rdParty\TinyXml2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ConfigParameter.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

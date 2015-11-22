@@ -173,6 +173,7 @@
     <ClCompile Include="Shape\TriangleMesh.cpp" />
     <ClCompile Include="Spectrum.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="WhittedIntegrator.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Include\Box.hpp" />
     <ClInclude Include="Include\Camera.hpp" />
     <ClInclude Include="Include\Color.hpp" />
+    <ClInclude Include="include\ConfigParameter.hpp" />
     <ClInclude Include="Include\DifferentialGeometry.hpp" />
     <ClInclude Include="Include\Error.hpp" />
     <ClInclude Include="Include\Film.hpp" />
@@ -224,6 +226,7 @@
     <ClInclude Include="include\StratifiedSampler.hpp" />
     <ClInclude Include="Include\Texture.hpp" />
     <ClInclude Include="Include\Timer.hpp" />
+    <ClInclude Include="include\tinyxml2.h" />
     <ClInclude Include="Include\Transform.hpp" />
     <ClInclude Include="Include\TriangleMesh.hpp" />
     <ClInclude Include="Include\Vector.hpp" />
